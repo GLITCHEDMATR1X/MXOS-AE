@@ -4,139 +4,255 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Matrix OS: Arcade Evolution</title>
-  <meta name="description" content="Matrix OS: Arcade Evolution — a dark futuristic arcade hub and creator platform." />
+  <meta
+    name="description"
+    content="Matrix OS: Arcade Evolution — a virtual desktop, arcade hub, creator sandbox, and evolving tool ecosystem."
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="bg-noise"></div>
-  <div class="bg-grid"></div>
-  <div class="bg-glow glow-a"></div>
-  <div class="bg-glow glow-b"></div>
-  <div class="bg-shards"></div>
-  <div class="bg-cityline"></div>
+  <div class="page-bg"></div>
+  <div class="grid-overlay"></div>
+  <div class="grain-overlay"></div>
+  <div class="skyline"></div>
 
   <header class="topbar">
-    <div class="brand">MATRIX OS</div>
+    <div class="brand-wrap">
+      <div class="brand-kicker">GLITCHED MATRIX</div>
+      <div class="brand">MATRIX OS</div>
+    </div>
+
     <nav class="nav">
       <a href="#about">About</a>
-      <a href="#features">Features</a>
-      <a href="#services">Future Services</a>
+      <a href="#state">Current State</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#community">Community</a>
       <a href="#media">Media</a>
     </nav>
   </header>
 
-  <main class="page">
+  <main class="shell">
     <section class="hero panel">
-      <div class="hero-left">
-        <div class="eyebrow">GLITCHED MATRIX</div>
-        <h1>Matrix OS:<br>Arcade Evolution</h1>
-        <p class="hero-text">
-          A futuristic arcade hub, virtual desktop, and evolving creator ecosystem built for playable experiments, tools, and mod-friendly expansion.
+      <div class="hero-copy">
+        <div class="eyebrow">Arcade Hub • Virtual Desktop • Creator Sandbox</div>
+        <h1>Matrix OS:<br />Arcade Evolution</h1>
+        <p class="lead">
+          A dark, system-like world built around playable prototypes, creator tools,
+          modular apps, and an expanding arcade ecosystem.
         </p>
 
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="https://store.steampowered.com/app/4386390/Matrix_OS_Arcade_Evolution/" target="_blank" rel="noopener noreferrer">View on Steam</a>
-          <a class="btn btn-secondary" href="#about">Explore Site</a>
+        <div class="cta-row">
+          <a
+            class="btn btn-primary"
+            href="https://store.steampowered.com/app/4386390/Matrix_OS_Arcade_Evolution/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >View on Steam</a>
+
+          <a class="btn btn-secondary" href="#about">Explore Project</a>
         </div>
 
-        <div class="hero-tags">
-          <span>Arcade Hub</span>
-          <span>Creator Sandbox</span>
-          <span>Dark Futuristic UI</span>
+        <div class="tag-row">
           <span>Early Access</span>
+          <span>Single-player</span>
+          <span>Workshop</span>
+          <span>Level Editor</span>
+          <span>LAN / Split-Screen Modes</span>
         </div>
       </div>
 
-      <div class="hero-right">
-        <div class="media-card poster-card">
-          <div class="media-label">Key Art</div>
-          <img class="poster-image" src="assets/images/library_capsule.png" alt="Matrix OS Arcade Evolution artwork" />
-        </div>
+      <div class="hero-art panel-inset">
+        <img src="assets/images/library_capsule.png" alt="Matrix OS Arcade Evolution artwork" />
       </div>
     </section>
 
-    <section id="media" class="media-section">
-      <div class="section-head">
-        <h2>Media</h2>
-        <p>Visuals, trailers, and world identity.</p>
+    <section class="store-strip">
+      <div class="info-card panel">
+        <div class="info-label">Developer</div>
+        <div class="info-value">GLITCHED MATRIX</div>
       </div>
-
-      <div class="media-grid">
-        <div class="panel media-box wide">Trailer / Main Showcase</div>
-        <div class="panel media-box">Screenshot 01</div>
-        <div class="panel media-box">Screenshot 02</div>
-        <div class="panel media-box">Screenshot 03</div>
-        <div class="panel media-box">Screenshot 04</div>
+      <div class="info-card panel">
+        <div class="info-label">Publisher</div>
+        <div class="info-value">GLITCHED MATRIX</div>
+      </div>
+      <div class="info-card panel">
+        <div class="info-label">Release</div>
+        <div class="info-value">Mar 23, 2026</div>
+      </div>
+      <div class="info-card panel">
+        <div class="info-label">Status</div>
+        <div class="info-value">Early Access</div>
       </div>
     </section>
 
     <section id="about" class="content-grid">
-      <div class="panel">
-        <div class="section-head left">
-          <h2>About the Project</h2>
-        </div>
+      <article class="panel section-card">
+        <div class="section-kicker">About This Game</div>
+        <h2>What Matrix OS Is</h2>
         <p>
-          Matrix OS: Arcade Evolution is built as a playable digital environment where games, prototypes, tools, and experimental systems can live inside one evolving platform.
+          Matrix OS: Arcade Evolution is positioned as a machine-like operating space where
+          creators and curious players interact with projects across many genres and stages
+          of development.
         </p>
         <p>
-          The site should feel like the operating surface of that world: industrial, dark, minimal, and glowing with restrained teal neon.
+          It is presented not just as one game, but as a virtual desktop, prototype arcade,
+          and creator platform designed to grow into a larger ecosystem of tools, bots,
+          and playable modules.
         </p>
-      </div>
+      </article>
 
-      <aside class="panel side-info">
-        <div class="info-row">
-          <span class="info-label">Status</span>
-          <span class="info-value">Active Development</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Theme</span>
-          <span class="info-value">Black / Grey / Teal</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Focus</span>
-          <span class="info-value">Games + Tools + Services</span>
-        </div>
+      <aside class="panel section-card lore-card">
+        <div class="section-kicker">World Setup</div>
+        <h2>Project Fiction</h2>
+        <p>
+          The Steam page frames the setting around a destroyed central hub, hacker conflict,
+          and a rogue archive bot, IO-88, preserving what remained for the creator who never returned.
+        </p>
+        <p>
+          The surviving tools, hub access, and rebuild angle should stay visible in the site’s tone.
+        </p>
       </aside>
     </section>
 
-    <section id="features">
-      <div class="section-head">
-        <h2>Core Features</h2>
-        <p>Structured like a store page, but branded like Matrix OS.</p>
-      </div>
+    <section id="state" class="panel section-card">
+      <div class="section-kicker">Current State</div>
+      <h2>What’s In The Early Access Build</h2>
 
       <div class="feature-grid">
-        <article class="panel feature-card">
-          <h3>Arcade Evolution</h3>
-          <p>Hub-based access to playable prototypes, experiments, and evolving modules.</p>
-        </article>
-        <article class="panel feature-card">
-          <h3>Creator Workflow</h3>
-          <p>Built to expand into tools, editing flows, project helpers, and no-code support.</p>
-        </article>
-        <article class="panel feature-card">
-          <h3>Mod-Friendly</h3>
-          <p>Designed around extendable content, replaceable assets, and future platform growth.</p>
-        </article>
-        <article class="panel feature-card">
-          <h3>Future Ecosystem</h3>
-          <p>A foundation for services, utilities, and connected experiences beyond one release.</p>
-        </article>
+        <div class="feature-box">
+          <h3>Large Prototype Library</h3>
+          <p>Over 50 games and apps now, with the library intended to grow much larger.</p>
+        </div>
+
+        <div class="feature-box">
+          <h3>Desktop UI Systems</h3>
+          <p>Start menu categories, pinning, wallpapers, music and volume controls, and window modes.</p>
+        </div>
+
+        <div class="feature-box">
+          <h3>Python Project Launching</h3>
+          <p>Launches projects from folders through <code>main.py</code>, with optional descriptions and thumbnails.</p>
+        </div>
+
+        <div class="feature-box">
+          <h3>Modular Tools</h3>
+          <p>A drop-in tools system built around separate tool folders and entry points.</p>
+        </div>
+
+        <div class="feature-box">
+          <h3>ChatSpace</h3>
+          <p>Multi-agent chat, direct messages, chat logging, live sketch cams, and erase prompt behavior.</p>
+        </div>
+
+        <div class="feature-box">
+          <h3>Debugging Focus</h3>
+          <p>Crash reporting and latest game log output for faster issue tracking and reproduction.</p>
+        </div>
       </div>
     </section>
 
-    <section id="services" class="panel services-panel">
-      <div class="section-head left">
-        <h2>Future Services</h2>
+    <section id="roadmap" class="content-grid">
+      <article class="panel section-card">
+        <div class="section-kicker">Planned Full Version</div>
+        <h2>How 1.0 Is Supposed To Expand</h2>
+        <ul class="clean-list">
+          <li>More built-in OS apps and creator utilities</li>
+          <li>Project setup, packaging helpers, and asset organization tools</li>
+          <li>More robust Panda3D-focused workflows and starter templates</li>
+          <li>Better creator guidance and richer interactive events</li>
+          <li>More themes, UI layouts, desktop widgets, and settings</li>
+          <li>Better stability, performance tuning, and clearer onboarding</li>
+        </ul>
+      </article>
+
+      <article class="panel section-card">
+        <div class="section-kicker">Early Access Window</div>
+        <h2>Development Approach</h2>
+        <p>
+          The Steam page says the project is intentionally ambitious and expects less than
+          12 months in Early Access, while prioritizing a stable and polished 1.0 over rushing a date.
+        </p>
+        <p>
+          The stated focus is refining stability, UI and UX, creator workflow, and performance
+          across different PC setups.
+        </p>
+      </article>
+    </section>
+
+    <section id="community" class="panel section-card">
+      <div class="section-kicker">Community Direction</div>
+      <h2>How Feedback Is Supposed To Shape The Project</h2>
+
+      <div class="community-grid">
+        <div class="community-box">
+          <h3>Stability</h3>
+          <p>Crash reports and logs are intended to drive fast bug reproduction and fixes.</p>
+        </div>
+
+        <div class="community-box">
+          <h3>Creator Workflow</h3>
+          <p>Feedback is meant to improve how projects and tools are discovered, launched, and packaged.</p>
+        </div>
+
+        <div class="community-box">
+          <h3>UI / UX</h3>
+          <p>Desktop organization, readability, window behavior, and accessibility are all named priorities.</p>
+        </div>
+
+        <div class="community-box">
+          <h3>Requested Tools</h3>
+          <p>Community requests are expected to shape built-in tools, templates, and no-code helpers.</p>
+        </div>
       </div>
-      <p>
-        This section can later expand into development services, creative tools, custom builds, consulting, AI-assisted workflows, and platform utilities.
-      </p>
-      <div class="service-tags">
-        <span>Game Development</span>
-        <span>Tool Design</span>
-        <span>Creative Systems</span>
-        <span>AI Workflows</span>
+    </section>
+
+    <section id="media" class="panel section-card">
+      <div class="section-kicker">Media</div>
+      <h2>Visual Presentation</h2>
+
+      <div class="media-grid">
+        <div class="media-slot media-main">Main Trailer / Showcase</div>
+        <div class="media-slot">Screenshot 01</div>
+        <div class="media-slot">Screenshot 02</div>
+        <div class="media-slot">Screenshot 03</div>
+        <div class="media-slot">Screenshot 04</div>
+      </div>
+    </section>
+
+    <section class="panel section-card">
+      <div class="section-kicker">Store Metadata</div>
+      <h2>Modes, Tags, and Features</h2>
+
+      <div class="pill-cloud">
+        <span>Simulation</span>
+        <span>God Game</span>
+        <span>Choose Your Own Adventure</span>
+        <span>Pixel Graphics</span>
+        <span>Retro</span>
+        <span>Artificial Intelligence</span>
+        <span>Singleplayer</span>
+        <span>Early Access</span>
+        <span>Racing</span>
+        <span>Sports</span>
+        <span>Strategy</span>
+        <span>Action</span>
+        <span>Adventure</span>
+        <span>RPG</span>
+        <span>Indie</span>
+        <span>Casual</span>
+        <span>Arcade</span>
+      </div>
+
+      <div class="pill-cloud secondary-cloud">
+        <span>Single-player</span>
+        <span>LAN PvP</span>
+        <span>Shared / Split Screen PvP</span>
+        <span>LAN Co-op</span>
+        <span>Shared / Split Screen Co-op</span>
+        <span>Steam Workshop</span>
+        <span>Includes level editor</span>
+        <span>Remote Play Together</span>
+        <span>Family Sharing</span>
       </div>
     </section>
   </main>
@@ -144,7 +260,11 @@
   <footer class="footer">
     <div>© GLITCHED MATRIX</div>
     <div class="footer-links">
-      <a href="https://store.steampowered.com/app/4386390/Matrix_OS_Arcade_Evolution/" target="_blank" rel="noopener noreferrer">Steam</a>
+      <a
+        href="https://store.steampowered.com/app/4386390/Matrix_OS_Arcade_Evolution/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Steam</a>
       <a href="#">YouTube</a>
       <a href="#">Contact</a>
     </div>
