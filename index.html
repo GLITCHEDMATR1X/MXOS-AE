@@ -3,47 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matrix OS: Arcade Evolution</title>
-  <meta name="description" content="Matrix OS: Arcade Evolution — an evolving immersive platform for testers, modders, content creators, publishers, and gamers." />
+  <title>GLITCHED MATRIX Prototype Lab</title>
+  <meta name="description" content="GLITCHED MATRIX Prototype Lab — a gaming platform, operating system, and game engine prototype hub with VR support in development." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="page-backdrop"></div>
-  <div class="page-grid"></div>
-  <div class="page-noise"></div>
-  <div class="cityline"></div>
+  <div class="grid-overlay"></div>
+  <div class="noise-overlay"></div>
+  <div class="scanlines"></div>
 
-  <header class="shell topbar">
-    <a class="brand-link" href="#top" aria-label="Matrix OS home">
-      <img id="navLogo" class="nav-logo" src="assets/images/logo.png" alt="Matrix OS logo" />
-    </a>
+  <header class="topbar shell">
+    <div class="brand-block">
+      <span class="micro overline editable" data-key="microLabel">GLITCHED MATRIX</span>
+      <a class="brand-link" href="#top">
+        <img id="navLogo" class="nav-logo" src="assets/images/capsule_small.png" alt="GLITCHED MATRIX Prototype Lab logo" />
+      </a>
+    </div>
     <nav class="nav">
       <a href="#about">About</a>
-      <a href="#current">Current Focus</a>
-      <a href="#vision">Vision</a>
+      <a href="#features">Features</a>
+      <a href="#roadmap">Roadmap</a>
       <a href="#media">Media</a>
-      <a href="#lore">Lore</a>
+      <a href="#community">Audience</a>
     </nav>
-    <button id="adminToggle" class="admin-toggle" type="button">Admin</button>
+    <button id="adminToggle" class="admin-toggle" type="button" aria-label="Open admin panel">Admin</button>
   </header>
 
   <main id="top" class="shell main-shell">
     <section class="hero panel">
-      <div class="hero-art-wrap">
-        <img id="heroHeaderImage" class="hero-art" src="assets/images/library_hero.png" alt="Matrix OS header art" />
-        <div class="hero-overlay"></div>
+      <div class="hero-visual">
+        <img id="heroHeaderImage" class="hero-header-art" src="assets/images/capsule_header.png" alt="GLITCHED MATRIX Prototype Lab header art" />
+        <div class="hero-gradient"></div>
       </div>
 
       <div class="hero-copy">
-        <div class="hero-logo-row">
-          <img id="heroLogo" class="hero-logo" src="assets/images/logo.png" alt="Matrix OS Arcade Evolution logo" />
+        <div class="hero-wordmark-wrap">
+          <img id="heroLogo" class="hero-logo" src="assets/images/logo.png" alt="GLITCHED MATRIX Prototype Lab wordmark" />
         </div>
-        <p class="eyebrow editable" data-key="heroEyebrow">Arcade Hub • Virtual Desktop • Creator Sandbox</p>
-        <h1 class="editable" data-key="heroTitle">Matrix OS: Arcade Evolution</h1>
-        <p class="lead editable" data-key="heroLead">A dark operating surface for playable prototypes, creator tools, modular apps, and an expanding arcade ecosystem.</p>
+        <div class="eyebrow editable" data-key="heroEyebrow">&gt; Gaming Platform / Operating System / Game Engine &lt;</div>
+        <h1 class="editable" data-key="heroTitle">GLITCHED MATRIX Prototype Lab</h1>
+        <p class="lead editable" data-key="heroLead">
+          A dark system hub for prototypes, creator tools, browser experiments, and modular apps — with VR support currently in development and a long-term goal of becoming an immersive platform for testers, modders, content creators, publishers, and gamers.
+        </p>
         <div class="cta-row">
           <a id="primaryCta" class="btn btn-primary" href="https://store.steampowered.com/app/4386390/Matrix_OS_Arcade_Evolution/" target="_blank" rel="noopener noreferrer">View on Steam</a>
-          <a id="secondaryCta" class="btn btn-secondary" href="#about">Explore Project</a>
+          <a id="secondaryCta" class="btn btn-secondary" href="#about">Enter the Lab</a>
         </div>
         <div id="heroTags" class="tag-cloud"></div>
       </div>
@@ -52,62 +57,69 @@
     <section class="stats-grid">
       <article class="panel stat-card">
         <span class="stat-label editable" data-key="stat1Label">Status</span>
-        <strong class="stat-value editable" data-key="stat1Value">Early Access</strong>
+        <strong class="stat-value editable" data-key="stat1Value">Active Development</strong>
       </article>
       <article class="panel stat-card">
-        <span class="stat-label editable" data-key="stat2Label">Library Size</span>
-        <strong class="stat-value editable" data-key="stat2Value">50+ Games & Apps</strong>
+        <span class="stat-label editable" data-key="stat2Label">Current Focus</span>
+        <strong class="stat-value editable" data-key="stat2Value">VR Support + Core Platform</strong>
       </article>
       <article class="panel stat-card">
-        <span class="stat-label editable" data-key="stat3Label">Working On Now</span>
-        <strong class="stat-value editable" data-key="stat3Value">VR Support + Platform Polish</strong>
+        <span class="stat-label editable" data-key="stat3Label">Identity</span>
+        <strong class="stat-value editable" data-key="stat3Value">Gaming Platform / Operating System / Game Engine</strong>
       </article>
       <article class="panel stat-card">
-        <span class="stat-label editable" data-key="stat4Label">Ultimate Goal</span>
-        <strong class="stat-value editable" data-key="stat4Value">Immersive Platform For Creators And Players</strong>
+        <span class="stat-label editable" data-key="stat4Label">Long-Term Goal</span>
+        <strong class="stat-value editable" data-key="stat4Value">Immersive Platform Ecosystem</strong>
       </article>
     </section>
 
     <section id="about" class="split-grid">
       <article class="panel content-card">
-        <span class="section-label editable" data-key="aboutLabel">About Matrix OS</span>
-        <h2 class="editable" data-key="aboutTitle">A site for the evolving platform, not just one page</h2>
-        <p class="editable" data-key="aboutBody1">Matrix OS is positioned as a virtual desktop environment where games, tools, experiments, and creator workflows live inside one system-like world.</p>
-        <p class="editable" data-key="aboutBody2">The long-term direction is bigger than a single release: an immersive platform for testers, modders, content creators of all types, publishers, and gamers to explore, build, evaluate, and share work.</p>
+        <span class="section-label editable" data-key="aboutLabel">About This Project</span>
+        <h2 class="editable" data-key="aboutTitle">A prototype hub designed to grow</h2>
+        <p class="editable" data-key="aboutBody1">
+          GLITCHED MATRIX Prototype Lab is positioned as a digital lab where games, browser experiments, tools, workflows, and system modules can live inside one branded environment.
+        </p>
+        <p class="editable" data-key="aboutBody2">
+          The goal is not just a single title page. It is the front end of a growing platform for testing, modding, creation, publishing, and play across multiple kinds of experiences.
+        </p>
       </article>
-      <aside id="lore" class="panel content-card lore-card">
+      <aside class="panel content-card tone-card">
         <span class="section-label editable" data-key="fictionLabel">Lore</span>
-        <h2 class="editable" data-key="fictionTitle">Rebuild the archive</h2>
-        <p class="editable" data-key="fictionBody1">The fiction should preserve the sense of a damaged hub, surviving systems, and an archive trying to keep projects alive after collapse.</p>
-        <p class="editable" data-key="fictionBody2">That gives the platform a stronger identity than a generic storefront and ties future tools and services back into the same world.</p>
-        <a id="loreLink" class="btn btn-secondary lore-link" href="https://www.amazon.fr/-/en/GLITCHED-MATRIX-ebook/dp/B0CW1NMCK9?dib=eyJ2IjoiMSJ9.ShEoM8fvlVyl0lBCimWn7g.391iz7J7Q4lB5VWhg76Ejhc_X0fP6_H75N4bnJ76Wns&dib_tag=se&qid=1774876478&refinements=p_27%3AGLITCHED+MATRIX&s=digital-text&sr=1-1&text=GLITCHED+MATRIX" target="_blank" rel="noopener noreferrer">Read More</a>
+        <h2 class="editable" data-key="fictionTitle">The world behind the lab</h2>
+        <p class="editable" data-key="fictionBody1">
+          The brand gains more identity when it feels like a surviving system: damaged infrastructure, preserved prototypes, and unfinished experiments being pushed back online.
+        </p>
+        <p class="editable" data-key="fictionBody2">
+          That fiction helps the lab, the tools, and the future services all feel like part of the same world instead of separate products.
+        </p>
+        <div class="tone-actions">
+          <a class="btn btn-secondary lore-link" href="https://www.amazon.fr/-/en/GLITCHED-MATRIX-ebook/dp/B0CW1NMCK9?dib=eyJ2IjoiMSJ9.ShEoM8fvlVyl0lBCimWn7g.391iz7J7Q4lB5VWhg76Ejhc_X0fP6_H75N4bnJ76Wns&dib_tag=se&qid=1774876478&refinements=p_27%3AGLITCHED+MATRIX&s=digital-text&sr=1-1&text=GLITCHED+MATRIX" target="_blank" rel="noopener noreferrer">Read More</a>
+        </div>
       </aside>
     </section>
 
-    <section id="current" class="panel content-card">
-      <div class="section-top">
-        <div>
-          <span class="section-label editable" data-key="featuresLabel">Current Build</span>
-          <h2 class="editable" data-key="featuresTitle">What the platform is communicating right now</h2>
-        </div>
-        <div class="section-mini-card panel-inset">
-          <span class="section-mini-label editable" data-key="focusLabel">Current Focus</span>
-          <p class="editable" data-key="focusBody">VR support, platform stability, clearer workflows, stronger customization, and a more immersive presentation layer.</p>
-        </div>
-      </div>
+    <section id="features" class="panel content-card">
+      <span class="section-label editable" data-key="featuresLabel">Current Focus</span>
+      <h2 class="editable" data-key="featuresTitle">What Prototype Lab is building toward</h2>
       <div id="featuresGrid" class="feature-grid"></div>
     </section>
 
-    <section id="vision" class="split-grid split-grid-roadmap">
+    <section id="roadmap" class="split-grid split-grid-roadmap">
       <article class="panel content-card">
-        <span class="section-label editable" data-key="roadmapLabel">Near-Term Roadmap</span>
-        <h2 class="editable" data-key="roadmapTitle">What is being pushed next</h2>
+        <span class="section-label editable" data-key="roadmapLabel">Vision</span>
+        <h2 class="editable" data-key="roadmapTitle">Ultimate platform goal</h2>
         <ul id="roadmapList" class="bullet-list"></ul>
       </article>
       <article class="panel content-card">
-        <span class="section-label editable" data-key="communityLabel">Ultimate Platform Vision</span>
-        <h2 class="editable" data-key="communityTitle">Who this is being built for</h2>
-        <div id="communityGrid" class="feature-grid community-grid"></div>
+        <span class="section-label editable" data-key="directionLabel">Next Phase</span>
+        <h2 class="editable" data-key="directionTitle">What should improve next</h2>
+        <p class="editable" data-key="directionBody1">
+          The presentation should keep pushing clarity, stability, better media presentation, and easier content swapping for the site and the platform.
+        </p>
+        <p class="editable" data-key="directionBody2">
+          Over time this can expand into browser-playable demos, downloadable builds, creator services, platform utilities, and deeper immersive support.
+        </p>
       </article>
     </section>
 
@@ -115,47 +127,46 @@
       <div class="media-head">
         <div>
           <span class="section-label editable" data-key="mediaLabel">Media</span>
-          <h2 class="editable" data-key="mediaTitle">Trailer, interface, and presentation materials</h2>
+          <h2 class="editable" data-key="mediaTitle">Brand art, headers, and presentation assets</h2>
         </div>
-        <a id="trailerLink" class="btn btn-secondary" href="https://youtu.be/d78EOS1a1-8?si=JSakLn7A1Jhj1Gm0" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+        <a id="trailerLink" class="btn btn-audio" href="https://www.youtube.com/watch?v=d78EOS1a1-8" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
       </div>
-      <div class="media-grid media-grid-rich">
-        <figure class="media-card media-video-card media-span-2-row-2">
+      <div class="media-grid">
+        <figure class="media-card media-main-card media-video-card">
           <div class="video-shell">
-            <iframe id="trailerEmbed" src="https://www.youtube.com/embed/d78EOS1a1-8?rel=0" title="Matrix OS Arcade Evolution trailer" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe id="trailerEmbed" src="https://www.youtube.com/embed/d78EOS1a1-8?rel=0" title="GLITCHED MATRIX Prototype Lab trailer" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </div>
         </figure>
-        <figure class="media-card media-main-shot"><img id="mediaMain" src="assets/images/SCREENSHOT.png" alt="Matrix OS main screenshot" /></figure>
-        <figure class="media-card"><img id="mediaAlt1" src="assets/images/screenshot2.png" alt="Matrix OS screenshot 2" /></figure>
-        <figure class="media-card"><img id="mediaAlt2" src="assets/images/matrixos_window.png" alt="Matrix OS window art" /></figure>
-        <figure class="media-card"><img id="mediaAlt3" src="assets/images/c1.png" alt="Arcade cabinet concept" /></figure>
-        <figure class="media-card"><img id="mediaAlt4" src="assets/images/c2.png" alt="Arcade cabinet concept 2" /></figure>
+        <figure class="media-card"><img id="mediaMain" src="assets/images/capsule_main.png" alt="GLITCHED MATRIX Prototype Lab main capsule" /></figure>
+        <figure class="media-card"><img id="mediaAlt1" src="assets/images/capsule_vertical.png" alt="GLITCHED MATRIX Prototype Lab vertical capsule" /></figure>
+        <figure class="media-card"><img id="mediaAlt2" src="assets/images/bg.png" alt="GLITCHED MATRIX Prototype Lab background art" /></figure>
+        <figure class="media-card"><img id="mediaAlt3" src="assets/images/business_card.png" alt="GLITCHED MATRIX Prototype Lab business card art" /></figure>
+        <figure class="media-card"><img id="mediaAlt4" src="assets/images/qr_code.png" alt="GLITCHED MATRIX Prototype Lab QR code" /></figure>
       </div>
     </section>
 
-    <section class="split-grid split-grid-roadmap lower-split">
-      <article class="panel content-card store-meta">
-        <span class="section-label editable" data-key="metaLabel">Modes, Tags, and Features</span>
-        <h2 class="editable" data-key="metaTitle">Store identity</h2>
-        <div id="metaTags" class="tag-cloud tag-cloud-secondary"></div>
-      </article>
-      <article class="panel content-card visual-card">
-        <span class="section-label editable" data-key="visualLabel">Visual Identity</span>
-        <h2 class="editable" data-key="visualTitle">Presentable, dark, and system-like</h2>
-        <p class="editable" data-key="visualBody">The site should feel like an industrial control surface with teal neon, matte black panels, restrained logo usage, and enough media to show the platform clearly without overwhelming the page.</p>
-        <img id="footerLogo" class="visual-footer-brand" src="assets/images/library_header.png" alt="Matrix OS header graphic" />
-      </article>
+    <section class="panel content-card store-meta">
+      <span class="section-label editable" data-key="metaLabel">Platform Keywords</span>
+      <h2 class="editable" data-key="metaTitle">Identity and audience</h2>
+      <div id="metaTags" class="tag-cloud tag-cloud-secondary"></div>
+    </section>
+
+    <section id="community" class="panel content-card">
+      <span class="section-label editable" data-key="communityLabel">Who It Is For</span>
+      <h2 class="editable" data-key="communityTitle">The people the platform is meant to serve</h2>
+      <div id="communityGrid" class="feature-grid community-grid"></div>
     </section>
   </main>
 
   <footer class="shell footer">
     <div class="footer-left">
-      <p class="footer-copy editable" data-key="footerCopy">© GLITCHED MATRIX — Matrix OS: Arcade Evolution</p>
+      <img id="footerLogo" class="footer-logo" src="assets/images/capsule_small.png" alt="GLITCHED MATRIX Prototype Lab footer logo" />
+      <p class="footer-copy editable" data-key="footerCopy">© GLITCHED MATRIX — Prototype Lab</p>
     </div>
     <div class="footer-links">
       <a href="https://store.steampowered.com/app/4386390/Matrix_OS_Arcade_Evolution/" target="_blank" rel="noopener noreferrer">Steam</a>
       <a href="#media">Media</a>
-      <a href="#lore">Lore</a>
+      <a href="#community">Audience</a>
     </div>
   </footer>
 
@@ -168,13 +179,10 @@
       <button id="closeAdmin" class="admin-close" type="button">×</button>
     </div>
 
-    <div class="admin-section three-col">
-      <label>Accent color <input id="accentColor" type="color" value="#5ec6a0" /></label>
-      <label>Background color <input id="bgColor" type="color" value="#050706" /></label>
-      <label>Panel tint <input id="panelColor" type="color" value="#101614" /></label>
-      <label>Asset version <input id="assetVersionInput" type="text" placeholder="20260330b" /></label>
-      <label>Lore link text <input id="loreLinkTextInput" type="text" /></label>
-      <label>Lore link URL <input id="loreLinkInput" type="text" /></label>
+    <div class="admin-section">
+      <label>Accent color <input id="accentColor" type="color" value="#cc1414" /></label>
+      <label>Background color <input id="bgColor" type="color" value="#060606" /></label>
+      <label>Panel tint <input id="panelColor" type="color" value="#140a0a" /></label>
     </div>
 
     <div class="admin-section two-col">
@@ -187,58 +195,48 @@
     </div>
 
     <div class="admin-section two-col">
-      <label>Hero logo URL <input id="heroLogoInput" type="text" /></label>
-      <label>Header art URL <input id="heroHeaderInput" type="text" /></label>
-      <label>Nav logo URL <input id="navLogoInput" type="text" /></label>
-      <label>Footer / brand strip URL <input id="footerLogoInput" type="text" /></label>
-      <label>Main screenshot URL <input id="mediaMainInput" type="text" /></label>
-      <label>Media image 2 URL <input id="mediaAlt1Input" type="text" /></label>
-      <label>Media image 3 URL <input id="mediaAlt2Input" type="text" /></label>
-      <label>Media image 4 URL <input id="mediaAlt3Input" type="text" /></label>
-      <label>Media image 5 URL <input id="mediaAlt4Input" type="text" /></label>
+      <label>Nav logo path <input id="navLogoInput" type="text" /></label>
+      <label>Hero logo path <input id="heroLogoInput" type="text" /></label>
+      <label>Hero header image <input id="heroHeaderInput" type="text" /></label>
+      <label>Footer logo path <input id="footerLogoInput" type="text" /></label>
+      <label>Media image 1 <input id="mediaMainInput" type="text" /></label>
+      <label>Media image 2 <input id="mediaAlt1Input" type="text" /></label>
+      <label>Media image 3 <input id="mediaAlt2Input" type="text" /></label>
+      <label>Media image 4 <input id="mediaAlt3Input" type="text" /></label>
+      <label>Media image 5 <input id="mediaAlt4Input" type="text" /></label>
+    </div>
+
+    <div class="admin-section two-col">
+      <label>Upload nav logo <input id="uploadNavLogo" type="file" accept="image/*" /></label>
+      <label>Upload hero logo <input id="uploadHeroLogo" type="file" accept="image/*" /></label>
+      <label>Upload hero header <input id="uploadHeroHeader" type="file" accept="image/*" /></label>
+      <label>Upload footer logo <input id="uploadFooterLogo" type="file" accept="image/*" /></label>
+      <label>Upload media 1 <input id="uploadMediaMain" type="file" accept="image/*" /></label>
+      <label>Upload media 2 <input id="uploadMediaAlt1" type="file" accept="image/*" /></label>
+      <label>Upload media 3 <input id="uploadMediaAlt2" type="file" accept="image/*" /></label>
+      <label>Upload media 4 <input id="uploadMediaAlt3" type="file" accept="image/*" /></label>
+      <label>Upload media 5 <input id="uploadMediaAlt4" type="file" accept="image/*" /></label>
     </div>
 
     <div class="admin-section">
-      <label>Hero tags (one per line)
-        <textarea id="heroTagsInput" rows="5"></textarea>
-      </label>
-      <label>Store tags (one per line)
-        <textarea id="metaTagsInput" rows="7"></textarea>
-      </label>
+      <label>Asset version <input id="assetVersionInput" type="text" placeholder="e.g. 20260330a" /></label>
+      <p class="admin-note">Change the asset version after replacing repo images to force a refresh.</p>
     </div>
 
     <div class="admin-section">
-      <label>Feature cards (Title | Body, one per line)
-        <textarea id="featuresInput" rows="8"></textarea>
-      </label>
-      <label>Roadmap bullets (one per line)
-        <textarea id="roadmapInput" rows="7"></textarea>
-      </label>
-      <label>Vision cards (Title | Body, one per line)
-        <textarea id="communityInput" rows="8"></textarea>
-      </label>
-    </div>
-
-    <div class="admin-section two-col file-upload-grid">
-      <label>Upload hero logo<input id="uploadHeroLogo" type="file" accept="image/*" /></label>
-      <label>Upload header art<input id="uploadHeroHeader" type="file" accept="image/*" /></label>
-      <label>Upload main screenshot<input id="uploadMediaMain" type="file" accept="image/*" /></label>
-      <label>Upload screenshot 2<input id="uploadMediaAlt1" type="file" accept="image/*" /></label>
-      <label>Upload screenshot 3<input id="uploadMediaAlt2" type="file" accept="image/*" /></label>
-      <label>Upload screenshot 4<input id="uploadMediaAlt3" type="file" accept="image/*" /></label>
-      <label>Upload screenshot 5<input id="uploadMediaAlt4" type="file" accept="image/*" /></label>
+      <label>Hero tags (one per line) <textarea id="heroTagsInput" rows="5"></textarea></label>
+      <label>Feature cards (Title|Body per line) <textarea id="featuresInput" rows="8"></textarea></label>
+      <label>Roadmap bullets (one per line) <textarea id="roadmapInput" rows="8"></textarea></label>
+      <label>Meta tags (one per line) <textarea id="metaInput" rows="8"></textarea></label>
+      <label>Community cards (Title|Body per line) <textarea id="communityInput" rows="8"></textarea></label>
     </div>
 
     <div class="admin-actions">
-      <button id="saveAdmin" class="btn btn-primary" type="button">Save</button>
-      <button id="resetAdmin" class="btn btn-secondary" type="button">Reset</button>
-      <button id="exportAdmin" class="btn btn-secondary" type="button">Export JSON</button>
-      <label class="import-label btn btn-secondary">Import JSON
-        <input id="importAdmin" type="file" accept="application/json" hidden />
-      </label>
+      <button id="saveAdmin" class="btn btn-primary" type="button">Save Changes</button>
+      <button id="resetAdmin" class="btn btn-secondary" type="button">Reset to Defaults</button>
+      <button id="exportConfig" class="btn btn-secondary" type="button">Export JSON</button>
+      <label class="btn btn-secondary import-label">Import JSON <input id="importConfig" type="file" accept="application/json" hidden /></label>
     </div>
-
-    <p class="admin-note">Text blocks can also be edited directly on the page while admin mode is open. Changes save in this browser. GitHub-login-only editing is not possible on a pure static GitHub Pages site without a separate GitHub App or OAuth backend. This bundle uses local admin editing instead.</p>
   </aside>
 
   <script src="admin.js"></script>
