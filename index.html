@@ -38,9 +38,6 @@
       </div>
 
       <div class="hero-copy">
-        <div class="hero-wordmark-wrap">
-          <img id="heroLogo" class="hero-logo" src="assets/images/logo.png" alt="GLITCHED MATRIX Prototype Lab wordmark" />
-        </div>
         <div class="eyebrow editable" data-key="heroEyebrow">&gt; Gaming Platform / Operating System / Game Engine &lt;</div>
         <h1 class="editable" data-key="heroTitle">GLITCHED MATRIX Prototype Lab</h1>
         <p class="lead editable" data-key="heroLead">
@@ -137,11 +134,10 @@
             <iframe id="trailerEmbed" src="https://www.youtube.com/embed/d78EOS1a1-8?rel=0" title="GLITCHED MATRIX Prototype Lab trailer" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </div>
         </figure>
-        <figure class="media-card"><img id="mediaMain" src="assets/images/capsule_main.png" alt="GLITCHED MATRIX Prototype Lab main capsule" /></figure>
-        <figure class="media-card"><img id="mediaAlt1" src="assets/images/capsule_vertical.png" alt="GLITCHED MATRIX Prototype Lab vertical capsule" /></figure>
-        <figure class="media-card"><img id="mediaAlt2" src="assets/images/bg.png" alt="GLITCHED MATRIX Prototype Lab background art" /></figure>
-        <figure class="media-card"><img id="mediaAlt3" src="assets/images/business_card.png" alt="GLITCHED MATRIX Prototype Lab business card art" /></figure>
-        <figure class="media-card"><img id="mediaAlt4" src="assets/images/qr_code.png" alt="GLITCHED MATRIX Prototype Lab QR code" /></figure>
+        <div class="gallery-stack">
+          <p class="gallery-note editable" data-key="galleryNote">Click any image to open it at full size. Add more images from the admin panel without duplicating what is already here.</p>
+          <div id="mediaGallery" class="media-gallery"></div>
+        </div>
       </div>
     </section>
 
@@ -170,6 +166,13 @@
     </div>
   </footer>
 
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <div class="lightbox-dialog" role="dialog" aria-modal="true" aria-label="Expanded image viewer">
+      <button id="lightboxClose" class="lightbox-close" type="button" aria-label="Close image viewer">×</button>
+      <img id="lightboxImage" class="lightbox-image" src="" alt="" />
+    </div>
+  </div>
+
   <aside id="adminPanel" class="admin-panel" aria-hidden="true">
     <div class="admin-header">
       <div>
@@ -196,30 +199,20 @@
 
     <div class="admin-section two-col">
       <label>Nav logo path <input id="navLogoInput" type="text" /></label>
-      <label>Hero logo path <input id="heroLogoInput" type="text" /></label>
       <label>Hero header image <input id="heroHeaderInput" type="text" /></label>
       <label>Footer logo path <input id="footerLogoInput" type="text" /></label>
-      <label>Media image 1 <input id="mediaMainInput" type="text" /></label>
-      <label>Media image 2 <input id="mediaAlt1Input" type="text" /></label>
-      <label>Media image 3 <input id="mediaAlt2Input" type="text" /></label>
-      <label>Media image 4 <input id="mediaAlt3Input" type="text" /></label>
-      <label>Media image 5 <input id="mediaAlt4Input" type="text" /></label>
+      <label>Gallery images (one path per line) <textarea id="galleryImagesInput" rows="8"></textarea></label>
     </div>
 
     <div class="admin-section two-col">
       <label>Upload nav logo <input id="uploadNavLogo" type="file" accept="image/*" /></label>
-      <label>Upload hero logo <input id="uploadHeroLogo" type="file" accept="image/*" /></label>
       <label>Upload hero header <input id="uploadHeroHeader" type="file" accept="image/*" /></label>
       <label>Upload footer logo <input id="uploadFooterLogo" type="file" accept="image/*" /></label>
-      <label>Upload media 1 <input id="uploadMediaMain" type="file" accept="image/*" /></label>
-      <label>Upload media 2 <input id="uploadMediaAlt1" type="file" accept="image/*" /></label>
-      <label>Upload media 3 <input id="uploadMediaAlt2" type="file" accept="image/*" /></label>
-      <label>Upload media 4 <input id="uploadMediaAlt3" type="file" accept="image/*" /></label>
-      <label>Upload media 5 <input id="uploadMediaAlt4" type="file" accept="image/*" /></label>
+      <label>Add gallery images <input id="uploadGalleryImages" type="file" accept="image/*" multiple /></label>
     </div>
 
     <div class="admin-section">
-      <label>Asset version <input id="assetVersionInput" type="text" placeholder="e.g. 20260330a" /></label>
+      <label>Asset version <input id="assetVersionInput" type="text" placeholder="e.g. 20260402a" /></label>
       <p class="admin-note">Change the asset version after replacing repo images to force a refresh.</p>
     </div>
 
@@ -227,15 +220,15 @@
       <label>Hero tags (one per line) <textarea id="heroTagsInput" rows="5"></textarea></label>
       <label>Feature cards (Title|Body per line) <textarea id="featuresInput" rows="8"></textarea></label>
       <label>Roadmap bullets (one per line) <textarea id="roadmapInput" rows="8"></textarea></label>
-      <label>Meta tags (one per line) <textarea id="metaInput" rows="8"></textarea></label>
+      <label>Meta tags (one per line) <textarea id="metaTagsInput" rows="8"></textarea></label>
       <label>Community cards (Title|Body per line) <textarea id="communityInput" rows="8"></textarea></label>
     </div>
 
     <div class="admin-actions">
       <button id="saveAdmin" class="btn btn-primary" type="button">Save Changes</button>
       <button id="resetAdmin" class="btn btn-secondary" type="button">Reset to Defaults</button>
-      <button id="exportConfig" class="btn btn-secondary" type="button">Export JSON</button>
-      <label class="btn btn-secondary import-label">Import JSON <input id="importConfig" type="file" accept="application/json" hidden /></label>
+      <button id="exportAdmin" class="btn btn-secondary" type="button">Export JSON</button>
+      <label class="btn btn-secondary import-label">Import JSON <input id="importAdmin" type="file" accept="application/json" hidden /></label>
     </div>
   </aside>
 

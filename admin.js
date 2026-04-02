@@ -3,7 +3,8 @@ const defaultConfig = {
   heroEyebrow: '> Gaming Platform / Operating System / Game Engine <',
   heroTitle: 'GLITCHED MATRIX Prototype Lab',
   heroLead: 'A dark system hub for prototypes, creator tools, browser experiments, and modular apps — with VR support currently in development and a long-term goal of becoming an immersive platform for testers, modders, content creators, publishers, and gamers.',
-  heroTags: ['VR Support in Development', 'Prototype Arcade', 'Creator Platform', 'Mod-Friendly', 'Browser Games'],
+  heroTags: ['Prototype Hub', 'Browser Experiments', 'VR Support in Progress', 'Immersive Platform Vision'],
+  galleryNote: 'Click any image to open it at full size. Add more images from the admin panel without duplicating what is already here.',
   stat1Label: 'Status',
   stat1Value: 'Active Development',
   stat2Label: 'Current Focus',
@@ -72,28 +73,28 @@ const defaultConfig = {
     trailerText: 'Watch on YouTube'
   },
   images: {
-    heroLogo: 'assets/images/logo.png',
     heroHeader: 'assets/images/capsule_header.png',
     navLogo: 'assets/images/capsule_small.png',
     footerLogo: 'assets/images/capsule_small.png',
-    mediaMain: 'assets/images/capsule_main.png',
-    mediaAlt1: 'assets/images/capsule_vertical.png',
-    mediaAlt2: 'assets/images/bg.png',
-    mediaAlt3: 'assets/images/business_card.png',
-    mediaAlt4: 'assets/images/qr_code.png'
+    gallery: [
+      'assets/images/capsule_main.png',
+      'assets/images/capsule_vertical.png',
+      'assets/images/bg.png',
+      'assets/images/business_card.png',
+      'assets/images/qr_code.png'
+    ]
   },
   theme: {
     accent: '#cc1414',
     bg: '#060606',
     panel: '#140a0a'
-  }
+  },
+  assetVersion: ''
 };
 
-const STORAGE_KEY = 'glitched-prototype-site-config-v1';
+const STORAGE_KEY = 'glitched-prototype-site-config-v2';
 let config = loadConfig();
 let adminOpen = false;
-let audioPlaying = false;
-
 
 const IMAGE_FALLBACK_BASES = [
   '',
@@ -106,17 +107,6 @@ const IMAGE_FALLBACK_BASES = [
   './steamtemp/'
 ];
 
-const AUDIO_FALLBACK_BASES = [
-  '',
-  './',
-  'assets/music/',
-  './assets/music/',
-  'site_bundle/assets/music/',
-  './site_bundle/assets/music/',
-  'steamtemp/music/',
-  './steamtemp/music/'
-];
-
 function isDirectUrl(value) {
   return /^(data:|blob:|https?:|\/)/i.test(value);
 }
@@ -127,6 +117,19 @@ function uniqueList(values) {
 
 function fileNameOnly(path) {
   return String(path).split('/').pop();
+}
+
+function normalizeAssetKey(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  if (isDirectUrl(raw)) return raw.toLowerCase();
+  return fileNameOnly(raw).toLowerCase();
+}
+
+function appendVersion(url) {
+  if (!config.assetVersion || (isDirectUrl(url) && (url.startsWith('data:') || url.startsWith('blob:')))) return url;
+  const join = url.includes('?') ? '&' : '?';
+  return `${url}${join}v=${encodeURIComponent(config.assetVersion)}`;
 }
 
 function makeImageCandidates(path) {
@@ -153,76 +156,28 @@ function makeImageCandidates(path) {
     input.replace(/^\.\//, ''),
     ...converted,
     ...IMAGE_FALLBACK_BASES.map(base => `${base}${name}`)
-  ]);
-}
-
-function makeAudioCandidates(path) {
-  const input = String(path || '').trim();
-  if (!input) return [];
-  if (isDirectUrl(input)) return [input];
-
-  const name = fileNameOnly(input);
-  const converted = [];
-  if (input.includes('assets/music/')) {
-    converted.push(input.replace('assets/music/', 'site_bundle/assets/music/'));
-    converted.push(input.replace('assets/music/', 'steamtemp/music/'));
-  } else if (input.includes('site_bundle/assets/music/')) {
-    converted.push(input.replace('site_bundle/assets/music/', 'assets/music/'));
-    converted.push(input.replace('site_bundle/assets/music/', 'steamtemp/music/'));
-  } else if (input.includes('steamtemp/music/')) {
-    converted.push(input.replace('steamtemp/music/', 'assets/music/'));
-    converted.push(input.replace('steamtemp/music/', 'site_bundle/assets/music/'));
-  }
-
-  return uniqueList([
-    input,
-    input.replace(/^\.\//, ''),
-    ...converted,
-    ...AUDIO_FALLBACK_BASES.map(base => `${base}${name}`)
-  ]);
+  ]).map(appendVersion);
 }
 
 function applyResolvedSource(el, candidates) {
   if (!el || !candidates.length) return;
   let index = 0;
-  const tried = [];
   const tryNext = () => {
-    if (index >= candidates.length) {
-      console.warn(`Asset not found for #${el.id || el.tagName.toLowerCase()}`, tried);
-      return;
-    }
-    const next = candidates[index++];
-    tried.push(next);
-    el.src = next;
+    if (index >= candidates.length) return;
+    el.src = candidates[index++];
   };
   el.onerror = tryNext;
   tryNext();
 }
-
-function applyResolvedAudio(el, candidates) {
-  if (!el || !candidates.length) return;
-  let index = 0;
-  const tried = [];
-  const tryNext = () => {
-    if (index >= candidates.length) {
-      console.warn('Audio asset not found', tried);
-      return;
-    }
-    const next = candidates[index++];
-    tried.push(next);
-    el.src = next;
-    el.load();
-  };
-  el.onerror = tryNext;
-  tryNext();
-}
-
 
 function loadConfig() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return structuredClone(defaultConfig);
-    return deepMerge(structuredClone(defaultConfig), JSON.parse(stored));
+    const parsed = JSON.parse(stored);
+    const merged = deepMerge(structuredClone(defaultConfig), parsed);
+    merged.images.gallery = dedupeGallery(merged.images.gallery);
+    return merged;
   } catch {
     return structuredClone(defaultConfig);
   }
@@ -261,25 +216,21 @@ function hexToRgb(hex) {
   return `${r}, ${g}, ${b}`;
 }
 
-function lighten(hex, amount) {
-  return alterHex(hex, amount);
-}
-
-function darken(hex, amount) {
-  return alterHex(hex, -amount);
-}
+function lighten(hex, amount) { return alterHex(hex, amount); }
+function darken(hex, amount) { return alterHex(hex, -amount); }
 
 function alterHex(hex, amt) {
   const clean = hex.replace('#', '');
   const num = parseInt(clean, 16);
-  let r = Math.min(255, Math.max(0, (num >> 16) + amt));
-  let g = Math.min(255, Math.max(0, ((num >> 8) & 0x00ff) + amt));
-  let b = Math.min(255, Math.max(0, (num & 0x0000ff) + amt));
+  const r = Math.min(255, Math.max(0, (num >> 16) + amt));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00ff) + amt));
+  const b = Math.min(255, Math.max(0, (num & 0x0000ff) + amt));
   return `#${[r, g, b].map(v => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
 function renderList(targetId, items, formatter) {
   const node = document.getElementById(targetId);
+  if (!node) return;
   node.innerHTML = '';
   items.forEach((item) => node.appendChild(formatter(item)));
 }
@@ -302,7 +253,6 @@ function makeRoadmapItem(item) {
   li.textContent = item;
   return li;
 }
-
 
 function extractYouTubeId(input) {
   const value = String(input || '').trim();
@@ -331,6 +281,9 @@ function applyText() {
     const key = el.dataset.key;
     if (config[key] != null) el.innerText = config[key];
   });
+  document.title = config.heroTitle || 'GLITCHED MATRIX Prototype Lab';
+  const desc = document.querySelector('meta[name="description"]');
+  if (desc) desc.setAttribute('content', config.heroLead || defaultConfig.heroLead);
 }
 
 function applyLinks() {
@@ -344,7 +297,7 @@ function applyLinks() {
   secondary.href = config.links.secondaryHref;
   if (trailerLink) {
     trailerLink.textContent = config.links.trailerText || 'Watch on YouTube';
-    trailerLink.href = config.links.trailerHref || 'https://www.youtube.com/watch?v=d78EOS1a1-8';
+    trailerLink.href = config.links.trailerHref || defaultConfig.links.trailerHref;
   }
   if (trailerEmbed) {
     trailerEmbed.src = toYouTubeEmbedUrl(config.links.trailerHref) || 'https://www.youtube.com/embed/d78EOS1a1-8?rel=0';
@@ -352,15 +305,62 @@ function applyLinks() {
 }
 
 function applyImages() {
-  applyResolvedSource(document.getElementById('heroLogo'), makeImageCandidates(config.images.heroLogo));
   applyResolvedSource(document.getElementById('heroHeaderImage'), makeImageCandidates(config.images.heroHeader));
   applyResolvedSource(document.getElementById('navLogo'), makeImageCandidates(config.images.navLogo));
   applyResolvedSource(document.getElementById('footerLogo'), makeImageCandidates(config.images.footerLogo));
-  applyResolvedSource(document.getElementById('mediaMain'), makeImageCandidates(config.images.mediaMain));
-  applyResolvedSource(document.getElementById('mediaAlt1'), makeImageCandidates(config.images.mediaAlt1));
-  applyResolvedSource(document.getElementById('mediaAlt2'), makeImageCandidates(config.images.mediaAlt2));
-  applyResolvedSource(document.getElementById('mediaAlt3'), makeImageCandidates(config.images.mediaAlt3));
-  applyResolvedSource(document.getElementById('mediaAlt4'), makeImageCandidates(config.images.mediaAlt4));
+}
+
+function dedupeGallery(items) {
+  const seen = new Set();
+  const out = [];
+  for (const item of items || []) {
+    const raw = String(item || '').trim();
+    if (!raw) continue;
+    const key = normalizeAssetKey(raw);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(raw);
+  }
+  return out;
+}
+
+function renderGallery() {
+  const host = document.getElementById('mediaGallery');
+  if (!host) return;
+  host.innerHTML = '';
+  config.images.gallery = dedupeGallery(config.images.gallery);
+  config.images.gallery.forEach((path, index) => {
+    const fig = document.createElement('figure');
+    fig.className = 'media-card gallery-item';
+
+    const img = document.createElement('img');
+    img.alt = `GLITCHED MATRIX gallery image ${index + 1}`;
+    img.loading = 'lazy';
+    applyResolvedSource(img, makeImageCandidates(path));
+
+    fig.appendChild(img);
+    fig.addEventListener('click', () => openLightbox(path, img.alt));
+    host.appendChild(fig);
+  });
+}
+
+function openLightbox(path, alt = 'Expanded gallery image') {
+  const modal = document.getElementById('lightbox');
+  const img = document.getElementById('lightboxImage');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  img.alt = alt;
+  applyResolvedSource(img, makeImageCandidates(path));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const modal = document.getElementById('lightbox');
+  const img = document.getElementById('lightboxImage');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  img.removeAttribute('src');
+  document.body.style.overflow = '';
 }
 
 function applyConfig() {
@@ -368,6 +368,7 @@ function applyConfig() {
   applyText();
   applyLinks();
   applyImages();
+  renderGallery();
   renderList('heroTags', config.heroTags, makeTag);
   renderList('metaTags', config.metaTags, makeTag);
   renderList('featuresGrid', config.features, makeFeatureCard);
@@ -387,20 +388,16 @@ function syncAdminInputs() {
   setVal('secondaryCtaLink', config.links.secondaryHref);
   setVal('trailerUrlInput', config.links.trailerHref);
   setVal('trailerLinkTextInput', config.links.trailerText || 'Watch on YouTube');
-  setVal('heroLogoInput', config.images.heroLogo);
   setVal('heroHeaderInput', config.images.heroHeader);
   setVal('navLogoInput', config.images.navLogo);
   setVal('footerLogoInput', config.images.footerLogo);
+  setVal('assetVersionInput', config.assetVersion || '');
   setVal('heroTagsInput', config.heroTags.join('\n'));
   setVal('metaTagsInput', config.metaTags.join('\n'));
   setVal('featuresInput', config.features.map(f => `${f.title} | ${f.body}`).join('\n'));
   setVal('roadmapInput', config.roadmap.join('\n'));
   setVal('communityInput', config.community.map(c => `${c.title} | ${c.body}`).join('\n'));
-  setVal('mediaMainInput', config.images.mediaMain);
-  setVal('mediaAlt1Input', config.images.mediaAlt1);
-  setVal('mediaAlt2Input', config.images.mediaAlt2);
-  setVal('mediaAlt3Input', config.images.mediaAlt3);
-  setVal('mediaAlt4Input', config.images.mediaAlt4);
+  setVal('galleryImagesInput', dedupeGallery(config.images.gallery).join('\n'));
 }
 
 function readEditableTextFromPage() {
@@ -432,20 +429,16 @@ function pullAdminValues() {
   config.links.secondaryHref = document.getElementById('secondaryCtaLink').value.trim() || defaultConfig.links.secondaryHref;
   config.links.trailerHref = document.getElementById('trailerUrlInput').value.trim() || defaultConfig.links.trailerHref;
   config.links.trailerText = document.getElementById('trailerLinkTextInput').value.trim() || defaultConfig.links.trailerText;
-  config.images.heroLogo = document.getElementById('heroLogoInput').value.trim() || defaultConfig.images.heroLogo;
   config.images.heroHeader = document.getElementById('heroHeaderInput').value.trim() || defaultConfig.images.heroHeader;
   config.images.navLogo = document.getElementById('navLogoInput').value.trim() || defaultConfig.images.navLogo;
   config.images.footerLogo = document.getElementById('footerLogoInput').value.trim() || defaultConfig.images.footerLogo;
+  config.assetVersion = document.getElementById('assetVersionInput').value.trim();
   config.heroTags = parseLineItems(document.getElementById('heroTagsInput').value);
   config.metaTags = parseLineItems(document.getElementById('metaTagsInput').value);
   config.features = parseCardLines(document.getElementById('featuresInput').value);
   config.roadmap = parseLineItems(document.getElementById('roadmapInput').value);
   config.community = parseCardLines(document.getElementById('communityInput').value);
-  config.images.mediaMain = document.getElementById('mediaMainInput').value.trim() || defaultConfig.images.mediaMain;
-  config.images.mediaAlt1 = document.getElementById('mediaAlt1Input').value.trim() || defaultConfig.images.mediaAlt1;
-  config.images.mediaAlt2 = document.getElementById('mediaAlt2Input').value.trim() || defaultConfig.images.mediaAlt2;
-  config.images.mediaAlt3 = document.getElementById('mediaAlt3Input').value.trim() || defaultConfig.images.mediaAlt3;
-  config.images.mediaAlt4 = document.getElementById('mediaAlt4Input').value.trim() || defaultConfig.images.mediaAlt4;
+  config.images.gallery = dedupeGallery(parseLineItems(document.getElementById('galleryImagesInput').value));
 }
 
 function toggleAdmin(force = null) {
@@ -453,9 +446,6 @@ function toggleAdmin(force = null) {
   const panel = document.getElementById('adminPanel');
   panel.classList.toggle('open', adminOpen);
   panel.setAttribute('aria-hidden', String(!adminOpen));
-  document.title = config.heroTitle || 'GLITCHED MATRIX Prototype Lab';
-  const desc = document.querySelector('meta[name="description"]');
-  if (desc) desc.setAttribute('content', config.heroLead || 'GLITCHED MATRIX Prototype Lab');
   document.querySelectorAll('.editable').forEach((el) => {
     el.contentEditable = adminOpen ? 'true' : 'false';
     el.classList.toggle('admin-editing', adminOpen);
@@ -467,7 +457,7 @@ function exportJson() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'mxos-site-config.json';
+  a.download = 'glitched-matrix-prototype-lab-config.json';
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -478,26 +468,50 @@ function importJson(file) {
     try {
       const parsed = JSON.parse(reader.result);
       config = deepMerge(structuredClone(defaultConfig), parsed);
+      config.images.gallery = dedupeGallery(config.images.gallery);
       saveConfig();
       applyConfig();
-    } catch (err) {
+    } catch {
       alert('Invalid JSON file.');
     }
   };
   reader.readAsText(file);
 }
 
-function bindFileInput(id, onLoad) {
+function bindFileInput(id, onLoad, multiple = false) {
   const input = document.getElementById(id);
   if (!input) return;
   input.addEventListener('change', (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(event.target.files || []);
+    if (!files.length) return;
+
+    if (multiple) {
+      let remaining = files.length;
+      const results = [];
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          results.push(reader.result);
+          remaining -= 1;
+          if (remaining === 0) {
+            onLoad(results);
+            saveConfig();
+            applyConfig();
+            input.value = '';
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+      return;
+    }
+
+    const file = files[0];
     const reader = new FileReader();
     reader.onload = () => {
       onLoad(reader.result);
       saveConfig();
       applyConfig();
+      input.value = '';
     };
     reader.readAsDataURL(file);
   });
@@ -510,6 +524,13 @@ function escapeHtml(str) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+function setupLightbox() {
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightbox').addEventListener('click', (event) => {
+    if (event.target.id === 'lightbox') closeLightbox();
+  });
 }
 
 function setupAdmin() {
@@ -532,18 +553,34 @@ function setupAdmin() {
     if (file) importJson(file);
   });
 
-  bindFileInput('uploadHeroLogo', (data) => { config.images.heroLogo = data; config.images.navLogo = data; document.getElementById('heroLogoInput').value = data; document.getElementById('navLogoInput').value = data; });
-  bindFileInput('uploadHeroHeader', (data) => { config.images.heroHeader = data; document.getElementById('heroHeaderInput').value = data; });
-  bindFileInput('uploadMediaMain', (data) => { config.images.mediaMain = data; document.getElementById('mediaMainInput').value = data; });
-  bindFileInput('uploadMediaAlt1', (data) => { config.images.mediaAlt1 = data; document.getElementById('mediaAlt1Input').value = data; });
-  bindFileInput('uploadMediaAlt2', (data) => { config.images.mediaAlt2 = data; document.getElementById('mediaAlt2Input').value = data; });
-  bindFileInput('uploadMediaAlt3', (data) => { config.images.mediaAlt3 = data; document.getElementById('mediaAlt3Input').value = data; });
-  bindFileInput('uploadMediaAlt4', (data) => { config.images.mediaAlt4 = data; document.getElementById('mediaAlt4Input').value = data; });
+  bindFileInput('uploadNavLogo', (data) => {
+    config.images.navLogo = data;
+    document.getElementById('navLogoInput').value = data;
+  });
+  bindFileInput('uploadHeroHeader', (data) => {
+    config.images.heroHeader = data;
+    document.getElementById('heroHeaderInput').value = data;
+  });
+  bindFileInput('uploadFooterLogo', (data) => {
+    config.images.footerLogo = data;
+    document.getElementById('footerLogoInput').value = data;
+  });
+  bindFileInput('uploadGalleryImages', (list) => {
+    config.images.gallery = dedupeGallery([...(config.images.gallery || []), ...list]);
+    document.getElementById('galleryImagesInput').value = config.images.gallery.join('\n');
+  }, true);
 
   document.addEventListener('keydown', (event) => {
     if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'a') {
       event.preventDefault();
       toggleAdmin();
+    }
+    if (event.key === 'Escape') {
+      if (document.getElementById('lightbox').classList.contains('open')) {
+        closeLightbox();
+      } else if (adminOpen) {
+        toggleAdmin(false);
+      }
     }
   });
 
@@ -553,4 +590,5 @@ function setupAdmin() {
 }
 
 applyConfig();
+setupLightbox();
 setupAdmin();
