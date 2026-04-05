@@ -1,78 +1,77 @@
 const defaultConfig = {
   microLabel: 'GLITCHED MATRIX',
-  heroEyebrow: '> Gaming Platform / Operating System / Game Engine <',
+  heroEyebrow: '> Experimental Arcade Platform <',
   heroTitle: 'GLITCHED MATRIX Prototype Lab',
-  heroLead: 'A dark system hub for prototypes, creator tools, browser experiments, and modular apps — with VR support currently in development and a long-term goal of becoming an immersive platform for testers, modders, content creators, publishers, and gamers.',
-  heroTags: ['Prototype Hub', 'Browser Experiments', 'VR Support in Progress', 'Immersive Platform Vision'],
-  galleryNote: 'Click any image to open it at full size. Add more images from the admin panel without duplicating what is already here.',
+  heroLead: 'A dark virtual arcade where playable prototypes, creator tools, bots, and mod-friendly experiments live inside one connected digital world.',
+  heroTags: ['Virtual Arcade', 'Playable Prototypes', 'Creator Tools', 'Mod-Friendly', 'Sci-Fi Hub', 'Experimental Worlds'],
   stat1Label: 'Status',
-  stat1Value: 'Active Development',
-  stat2Label: 'Current Focus',
-  stat2Value: 'VR Support + Core Platform',
-  stat3Label: 'Identity',
-  stat3Value: 'Gaming Platform / Operating System / Game Engine',
-  stat4Label: 'Long-Term Goal',
-  stat4Value: 'Immersive Platform Ecosystem',
-  aboutLabel: 'About This Project',
-  aboutTitle: 'A prototype hub designed to grow',
-  aboutBody1: 'GLITCHED MATRIX Prototype Lab is positioned as a digital lab where games, browser experiments, tools, workflows, and system modules can live inside one branded environment.',
-  aboutBody2: 'The goal is not just a single title page. It is the front end of a growing platform for testing, modding, creation, publishing, and play across multiple kinds of experiences.',
+  stat1Value: 'Early Access',
+  stat2Label: 'What You Do',
+  stat2Value: 'Explore • Play • Experiment',
+  stat3Label: 'Core Appeal',
+  stat3Value: 'Connected prototype arcade',
+  stat4Label: 'Built For',
+  stat4Value: 'Curious players and creators',
+  aboutLabel: 'About',
+  aboutTitle: 'A connected digital world built for discovery',
+  aboutBody1: 'GLITCHED MATRIX Prototype Lab is a dark sci-fi hub where games, tools, bots, and experiments all exist inside one navigable system.',
+  aboutBody2: 'Instead of presenting everything as separate downloads or menus, the lab brings play, discovery, and creative experimentation into one evolving space.',
   fictionLabel: 'Lore',
-  fictionTitle: 'The world behind the lab',
-  fictionBody1: 'The brand gains more identity when it feels like a surviving system: damaged infrastructure, preserved prototypes, and unfinished experiments being pushed back online.',
-  fictionBody2: 'That fiction helps the lab, the tools, and the future services all feel like part of the same world instead of separate products.',
-  featuresLabel: 'Current Focus',
-  featuresTitle: 'What Prototype Lab is building toward',
+  fictionTitle: 'What happened to the system?',
+  fictionBody1: 'During the creation of The Utopia Project, a virtual space dimension was formed inside its central hub. When an exploit was discovered, conflicts spread through the machine and the hub was destroyed to contain the damage.',
+  fictionBody2: 'A rogue archive bot named IO-88 remained behind to preserve what survived. Those fragments now live on as recoverable prototypes, tools, and digital spaces inside the lab.',
+  featuresLabel: 'Inside the Lab',
+  featuresTitle: 'What you can explore right now',
   features: [
-    { title: 'Prototype Library', body: 'A growing collection of games, apps, experiments, and internal tools can live under one branded hub.' },
-    { title: 'Browser Game Section', body: 'Small playable site games can act as an instant demo layer for visitors before they ever download anything.' },
-    { title: 'Creator Tools & Workflows', body: 'The platform can support editing utilities, setup helpers, showcase tools, and other workstation-like systems.' },
-    { title: 'VR Support in Progress', body: 'VR support is an active direction and should be communicated clearly as an in-development capability.' },
-    { title: 'Modding and Testing Surface', body: 'The long-term platform should feel useful for testers, modders, builders, and people exploring unfinished ideas.' },
-    { title: 'Platform Identity', body: 'It should read as a gaming platform, operating system, and game engine prototype space rather than a single-page store clone.' }
+    { title: 'Connected Arcade Hub', body: 'Move through a custom digital environment rather than a standard store-style page or launcher.' },
+    { title: 'Playable Prototype Library', body: 'Jump between experimental games, concepts, and interactive modules from one central hub.' },
+    { title: 'Built-in Creator Tools', body: 'Open internal apps and utilities designed for tinkering, editing, and creative workflows.' },
+    { title: 'Bots and Side Activities', body: 'Interact with chat-driven features, smaller activities, and system spaces that make the lab feel alive.' },
+    { title: 'Mod-Friendly Structure', body: 'Replace assets, experiment with content, and treat the system as something you can shape over time.' },
+    { title: 'Growing Sci-Fi Identity', body: 'Explore a world built around damaged infrastructure, preserved archives, and strange digital recovery.' }
   ],
-  roadmapLabel: 'Vision',
-  roadmapTitle: 'Ultimate platform goal',
+  roadmapLabel: 'Direction',
+  roadmapTitle: 'How the lab can grow',
   roadmap: [
-    'Become an immersive platform for testers, modders, content creators of all types, publishers, and gamers',
-    'Expand into browser-playable demos, downloadable builds, and richer prototype showcases',
-    'Add stronger creator workflows, utilities, and content management systems',
-    'Develop VR support into a meaningful part of the platform experience',
-    'Support more modular tools, custom media, and user-replaceable assets',
-    'Keep improving clarity, stability, performance, and presentation quality'
+    'We plan to keep improving stability, presentation, and overall ease of use',
+    'We plan to expand the range and quality of playable experiences inside the hub',
+    'We plan to deepen creator workflows, utilities, and modular tool support',
+    'We plan to further connect the desktop, tools, bots, and game spaces into a more cohesive world',
+    'We plan to improve customization, media support, and user-replaceable content',
+    'We plan to keep refining the platform identity as the system grows'
   ],
-  directionLabel: 'Next Phase',
-  directionTitle: 'What should improve next',
-  directionBody1: 'The presentation should keep pushing clarity, stability, better media presentation, and easier content swapping for the site and the platform.',
-  directionBody2: 'Over time this can expand into browser-playable demos, downloadable builds, creator services, platform utilities, and deeper immersive support.',
+  directionLabel: 'Right Now',
+  directionTitle: 'What the current release emphasizes',
+  directionBody1: 'The current site and build focus on communicating the experience clearly: a dark virtual arcade built for experimentation, playable variety, and creative curiosity.',
+  directionBody2: 'Expect the presentation to keep improving as the project becomes more polished, easier to navigate, and stronger at showing its best experiences first.',
   mediaLabel: 'Media',
-  mediaTitle: 'Brand art, headers, and presentation assets',
-  metaLabel: 'Platform Keywords',
-  metaTitle: 'Identity and audience',
+  mediaTitle: 'Trailer, capsules, and screenshots',
+  galleryNote: 'Click any image to open it at full size.',
+  metaLabel: 'What to Expect',
+  metaTitle: 'Core identity',
   metaTags: [
-    'Gaming Platform', 'Operating System', 'Game Engine', 'Prototype Lab', 'Browser Games',
-    'VR Support', 'Modding', 'Testing', 'Content Creation', 'Publishing',
-    'Gamers', 'Developers', 'Workflow Tools', 'Arcade Hub', 'Creative Sandbox',
-    'Interactive Media', 'Indie Tech'
+    'Experimental Arcade', 'Sci-Fi', 'Prototype Lab', 'Playable Hub', 'Creator Tools',
+    'Mod-Friendly', 'Bots', 'Interactive Systems', 'Digital World', 'Indie Tech',
+    'Evolving Platform', 'Curiosity-Driven'
   ],
   communityLabel: 'Who It Is For',
-  communityTitle: 'The people the platform is meant to serve',
+  communityTitle: 'Players, tinkerers, and creators',
   community: [
-    { title: 'Testers', body: 'A space for trying unfinished ideas, breaking systems, reporting issues, and helping shape what improves next.' },
-    { title: 'Modders', body: 'A platform that can eventually support replaceable assets, custom content, tinkering, and deeper community experimentation.' },
-    { title: 'Content creators', body: 'A hub for people who stream, record, build, design, write, animate, and produce around interactive media.' },
-    { title: 'Publishers and gamers', body: 'A branded front end that can grow into a discoverable showcase for projects, partners, releases, and play.' }
+    { title: 'Curious players', body: 'People who enjoy exploring unusual games, hidden features, and connected digital spaces.' },
+    { title: 'Tinkerers and modders', body: 'People who like swapping assets, experimenting with content, and pushing unfinished ideas further.' },
+    { title: 'Creators', body: 'Artists, builders, designers, and developers looking for a space centered on experimentation and invention.' },
+    { title: 'Archive explorers', body: 'People drawn to lore, prototypes, system fiction, and the feeling of digging through a living machine.' }
   ],
   updatesLabel: 'Updates',
-  updatesTitle: 'Updates',
-  updatesNote: 'Scroll through the latest patch notes here. Add more from the admin panel and keep the list growing.',
+  updatesTitle: 'Patch Notes',
+  updatesNote: 'Latest development notes and version updates.',
   updatesRaw: '',
   footerCopy: '© GLITCHED MATRIX — Prototype Lab',
   links: {
     primaryText: 'View on Steam',
     primaryHref: 'https://store.steampowered.com/app/4386390/Matrix_OS_Arcade_Evolution/',
-    secondaryText: 'Enter the Lab',
-    secondaryHref: '#about',
+    secondaryText: 'See Features',
+    secondaryHref: '#features',
     trailerHref: 'https://www.youtube.com/watch?v=d78EOS1a1-8',
     trailerText: 'Watch on YouTube'
   },
@@ -96,7 +95,7 @@ const defaultConfig = {
   assetVersion: ''
 };
 
-const STORAGE_KEY = 'glitched-prototype-site-config-v3';
+const STORAGE_KEY = 'glitched-prototype-site-config-v4';
 const UPDATES_SOURCE_URL = 'assets/data/combined_patch_notes.txt';
 let config = loadConfig();
 let adminOpen = false;
@@ -171,8 +170,7 @@ function applyResolvedSource(el, candidates) {
 
 function loadConfig() {
   try {
-    const legacy = localStorage.getItem('glitched-prototype-site-config-v2');
-    const stored = localStorage.getItem(STORAGE_KEY) || legacy;
+    const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return structuredClone(defaultConfig);
     const parsed = JSON.parse(stored);
     const merged = deepMerge(structuredClone(defaultConfig), parsed);
@@ -447,7 +445,7 @@ function renderUpdates() {
   if (!entries.length) {
     const empty = document.createElement('div');
     empty.className = 'update-empty';
-    empty.textContent = 'No updates loaded yet. Import a patch notes text file or add an entry from the admin panel.';
+    empty.textContent = 'No update notes loaded yet.';
     host.appendChild(empty);
     return;
   }
@@ -657,7 +655,13 @@ function prependUpdateEntry() {
 }
 
 function setupAdmin() {
-  document.getElementById('adminToggle').addEventListener('click', () => toggleAdmin());
+  const adminToggleBtn = document.getElementById('adminToggle');
+  const revealAdminEntry = () => {
+    document.body.classList.add('admin-mode-available');
+    if (adminToggleBtn) adminToggleBtn.hidden = false;
+  };
+
+  if (adminToggleBtn) adminToggleBtn.addEventListener('click', () => toggleAdmin());
   document.getElementById('closeAdmin').addEventListener('click', () => toggleAdmin(false));
   document.getElementById('saveAdmin').addEventListener('click', () => {
     pullAdminValues();
@@ -702,6 +706,7 @@ function setupAdmin() {
   document.addEventListener('keydown', (event) => {
     if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'a') {
       event.preventDefault();
+      revealAdminEntry();
       toggleAdmin();
     }
     if (event.key === 'Escape') {
@@ -714,6 +719,7 @@ function setupAdmin() {
   });
 
   if (new URLSearchParams(window.location.search).get('admin') === '1') {
+    revealAdminEntry();
     toggleAdmin(true);
   }
 }
