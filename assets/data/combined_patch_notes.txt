@@ -1,14 +1,82 @@
 Patch Note Summary Export
-Generated: 2026-04-05 01:07:31
-Root: Arcade_Evolution
+Generated: 2026-04-08 07:58:41
+Root: GLITCHED MATRIX Prototype Lab
 
 Entries are ordered from newest patch to oldest. Duplicate patch notes were removed automatically.
 
-Split Time
-==========
+GLITCHED MATRIX Prototype Lab (Main Directory)
+==============================================
 
-Split Time — 0.2.15 — 2026-04-05
---------------------------------
+GLITCHED MATRIX Prototype Lab — 1.1.4 — 2026-04-08
+--------------------------------------------------
+- Fixed portable runtime path handling so the launcher can resolve bundled assets after the install folder is moved.
+- Added EXE icon packaging support using GXPrototypeLab icon assets instead of MatrixOS fallback names.
+- Added a Windows portable PyInstaller spec and batch build script for Steam-ready one-folder packaging.
+- Fixed wallpaper resolution so old absolute wallpaper paths fall back to the bundled wallpaper.
+- Applied wallpaper rendering to the desktop container layer so the wallpaper is visible again in desktop mode.
+- Forced startup working directory to the app base folder to reduce broken relative-path loads in packaged builds.
+- Updated shipped desktop settings to use a portable relative wallpaper path.
+- Captured a fresh validation screenshot from the latest tested build.
+
+GLITCHED MATRIX Prototype Lab — 1.2 — 2026-04-08
+------------------------------------------------
+- Fixed desktop list mode to wrap into new columns before the toolbar boundary instead of running behind it.
+- Kept all desktop groups visible together on the desktop surface: Arcade Evolution, Prototype Lab, Test Lab, and Tool Test Lab.
+- Improved category root detection so MatrixOS can find group folders more reliably around the project root and games folder.
+- Added desktop mouse-wheel scrolling support on the desktop canvas.
+- Upgraded list thumbnails to wider 16:9 previews in list mode.
+- Improved thumbnail fallback order: folder screenshots first, then matching global preview images, then the GLITCHED MATRIX logo.
+- Preserved Prototype Lab branding while showing all detected groups and launchable apps directly on the desktop.
+
+The Anti-Heroes - Alpha
+=======================
+
+The Anti-Heroes - Alpha — 2026-04-08
+------------------------------------
+- Fixed Windows audio loading for generated and packaged WAV assets.
+- Audio files are now loaded through Panda-safe converted filenames instead of raw Windows-style paths.
+- This resolves the power_sfx load failures reported in the Windows runtime log.
+- Kept the v9 flood feature set intact while correcting the file-loading layer only.
+- Fresh compile and preview validation completed.
+
+panda_asset_workstation
+=======================
+
+panda_asset_workstation — 0.2.2 — 2026-04-08
+--------------------------------------------
+- Panda Asset Workstation 0.2.2
+- Added backend detection for FBX
+- Added rig-preserving FBX->GLB cache path
+- Added repair hooks for Assimp and FBX2glTF
+- Auto-detects model textures on import
+- Uses scene-level preview first so textured assets show up more reliably
+- Packages editable texture copies alongside Panda-ready exports
+
+gib_player_controller
+=====================
+
+gib_player_controller — 2026-04-08
+----------------------------------
+- GIB Player Controller Prototype
+
+- Added GLB-first animated player loading using the provided file.
+- Added data-driven playtest world with resizable clamped grid bounds.
+- Added over-the-shoulder third-person locomotion and camera controls.
+- Added animation-map asset folder for future walk clips.
+- Added HUD, settings overlay, logging, smoketest, and screenshot hooks.
+
+chatspace
+=========
+
+chatspace — 2026-04-05
+----------------------
+- ChatSpace scans this folder on launch and adds update knowledge to its active memory.
+
+Split Time - Test
+=================
+
+Split Time - Test — 0.2.15 — 2026-04-05
+---------------------------------------
 - Two Sides: Past / Future Split 0.2.15
 
 - Replaced scattered future tech pickups with rarer cave scavenger robots that dig hidden ore tunnels and drop loot when found.
@@ -17,11 +85,11 @@ Split Time — 0.2.15 — 2026-04-05
 - Future auto-targeting now prefers scavenger drops and bots instead of surface loot spam.
 - Kept the cozy past / dark cyber future presentation while shifting the reward loop deeper underground.
 
-Ghost City
-==========
+Ghost City - Test
+=================
 
-Ghost City — 2026-04-05
------------------------
+Ghost City - Test — 2026-04-05
+------------------------------
 - Ghost Grid City Prototype
 - Converts the supplied top-down city sketch into a grid-driven city footprint.
 - Streams sectors and interiors to keep draw cost down.
@@ -29,11 +97,11 @@ Ghost City — 2026-04-05
 - Starts in fly camera mode for layout validation.
 - Supports HUD toggle on H and settings overlay on Esc.
 
-Fields
-======
+Fields - Test
+=============
 
-Fields — 2026-04-05
--------------------
+Fields - Test — 2026-04-05
+--------------------------
 - Build goals
 - Endless first-person wheat traversal with multiple landscape regions instead of one repeated hill pattern.
 - Distinct golden plains, rippled dune belts, chalky terrace shelves, and rocky uplifts blended across the world.
@@ -51,11 +119,26 @@ Fields — 2026-04-05
 - Q / E: lower / raise camera a little for inspection
 - Dynamic sun arc and cloud drift run automatically
 
-timetravelsim
-=============
+The Anti-Heroes - Alpha
+=======================
 
-timetravelsim — 2026-04-05
---------------------------
+The Anti-Heroes - Alpha — 1.10.16 — 2026-04-05
+----------------------------------------------
+- The Anti-Heroes v2
+
+- Installed Panda3D 1.10.16 and panda3d-gltf 1.3.0 in the test environment for runtime validation.
+- Cached the procedural suit and emissive textures so repeated actor builds stop regenerating the same large textures.
+- Added a reusable sheet-style hero prototype clone path so NPC actor construction stops rebuilding the full hero mesh every spawn.
+- Reduced startup spawn cost substantially by reusing the cloned actor rig for the preview NPC path.
+- Tightened packaged settings for a more stable Windows 10 baseline: Performance preset, lower FX density, lower traffic density, weather FX off, slightly narrower FOV, reduced lock range.
+- Expanded packaged Python requirements to include panda3d-gltf.
+- Re-tested the packaged build in headless preview mode and regenerated the screenshot with no fresh crash log.
+
+timetravelsim - Test
+====================
+
+timetravelsim - Test — 2026-04-05
+---------------------------------
 - Updated: 2026-04-05 07:03:27 UTC
 
 - Increased structure scale and height profile.
@@ -63,6 +146,22 @@ timetravelsim — 2026-04-05
 - Added clickable owner inspection with building analytics.
 - Added arrow-key structure cycling when movement is not active.
 - Preserved timeline warp effects, news feed, saves, and crash report flow.
+
+TV - Test
+=========
+
+TV - Test — 1.1.0 — 2026-04-05
+------------------------------
+- Procedural TV Simulator
+- Version: 1.1.0
+
+- Reframed the whole presentation around old cable television aesthetics and retro broadcast hardware.
+- Reworked the TV shell, room tones, HUD palette, and service-menu styling for a vintage set feel.
+- Added stronger CRT damage, rounded corners, phosphor warmth, tracking bars, and analog OSD overlays.
+- Shifted UI copy and color language toward old cable television rather than modern neon sci-fi.
+- Retained HUD toggle (H), settings on Esc, workstation on F1, audio on M, auto-schedule on A.
+- Added G console toggle with a tiny LED under the set and a built-in retro console game.
+- In console mode, the TV pauses and the Blood Dojo-inspired procedural game takes over the screen.
 
 fbx_gib_loader
 ==============
@@ -76,44 +175,11 @@ fbx_gib_loader — 2026-04-04
 - Degenerate clip bindings are filtered out instead of being presented as working.
 - Window paths are converted to Panda filename syntax before load.
 
-panda_asset_workstation
-=======================
+Tunnel Carts - Test
+===================
 
-panda_asset_workstation — 0.2.2 — 2026-04-04
---------------------------------------------
-- Panda Asset Workstation 0.2.2
-- Added backend detection for FBX
-- Added rig-preserving FBX->GLB cache path
-- Added repair hooks for Assimp and FBX2glTF
-- Auto-detects model textures on import
-- Uses scene-level preview first so textured assets show up more reliably
-- Packages editable texture copies alongside Panda-ready exports
-
-hex_room_panda_v9
-=================
-
-hex_room_panda_v9 — 2026-04-04
-------------------------------
-- Hex Room Panda v9
-
-- Kept the v8 hover and UI-hit improvements as the base.
-- Replaced the UI dot with an in-app mouse-arrow cursor for menu mode while keeping the OS cursor hidden.
-- Added image + video surface media support for wall, floor, and ceiling replacements.
-- Surface replacement now refreshes immediately after install so the new media is visible at once.
-- Added best-effort support for mp4, mov, ogv, webm, avi, and mkv surface media files.
-- Rebuilt the sky from a cube shell into an inward UV sphere to remove visible outer edges.
-- Generated a new seamless nebula default sky and added slow motion by rotating the sky shell.
-- Updated latest screenshots and logs from the newest clean smoketest run.
-
-- Known environment limit:
-- Audio could not be validated in this container because Panda3D fell back to NullAudioManager.
-- MP4 loading was validated here. Other listed video containers are accepted by the UI and passed to Panda3D's movie loader, but codec support can still vary by runtime environment.
-
-Tunnel Carts
-============
-
-Tunnel Carts — 2026-04-04
--------------------------
+Tunnel Carts - Test — 2026-04-04
+--------------------------------
 - Added dynamic procedural SFX for hover vehicles, surf ocean space flight, and mode switching.
 - Raised the hover camera slightly for a better track view.
 - Added Space Flight as a third rotating mode with nebulas, weird planets, drones, and score gates.
@@ -142,30 +208,6 @@ Doomsday Battle — 2026-04-04
 - Included assets.zip for bootstrap extraction if assets/ is missing.
 - Verified embedded launches from the map shell for Ground, Vehicles, Naval, and Air.
 
-The Anti-Heroes
-===============
-
-The Anti-Heroes — 2026-04-04
-----------------------------
-- Reduced startup scene complexity by removing always-on duplicate shell rigs for actors.
-- Hero and NPC X-ray shells now build only when X-ray is active and are destroyed when inactive.
-- NPC aura shells now respect quality level instead of always existing.
-- Hidden optional shells no longer receive pose and head tracking updates.
-- Added hard caps for transient power FX and projectile counts to prevent runaway frame loss.
-- Performance preset now clamps effect density and projectile budgets more aggressively.
-- Added Workstation tab actions in the settings menu:
-- Refresh asset inventory
-- Open game folder
-- Open logs folder
-- Export combat simulator blueprint
-- Export world creation blueprint
-- Export editor manifest
-- Exported blueprint files into the game directory for future combat sim and world creation workflows.
-- Verified headless preview run completed without crash and produced a fresh screenshot.
-
-Doomsday Battle
-===============
-
 Doomsday Battle — 2026-04-04
 ----------------------------
 - Stage 24 - Vehicles launch crash fix
@@ -174,19 +216,6 @@ Doomsday Battle — 2026-04-04
 - Corrected map runner logic so vehicular and naval modes are treated as running while step() returns True.
 - Added procedural fallback vehicle sprites so Vehicles no longer crashes when external art is missing.
 - Verified embedded launches from the map shell for Ground, Vehicular, and Naval.
-
-gib_player_controller
-=====================
-
-gib_player_controller — 2026-04-04
-----------------------------------
-- GIB Player Controller Prototype
-
-- Added GLB-first animated player loading using the provided file.
-- Added data-driven playtest world with resizable clamped grid bounds.
-- Added over-the-shoulder third-person locomotion and camera controls.
-- Added animation-map asset folder for future walk clips.
-- Added HUD, settings overlay, logging, smoketest, and screenshot hooks.
 
 tablet_sprite_studio
 ====================
@@ -255,661 +284,11 @@ Entropy — 2026-04-04
 - Added a space third-person chase camera and procedural ship render. Press V to toggle cockpit
 - Surface sky planets remain removed.
 
-Arcade_Evolution (Main Directory)
-=================================
-
-Arcade_Evolution — 2026-04-04
------------------------------
-- Generated: 2026-04-04 03:43:33
-- Root: Arcade_Evolution
-
-- Latest entries first. Duplicate patch notes were removed automatically.
-
-- Arcade_Evolution (Main Directory)
-
-- Arcade_Evolution — 2026-04-03
-- What it does
-- Scans the folder this script is placed in by default, including subfolders.
-- Detects patch note .txt files by common names like patch, update, changelog, and release notes.
-- Maps each patch file to the nearest app folder that contains a main.py.
-- Treats the scan root as the main directory and forces that section to the top of the combined export.
-- Sorts entries newest first.
-- Removes duplicate patch note files from the final export.
-- Exports one clean combined .txt file without file paths inside the output text.
-- Can optionally delete older patch note files while keeping the newest N per app.
-
-- How to run
-- Gui:
-- python patch_notes_workstation.py
-
-- Cli:
-- python patch_notes_workstation.py --cli --root "." --output "combined_patch_notes.txt"
-
-- Optional cleanup:
-- python patch_notes_workstation.py --cli --root "." --output "combined_patch_notes.txt" --delete-older --keep-latest-per-app 1
-
-- Notes
-- No external dependencies are required beyond Python with Tkinter available.
-- The GUI defaults to scanning the script's own directory if no config file exists.
-- The preview image included with this package is a rendered workstation preview based on live scan data from testing.
-
-- Arcade_Evolution — 2026-03-28
-- Focus:
-- reduce combat stutter during power exchanges
-- reduce default combatants to 3
-- improve helmet and suit silhouette variety
-
-- Changes:
-- default combatants lowered from 4 to 3
-- combatant setting now clamps to 2-6 instead of 2-8 for better stability
-- settings.json reset away from the prior stress-test state
-- active_player_count = 3
-- round_mutator = none
-- arena_theme = neptune_upper
-- effect_density capped to a smoother default
-- prewarmed combat FX and projectile textures at startup to reduce first-use hitching
-- added live caps for simultaneous power FX and projectiles
-- non-critical FX are now dropped first when the scene is saturated instead of spiking frame time
-- non-player projectiles are culled first when projectile load is too high
-- helmet and suit attack bursts now scale to the active combat budget instead of always firing the heaviest burst counts
-- suit construction now adds stronger silhouette masses per style
-- bigger torso blocks
-- pelvis / collar / spine masses
-- stronger shoulders / forearms / thighs / shins
-- more readable differences between alien, electric, laser, knight, void, exo, and cathedral builds
-- helmet construction now applies stronger shell-scale differences by helmet family
-- helmets now add broader crown, brow, side, and cheek silhouette pieces so variants read from gameplay distance more clearly
-
-- Validation:
-- main.py compile check passed
-- boot smoke test passed in the sandbox after the hotfix
-- Xvfb capture path remained slower than normal and mostly showed the loading screen in this environment
-
-- Arcade_Evolution — 2026-03-27
-- Added
-- Expanded the Suit design menu into a full Armor Suite catalog panel during customization.
-- Added new suit families: alien_material, electric_silhouette, laser_ribcage, neon_knight, void_plate, exo_frame, bio_armor, and cathedral_mech.
-- Added full-body suit construction geometry so suit choices now change silhouette and mass, not only color.
-- Added suit-linked attack augments that fire when actors attack.
-- Added active_player_count setting with a default of 4 total combatants.
-
-- Changed
-- Default skirmish size is now 4 total pilots including the player.
-- Suit menu preview now opens directly on Suit design in preview customization mode.
-- HUD and menu readouts now show the live combatant target count instead of the old fixed 9-pilot text.
-- Spawn logic now enforces per-round uniqueness for family, helmet, suit style, and back rig across the active roster.
-
-- Technical
-- Reordered startup so the hero profile is randomized before the NPC roster is generated, improving active roster uniqueness.
-- Added live roster rebuild when the combatant count setting changes.
-- Added runtime-safe suit construct generation and preview validation.
-
-- Validation
-- Verified headless Panda3D preview boot and saved a fresh in-engine screenshot.
-- Verified default roster: 4 total combatants / 3 NPCs.
-- Verified live rebuild path by switching the combatant setting to 6 and regenerating the roster.
-- Verified active roster uniqueness for family, helmet, suit_style, and back_pattern in the validated preview run.
-
-- Arcade_Evolution — 2026-03-27
-- Update: Helmet Alignment View + Helmet Attack Powers
-
-- Added:
-- Helmet Studio now uses a full-body alignment preview instead of the tighter bust-only framing.
-- The player body stays visible during helmet editing so helmet placement can be judged against the head and silhouette.
-- Added new helmet variants:
-- samurai, tiara, scarab, dreadnought, skull, totem
-- Added helmet attack augments for players. Some helmets now emit bonus attacks or effects when firing:
-- horns -> Ruin Arc
-- antenna -> Scanner Lance
-- halo -> Halo Nova
-- blade -> Blade Wave
-- mandibles -> Venom Flux
-
-- Changed:
-- Helmet variant catalog now includes the new types in the studio list and randomization pools.
-- Helmet editor readout now reports full-body alignment view.
-- Helmet editing hides only noisy FX layers so the main character remains visible.
-- Helmet power names append to the attack text when a helmet bonus is triggered.
-
-- Notes:
-- Per-helmet offset auto-save remains active.
-- Snap views 1-4 remain available.
-
-- Arcade_Evolution — 2026-03-27
-- Summary:
-- Added a true Helmet Studio bust mode when the Helmet entry is selected in customization.
-- Added snapped camera views for front, left side, right side, and back helmet inspection.
-- Tightened the Helmet Studio framing and simplified the visible rig during helmet editing.
-- Preserved per-helmet offset and scale auto-save behavior from the previous update.
-
-- New Helmet Studio controls:
-- 1 = Front snap view
-- 2 = Left side snap view
-- 3 = Right side snap view
-- 4 = Back snap view
-- J / L = move helmet on X
-- U / O = move helmet on Y
-- I / K = move helmet on Z
-- Shift + same keys = scale helmet on that axis
-- Y = reset the current helmet preset
-- Left / Right = change helmet variant
-
-- Bust mode behavior:
-- Hides most body geometry while editing helmets so the head area reads clearly.
-- Hides aura shell clutter during helmet editing.
-- Keeps head, neck, clavicle, shoulder framing, and helmet extras visible.
-- Shows the full helmet variant catalog in the studio panel.
-
-- UI cleanup:
-- Moved the Helmet Studio panel farther right to keep the center preview cleaner.
-- Reduced Helmet Studio text size slightly so the full variant list fits with less clutter.
-- Added the current snap view label to the Helmet Studio readout.
-
-- Validation:
-- Syntax checked with py_compile.
-- Ran the Panda3D build in preview customization mode and captured an in-engine screenshot.
-
-- Arcade_Evolution — 2026-03-27
-- Update focus
-- Reworked helmet and mask silhouettes so switching helmet variants produces stronger visible changes.
-- Added neon helmet overlay passes with brighter themed face lines, brow strips, crest strips, and scanner details.
-- Added a new antlers helmet family and expanded random helmet pools to include it.
-- Upgraded horn behavior so large horns now scale the current live helmet extras correctly.
-- Added secondary ornament mixing so mythic and sci-fi helmets can pick up extra horns, antlers, or antennae where appropriate.
-- Improved helmet anchoring by rebuilding all attachments from a dedicated head-anchored helmet root.
-- Added cleanup for old tail extras during profile refresh so repeated customization no longer leaves stale attachments behind.
-
-- Load changes
-- Deferred maintenance work until after gameplay begins instead of blocking the loading sequence.
-- Moved asset inventory generation out of the critical startup path.
-- Reduced post-load hold time before control returns to play.
-
-- Validation
-- Panda3D preview boot completed successfully in sandbox.
-- Preview screenshot regenerated after patch.
-
-- Arcade_Evolution — 2026-03-27
-- Added
-- Added a dedicated Helmet Studio state when the Helmet row is selected in Customization.
-- Added a focused head-preview camera for helmet editing.
-- Added a complete on-screen helmet variant board so every helmet option is visible while editing.
-- Added per-helmet auto-save presets for anchor offset and anchor scale.
-- Added live helmet transform controls:
-- J = X offset
-- U = Y offset
-- I = Z offset
-- Shift + same keys = X scale
-- Y = reset current helmet preset
-- Added persistent helmet preset storage in helmet_studio_presets.json once the user edits a helmet.
-
-- Improved
-- Helmet selection now recalls the saved transform for that helmet variant automatically.
-- Helmet extras are anchored through a dedicated transform node so horns, masks, fins, antennae, antlers, and other add-ons stay aligned more predictably.
-- Customization menu now uses cached option lists for lighter menu refresh work.
-- Removed a startup settings write that was not needed at boot.
-
-- Visual / UX
-- Helmet Studio suppresses most back-rig clutter while editing so the head area reads more clearly.
-- Customization preview boot now opens with the Helmet row selected for faster validation.
-
-- Validation
-- Syntax checked with py_compile.
-- Ran the Panda3D build in preview customization mode successfully.
-- Captured an in-engine screenshot of the new Helmet Studio.
-
-- Arcade_Evolution — 2026-03-27
-- The Anti-Heroes - Sequence Stability Hotfix
-
-- Summary:
-- Added a stability shield for late-stage runtime systems introduced in the sequence pass.
-- Sanitized arena and mutator settings when loading older or malformed settings files.
-- Added a clearer startup message when Panda3D is missing.
-- Preserved the sequence pass content while preventing single-subsystem faults from crashing the whole game.
-
-- Fixes:
-- Runtime faults in non-core systems now get logged to logs and the failing subsystem is disabled instead of crashing the app.
-- Arena theme and round mutator settings are normalized and clamped to valid values on load.
-- Active combatant count is written back in sanitized form during runtime settings application.
-- Missing Panda3D dependency now prints a direct install instruction before exiting.
-
-- Validated:
-- Python compile check passed.
-- Offscreen gameplay preview boot passed.
-- Offscreen customization preview boot passed.
-- Live gameplay smoke test under Xvfb ran for 20 seconds without crashing.
-
-- Arcade_Evolution — 2026-03-27
-- The Anti-Heroes — Sequence Systems Pass
-
-- Sequence 1 — Armor mass and authored identities
-- Added armor mass classes: light, medium, heavy.
-- Added combat roles: duelist, tank, assassin, caster, berserker, support.
-- Added power sources: arc, plasma, relic, bone, radiation, solar, signal.
-- Added temperaments for fighter flavor and roster differentiation.
-- Extended live roster uniqueness so active fighters avoid duplicating family, helmet, suit, back pattern, weight class, combat role, and power source.
-- Weight class now changes scale, HP, speed, evade behavior, attack cadence, projectile scale, and hit radius.
-
-- Sequence 2 — Arena themes and mutators
-- Added arena settings: Neptune Upper, Neon Cathedral, Void Lab, Storm Forge, Alien Hive, Laser Tomb, Signal Pit.
-- Added mutators: none, low gravity, storm interference, unstable neon, armor overheat, power surge.
-- Arena theme now updates scene tinting and menu presentation.
-- Mutators now affect movement and damage flow.
-
-- Sequence 3 — Body construction layers
-- Expanded suits with clearer silhouette layers: shoulder rigs, gauntlets, greaves, boot trails, chest core, spine lattice, collar frame, waist cloth, and hip blades.
-- New body layers respond to armor mass and combat role.
-
-- Sequence 4 — Spawn intros and codex
-- Added round announcement system.
-- Added round showcase lines for the active roster.
-- Added codex persistence file that records discovered combinations of family, helmet, suit, weight class, role, and power source.
-
-- Sequence 5 — Damage deformation and audio identity
-- Added damage-state visual degradation for suit constructs and glow nodes.
-- Added identity-based audio triggers for spawn, attack, and hit events.
-
-- Validation
-- Python syntax compiled successfully.
-- In-engine gameplay preview completed successfully.
-- In-engine customization preview completed successfully.
-- Additional smoke test completed with arena_theme=signal_pit, round_mutator=power_surge, active_player_count=6.
-
-- Known limitations
-- Damage deformation currently focuses on suit constructs and emissive readability rather than true mesh destruction.
-- Arena themes are currently visual rather than fully bespoke geometry sets.
-- The round showcase and codex are functional, but the codex does not yet have a dedicated browser UI.
-
-- Atlas
-
-- Atlas — 0.2.0 — 2026-03-28
-- Timestamp: 20260328_065919
-
-- Initial prototype booted.
-- Includes crash logging, semantic grouping, safe-edit hotspots, report export, and screenshot export.
-
-- Atlas — 0.2.0 — 2026-03-28
-- Timestamp: 20260328_035551
-
-- Initial prototype booted.
-- Includes crash logging, semantic grouping, safe-edit hotspots, report export, and screenshot export.
-
-- Atlas — 0.2.0 — 2026-03-28
-- Timestamp: 20260328_delivery
-
-- Prepared clean delivery build without bundled games or demo projects.
-- Removed demo toolbar actions from the packaged build.
-- Updated docs and startup script for app-only delivery.
-- Preserved crash logs, patch note output, project scanning, editing, report export, and screenshot export.
-
-- Chameleon Pixels
-
-- Chameleon Pixels — 0.2.0 — 2026-03-27
-- ChamelionPixels 0.2.0
-- Generated: 2026-03-27T07:35:10
-
-- Update Summary:
-- Tightened projection placement so emitted pixels stay anchored close to the detected motion source.
-- Increased default analysis resolution for better spatial tracking.
-- Added anchor pull and projection exactness controls for the workstation.
-- Fixed workstation readability by forcing a fully styled dark content surface.
-- Added best-effort Windows capture exclusion to reduce self-feedback artifacts.
-- Kept topmost overlay, click-through behavior, config persistence, crash logs, and patch note generation.
-
-- chatspace
-
-- chatspace — 2026-04-01
-- ChatSpace scans this folder on launch and adds update knowledge to its active memory.
-
-- Doomsday Apocalypse
-
-- Doomsday Apocalypse — 2026-04-04
-- Doomsday War Map Restart Build Stage 11
-
-- Rebuilt the launcher from the clean Stage 9 war-map baseline instead of patching the regressed shell.
-- main.py now boots directly into the war map and auto-extracts assets.zip if the live assets folder is missing or empty.
-- Restored same-window embedded launching for Ground, Vehicular, Naval, and Apocalypse.
-- Air Combat remains the built-in jet overlay inside map.py.
-- Fixed battle.py module loading through sys.modules registration in the embedded launcher path.
-- Fixed vehicles.py embedded event handling by binding _handle_events onto Game.
-- Restored the rustic war-room sidebar, scrollable battle feed, and wrapped text layout.
-- Launcher entries now point at battle.py, vehicles.py, naval.py, and apocalypse.py instead of missing subfolders.
-- Apocalypse is available from the start in this build.
-- Verified direct render and launcher-session smoke tests for all four subgames plus the air overlay.
-
-- Doomsday Apocalypse — 2026-04-03
-- Stage 15 - Apocalypse Embedded Driving Fix
-
-- Kept Stage 14 as baseline and upgraded the Apocalypse in-window path.
-- map.py: fixed the embedded runner for Apocalypse so host-delivered events are not double-processed.
-- map.py: on host resize, the embedded game's external surface and output size are rebound to the current display surface.
-- apocalypse.py: EmbeddedXCountry now accepts optional doomsday context cleanly.
-- apocalypse.py: create_embedded now accepts launcher kwargs without failing.
-- Verified Apocalypse road-mode driving renders in the embedded window.
-- Verified gas depletion transitions Apocalypse from road mode into pit mode in embedded play.
-- Verified Apocalypse launched from the map shell and returned on ESC.
-- Preserved Apocalypse's own overlay; host banner remains suppressed for this mode.
-
-- Doomsday Apocalypse — 2026-04-03
-- Stage 14 - Apocalypse Embedded + Pit Stop Fix
-
-- Baseline kept:
-- Map-first combined build from the previous same-window version.
-- main.py remains a tiny bootstrap that launches map.py.
-
-- Fixes:
-- Apocalypse now stays embedded in the map window correctly.
-- Apocalypse embedded mode now uses the correct close contract (False means exit).
-- Pit stop transition was verified in embedded mode:
-- road -> pit when gas reaches 0
-- pit -> road when the pit session completes
-- fuel gained in pit transfers back to the road vehicle
-- Apocalypse no longer gets the extra host minigame banner drawn over its own road overlay.
-
-- Validation:
-- py_compile passed for main.py, map.py, battle.py, vehicles.py, naval.py, apocalypse.py
-- Embedded smoke tests passed for ground, vehicular, naval, apocalypse
-- Embedded apocalypse pit-stop flow passed
-
-- Doomsday Apocalypse — 2026-04-03
-- Stage 13 - Combined Same-Window Game Build
-
-- What changed
-- Turned the map into the true main shell.
-- Replaced the old noir main entry with a direct map bootstrap.
-- Reworked launcher flow so Ground, Vehicular, Naval, and Apocalypse open inside the map window.
-- Preserved Apocalypse's own embedded overlay by avoiding an extra host banner over it.
-- Fixed EmbeddedAppWrapper event routing so games with handle_event(ev) and handle_event(ev, local_pos) both work.
-- Fixed vehicles.py embedded event handling by binding _handle_events into the Game class.
-- Added procedural vehicle placeholder sprites so Vehicular mode runs even without external vehicle art.
-- Added safe UI SFX helper in the map shell.
-- Kept Air combat as the built-in map overlay rather than a separate file.
-
-- Validated
-- main.py compile
-- map.py compile
-- battle.py compile
-- vehicles.py compile
-- naval.py compile
-- apocalypse.py compile
-- Same-window embedded smoke pass for Ground, Vehicular, Naval, Apocalypse
-
-- Doomsday Apocalypse — 2026-04-03
-- Doomsday War Map - Stage 10
-
-- Latest fixes
-- main.py now boots straight into the war map instead of the old noir database app.
-- Removed the launcher block that treated Ground Combat as "already active" and prevented it from opening.
-- Removed the "No active invasion for your faction yet" dead end by forcing an immediate skirmish matchup after the player picks a side.
-- All mode channels are available from the start, including Apocalypse.
-- Air Combat remains the built-in jet overlay on the map shell.
-- Reduced several UI font sizes to prevent oversized headings and sidebar bleed.
-- Added safe UI SFX hooks for click, launch, error, team select, and unlock events.
-- Fixed an Air launcher runtime bug caused by local shadowing of the global time module.
-
-- Validation
-- py_compile passed for main.py and map.py.
-- Smoke test confirmed:
-- ground launch path available
-- vehicular launch path available
-- naval launch path available
-- air overlay activates
-- apocalypse marked enabled
-- matchup generation succeeds immediately after faction selection
-
-- Doomsday Apocalypse — 2026-04-03
-- Doomsday War Map - Stage 9
-
-- Restored the war map as the primary entry point through main.py.
-- Kept the rustic war-room sidebar and scrollable battle feed from the latest map shell.
-- Added 2:00 sortie timers for Ground, Vehicular, Naval, and Air Combat.
-- Added 90-second cooldowns after timed sorties.
-- Kept Apocalypse untimed and locked behind 10 minutes of total runtime.
-- Air Combat now launches from the Air tab and auto-returns after its timed sortie.
-- Reduced oversized UI text and kept wrapped sidebar copy to prevent bleed-off.
-- Added HUD toggle on H.
-- Preserved UI SFX hooks and current asset-pack loading.
-- Updated display captions and launcher flow for a cleaner game-ready shell.
-
-- Doomsday Apocalypse — 3.13 — 2026-04-03
-- Doomsday War Map - Stage 8
-
-- main.py remains the war-map entry point.
-- Restored current launcher entries to the real local files:
-- battle.py, vehicles.py, naval.py, apocalypse.py
-- Air Combat now uses the built-in map overlay instead of a missing external mode file.
-- Core modes are available immediately after team selection.
-- Apocalypse now starts locked and unlocks after 10 minutes of campaign runtime.
-- Reduced oversized UI fonts and refreshed the sidebar with a rustic war-room style.
-- Added wrapped text and a scrollable battle feed to prevent text bleeding off-screen.
-- Added UI SFX hooks for click, launch, error, selection, and unlock feedback.
-- Fixed battle.py import registration under Python 3.13 by registering loaded modules in sys.modules.
-- Restored extracted assets/ so vehicular mode can find vehicle sprites again.
-- Fixed vehicles.py embedded helper binding so step() can process events safely.
-
-- Doomsday Apocalypse — 2026-04-03
-- Doomsday War Map - Stage 7
-
-- main.py restored to launch the war map directly
-- map.py launcher entries corrected to use local files: battle.py, vehicles.py, naval.py, apocalypse.py
-- Ground Combat tab restored to open battle.py instead of showing the old 'always active on map' block
-- rustic war-room sidebar restored
-- battle feed panel made scrollable and wrapped to avoid text bleeding off-screen
-- sidebar fonts switched to a serif style
-- assets.zip extracted into a live assets/ folder and nested asset paths flattened so vehicle sprites load
-- window caption restored to 'Doomsday War Map'
-
-- Doomsday Apocalypse — 2026-04-03
-- Stage 6 - Launcher Repair + Verified Embedded Launches
-
-- Fixed launcher tab routing so Ground Combat now launches battle.py instead of being blocked.
-- Fixed launcher entry paths to use the real local mode files:
-- battle.py
-- vehicles.py
-- naval.py
-- apocalypse.py
-- Fixed embedded module loading by registering loaded modules in sys.modules.
-- Fixed launcher step contract handling:
-- battle returns True on exit
-- vehicles returns False on exit
-- naval returns False on exit
-- apocalypse returns False on exit
-- Patched vehicles.py so embedded mode binds _handle_events onto Game.
-- Extracted the provided assets.zip contents into assets/ so vehicles mode has the sprites it requires.
-- Restored apocalypse to locked-at-start state with 10-minute total-play unlock logic.
-- Verified same-shell launches from the map tabs for Ground, Vehicular, Naval, and Apocalypse.
-
-- Entropy
-
-- Entropy — 2026-04-04
-- Space Planetways Build v4
-
-- Increased planet physical size and on-screen projection so planets read larger earlier on approach.
-- Atmosphere entry now triggers at a larger atmosphere-touch radius and preloads terrain immediately using the correct current planet seed.
-- Galaxies are more transparent, less dense, and placed farther away.
-- Added a space third-person chase camera and procedural ship render. Press V to toggle cockpit
-- Surface sky planets remain removed.
-
-- Entropy — 2026-04-03
-- Space Core Surface Merge - Planet Variant Pass
-- Generated: $(date -Iseconds)
-
-- Changes
-- Converted former dungeon themes into rare desolate surface biomes instead of enterable wall-based interiors.
-- Removed overworld ruin structures and breach logic from terrain generation.
-- Added new natural planet variants: desolate, salt, and ash worlds.
-- Increased fog density and thick-fog frequency to soften distant terrain reveal.
-- Added approach fade so a new planet surface resolves through fog instead of appearing abruptly.
-- Expanded palette variation with more muted low-saturation worlds.
-- Added stronger storm variety: dust, snow, rain, ash, and mist overlays.
-- Reduced deep black usage in terrain gradients; horizons now stay color-linked to sky and fog.
-
-- Entropy — 2026-04-03
-- Surface + Dungeon Atmosphere Pass
-- Generated: $(date -Iseconds)
-
-- Removed near-black ground gradients on planetary surfaces; horizons now fade into sky and fog color instead of dropping to black.
-- Added per-planet fog density and thick-fog planets for heavier atmospheric variety.
-- Made dungeons extremely rare: only rare worlds expose a single enterable veiled ruin, while other ruins remain sealed scenery.
-- Brightened dungeon palettes and reduced black crush on wall rendering.
-- Added glow-stone clusters to dungeon wall themes so some walls emit color instead of reading flat black.
-- Updated surface HUD prompts so only rare breach ruins advertise dungeon entry.
-
-- Entropy — 0.2.0 — 2026-04-03
-- Dream Crawler Hybrid 0.2.0
-- Generated: 2026-04-03T08:25:00
-
-- Highlights
-- Added proper window management with resizable letterboxed presentation, fullscreen toggle, and window size cycling.
-- Replaced the lone overworld portal with procedural enterable structures that route into dungeon variants.
-- Rebuilt the first dungeon generator into a room-and-corridor layout for cleaner navigation and fewer broken dead zones.
-- Removed overworld roaming NPC entities to keep the exterior readable and atmospheric.
-- Kept single-file runtime flow, HUD toggle, settings overlay, and headless smoke validation.
-
-- Entropy — 2026-04-03
-- Space Core Planet Merge
-- Generated: 2026-04-03
-
-- Changes
-- Kept space_core.py as the main runtime and launcher target.
-- Added terrains.py as the planetary surface simulation layer expected by space_core.
-- Replaced the broken interiors.py upload with a stable ship-interior module using the same API.
-- Planet surfaces now generate distinct biomes including desert, ice, jungle, volcanic, crystal, and oceanic variants.
-- Ancient-civilization structure districts now spawn on planets and can be entered with E.
-- Structure interiors route into distinct dungeon variants: Star Tomb, Sky Keep, and Buried Catacomb.
-- Surface mode remains compatible with space_core’s existing controls: TAB near ship enters ship interior and SPACE returns to orbit.
-- Added a fallback get_planet_world() implementation so older space_core branches still have a valid terrain backdrop object.
-
-- Validation
-- py_compile passed for main.py, space_core.py, terrains.py, and interiors.py.
-- Runtime integration test passed through space_core lazy terrain loading.
-- Rendered screenshots for planetary surface, dungeon, and ship interior states.
-
-- Entropy — 2026-04-03
-- Surface Performance + Grounding Pass
-- Generated: 2026-04-03
-
-- Changes
-- Reduced avoidable per-frame rendering work in terrains.py.
-- Cached low-res ray direction tables for the surface renderer.
-- Cached scaled billboard sprites to reduce repeated smoothscale calls.
-- Cached sky-body halo layers instead of rebuilding them every frame.
-- Reused dungeon floor buffers and cached the scaled composite when camera state is unchanged.
-- Added adaptive terrain march step growth at distance for the surface voxel pass.
-- Added sprite grounding skirts, stronger contact shadows, and pseudo-thickness for larger billboards.
-- Improved structure sprites with plinths, darker lower masses, and debris so they read as embedded architecture.
-- Added tree sprite variants for more visual variety without increasing runtime generation cost.
-- Reduced foliage overdraw with slightly more aggressive draw skipping for dense sets.
-
-- Notes
-- This pass targets the surface renderer used by space_core.py through terrains.py.
-- No changes were made to the ship-flight core loop in space_core.py.
-
-- Image 3D Forge
-
-- Image 3D Forge — 0.9.0 — 2026-03-28
-- 3D Forge Workstation 0.9.0
-- Patch Tag: 009
-
-- Highlights
-- Kept export scale normalized to a stable one-unit max dimension with centered pivot.
-- Pushed blade surfaces flatter and thinner while concentrating bevel falloff at the outer edge zones.
-- Increased smoothing on rounded forms while preserving harder crease response on the sword body.
-- Preserved mirrored front surfaces, sidewalls, and OBJ export for quick external testing.
-- Tightened the workstation presentation and rerendered the sword comparison set.
-
-- Image 3D Forge — 1.0.0 — 2026-03-28
-- 3D Forge Workstation 1.0.0
-- Patch Tag: 010
-
-- Highlights
-- Added VR-ready greatsword export with grip-at-origin pivoting for Panda3D XR workflows.
-- Added metadata export describing blade axis, primary edge axis, flat face axis, and measured grip distances.
-- Scaled VR sword output to a 1.55 meter greatsword profile for one-unit-equals-one-meter workflows.
-- Moved workstation UI further toward the screen edges and tightened the center play space.
-- Added a Panda3D hand-anchor loading example for the exported VR greatsword asset.
-
-- Liquid Mercury 4D
-
-- Liquid Mercury 4D — 2026-03-28
-- Liquid Sphere Media Simulator
-
-- Build highlights
-- Kept the simulator-first presentation and the seamless liquid sphere branch from the uploaded build.
-- Enlarged the orb so the existing media texture reads on a bigger perfect sphere.
-- Removed the camera clamp so the player can fly anywhere in 3D, inside or outside the sphere.
-- Updated the shading so the textured orb stays visible from both sides when you exit the volume.
-- Added a spherical compatibility placeholder asset in assets while leaving the live simulator driven by the real 3D sphere mesh.
-- Kept replaceable media loading, wave interaction, screenshot capture, config reload and crash logging.
-
-- Liquid Mercury 4D — 2026-03-28
-- Chromatic Pool Simulator
-
-- Build highlights
-- Replaced the room shell with a single circular chromatic pool.
-- Removed visible UI from the default simulator presentation.
-- Added a replaceable media surface pipeline for one image or video texture.
-- Added a replaceable silhouette-to-liquid emergence object system.
-- Enlarged and smoothed the emergence object into a softer liquid form.
-- Kept direct no-momentum movement and persistent mouse lock during interaction.
-- Reduced scene complexity and render overhead for better performance.
-
-- Liquid Mercury 4D — 2026-03-28
-- Chromatic Pool Simulator
-
-- Build highlights
-- Replaced the sphere room with a single circular chromatic pool surface.
-- Removed visible UI from the default simulator view.
-- Added replaceable media texture loading from assets with best-effort image and video support.
-- Added a right-click emergence system that raises a liquid form from the pool and morphs it toward a replaceable PNG mask.
-- Simplified the scene for better runtime cost: one deformable pool, one emergent form, one hidden debug panel.
-
-- MonkeyStranded
-
-- MonkeyStranded — 2026-04-03
-- Build: resize-hardening + embedded insect stability pass
-
-- What changed
-- Hardened the island window path for resize safety.
-- Added sanitized window sizing with minimum and maximum bounds.
-- Replaced fixed-size presentation assumptions with a real viewport update path.
-- Fixed mouse-to-world mapping after resize so clicks and aiming stay aligned.
-- Passed the current window size into the embedded insect world instead of forcing stale defaults.
-- Fixed return-from-insect rebuild so it does not touch a dead display surface.
-- Hardened the insect world resize code with a shared safe display opener.
-- Added font refresh on insect-world window changes so HUD text stays readable.
-- Increased insect HUD spacing and label placement stability.
-
-- Preventive measures added
-- Rejects pathological resize values by clamping to safe bounds.
-- Rebuilds display surfaces after resize through one controlled path.
-- Preserves last valid windowed size for fullscreen transitions.
-- Prevents view-rect math from using zero or invalid dimensions.
-- Prevents click hit-testing from using stale 4x scale assumptions.
-- Avoids querying a destroyed display surface when returning from embedded mode.
-
-- Validation
-- Syntax-checked main.py and insects.py.
-- Stress-tested island resizing with: 1600x900, 1x1, 1920x1080, 5000x3200, 1280x720, 960x540.
-- Stress-tested embedded insect mode resizing with: 1600x900, 1x1, 1920x1080, 5000x3200, 1280x720.
-- Final integrated run completed without generating crash reports.
-
-- Radar Hell
-
-- Radar Hell — 2026-04-03
-- Updated: 2026-04-03 20:28:35
-
-- New main shell that fronts the project as a stylish launcher.
-- hvh1 and hvh2 now return to the shell after exit instead of terminating the whole session.
-- Launch context isolates relative asset paths by switching to the child script directory during each run.
-- Shared shell settings: fullscreen, HUD, help visibility, clean 16:9 presentation.
-- Added mode discovery for extra sibling Python files.
-- Added crash logging for shell-level runtime failures.
-
-Central Hub Project
-===================
-
-Central Hub Project — 0.5.3 — 2026-04-04
-----------------------------------------
+GLITCHED MATRIX Prototype Lab (Main Directory)
+==============================================
+
+GLITCHED MATRIX Prototype Lab — 0.5.3 — 2026-04-04
+--------------------------------------------------
 - Etchline: Noir City Assault
 - Version: 0.5.3
 - Generated: 2026-04-04T06:12:13.040907
@@ -923,8 +302,8 @@ Central Hub Project — 0.5.3 — 2026-04-04
 - Added generated mech weapon feedback and hardened chain-lightning targeting against removed enemies.
 - Kept the mech combat layer, red enemy cores, fog treatment, workstation, screenshots, and crash logging.
 
-Central Hub Project — 0.5.3 — 2026-04-04
-----------------------------------------
+GLITCHED MATRIX Prototype Lab — 0.5.3 — 2026-04-04
+--------------------------------------------------
 - Etchline: Noir City Assault
 - Version: 0.5.3
 - Generated: 2026-04-04T11:04:56.232911
@@ -938,56 +317,11 @@ Central Hub Project — 0.5.3 — 2026-04-04
 - Added generated mech weapon feedback and hardened chain-lightning targeting against removed enemies.
 - Kept the mech combat layer, red enemy cores, fog treatment, workstation, screenshots, and crash logging.
 
-TV
-==
+MonkeyStranded - Beta
+=====================
 
-TV — 1.1.0 — 2026-04-04
------------------------
-- Version: 1.1.0
-
-- Reframed the whole presentation around old cable television aesthetics and retro broadcast hardware.
-- Reworked the TV shell, room tones, HUD palette, and service-menu styling for a vintage set feel.
-- Added stronger CRT damage, rounded corners, phosphor warmth, tracking bars, and analog OSD overlays.
-- Shifted UI copy and color language toward old cable television rather than modern neon sci-fi.
-- Retained HUD toggle (H), settings on Esc, workstation on F1, audio on M, auto-schedule on A.
-- Added G console toggle with a tiny LED under the set and a built-in retro console game.
-- In console mode, the TV pauses and the Blood Dojo-inspired procedural game takes over the screen.
-
-Arcade_Evolution (Main Directory)
-=================================
-
-Arcade_Evolution — 2026-04-03
------------------------------
-- What it does
-- Scans the folder this script is placed in by default, including subfolders.
-- Detects patch note .txt files by common names like patch, update, changelog, and release notes.
-- Maps each patch file to the nearest app folder that contains a main.py.
-- Treats the scan root as the main directory and forces that section to the top of the combined export.
-- Sorts entries newest first.
-- Removes duplicate patch note files from the final export.
-- Exports one clean combined .txt file without file paths inside the output text.
-- Can optionally delete older patch note files while keeping the newest N per app.
-
-- How to run
-- Gui:
-- python patch_notes_workstation.py
-
-- Cli:
-- python patch_notes_workstation.py --cli --root "." --output "combined_patch_notes.txt"
-
-- Optional cleanup:
-- python patch_notes_workstation.py --cli --root "." --output "combined_patch_notes.txt" --delete-older --keep-latest-per-app 1
-
-- Notes
-- No external dependencies are required beyond Python with Tkinter available.
-- The GUI defaults to scanning the script's own directory if no config file exists.
-- The preview image included with this package is a rendered workstation preview based on live scan data from testing.
-
-MonkeyStranded
-==============
-
-MonkeyStranded — 2026-04-03
----------------------------
+MonkeyStranded - Beta — 2026-04-03
+----------------------------------
 - Build: resize-hardening + embedded insect stability pass
 
 - What changed
@@ -1098,11 +432,12 @@ Entropy — 2026-04-03
 - This pass targets the surface renderer used by space_core.py through terrains.py.
 - No changes were made to the ship-flight core loop in space_core.py.
 
-Radar Hell
-==========
+Radar Hell - Alpha
+==================
 
-Radar Hell — 2026-04-03
------------------------
+Radar Hell - Alpha — 2026-04-03
+-------------------------------
+- Radar Hell  Integrated Frontend
 - Updated: 2026-04-03 20:28:35
 
 - New main shell that fronts the project as a stylish launcher.
@@ -1125,24 +460,227 @@ GLB Generator — 2026-04-02
 - latest preview run generated fresh screenshots
 - latest run produced no fresh crash log
 
-chatspace
-=========
+Corridor - Test
+===============
 
-chatspace — 2026-04-01
-----------------------
-- ChatSpace scans this folder on launch and adds update knowledge to its active memory.
+Corridor - Test — 2026-03-29
+----------------------------
+- Signal Corridor Workstation
 
-Corridor
-========
-
-Corridor — 2026-03-29
----------------------
 - Build highlights
 - Removed the old zombie scene and replaced it with a sealed four-surface corridor.
 - Applied a seamless liquid signal shader to the walls, ceiling, and floor using a shared corridor-space field.
 - Added mirrored Rorschach-like pulses that morph into root and spider formations that track the player.
 - Added dark falloff before corridor ends, a sci-fi television aura, and a player-following spotlight feel in shader.
 - Kept workstation conventions: crash logging, patch notes reset, replaceable media texture input, screenshots, HUD toggle, and settings toggle.
+
+GLITCHED MATRIX Prototype Lab (Main Directory)
+==============================================
+
+GLITCHED MATRIX Prototype Lab — 0.5.3 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.5.3
+- Generated: 2026-03-28T06:49:22.559716
+
+- Patch Notes
+- Switched the playable world over to an open district layout derived from the uploaded level2 world logic.
+- Reduced near-field clutter with broader roads, landmarks, courtyards, and clearer route silhouettes.
+- Moved the dense metropolis into a distant skyline backdrop so it reads as scale without crushing framerate.
+- Added an aura-based material reveal: nearby structures fade their solid surfaces in around the player while linework remains readable at range.
+- Spread the cockpit shoulder pylons wider for a clearer center view and moved the LED health meters onto them.
+- Added generated mech weapon feedback and hardened chain-lightning targeting against removed enemies.
+- Kept the mech combat layer, red enemy cores, fog treatment, workstation, screenshots, and crash logging.
+
+GLITCHED MATRIX Prototype Lab — 0.5.3 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.5.3
+- Generated: 2026-03-28T06:50:56.385302
+
+- Patch Notes
+- Switched the playable world over to an open district layout derived from the uploaded level2 world logic.
+- Reduced near-field clutter with broader roads, landmarks, courtyards, and clearer route silhouettes.
+- Moved the dense metropolis into a distant skyline backdrop so it reads as scale without crushing framerate.
+- Added an aura-based material reveal: nearby structures fade their solid surfaces in around the player while linework remains readable at range.
+- Spread the cockpit shoulder pylons wider for a clearer center view and moved the LED health meters onto them.
+- Added generated mech weapon feedback and hardened chain-lightning targeting against removed enemies.
+- Kept the mech combat layer, red enemy cores, fog treatment, workstation, screenshots, and crash logging.
+
+GLITCHED MATRIX Prototype Lab — 0.5.3 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.5.3
+- Generated: 2026-03-28T17:56:17.773085
+
+- Patch Notes
+- Switched the playable world over to an open district layout derived from the uploaded level2 world logic.
+- Reduced near-field clutter with broader roads, landmarks, courtyards, and clearer route silhouettes.
+- Moved the dense metropolis into a distant skyline backdrop so it reads as scale without crushing framerate.
+- Added an aura-based material reveal: nearby structures fade their solid surfaces in around the player while linework remains readable at range.
+- Spread the cockpit shoulder pylons wider for a clearer center view and moved the LED health meters onto them.
+- Added generated mech weapon feedback and hardened chain-lightning targeting against removed enemies.
+- Kept the mech combat layer, red enemy cores, fog treatment, workstation, screenshots, and crash logging.
+
+GLITCHED MATRIX Prototype Lab — 0.2.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.2.0
+- Generated: 2026-03-28T17:58:04.867232
+
+- Patch Notes
+- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
+- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
+- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
+- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
+- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
+- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
+
+GLITCHED MATRIX Prototype Lab — 0.1.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.1.0
+- Generated: 2026-03-28T17:58:39.214803
+
+- Patch Notes
+- Added a first-person monochrome line-art cyber-noir shooter foundation.
+- Procedural far-distance city chunk generation with fade fog and full collision boxes.
+- Ten-minute day inversion cycle with long dawn and dusk transitions.
+- Endless procedural weapon cycling on TAB.
+- Scary intact line-render enemies with chase behavior and ink-blood drips.
+- Minimal professional HUD, ESC settings panel, H HUD toggle, F10 workstation.
+- Built-in asset folders, patch notes generation, screenshots, and crash logs.
+- Self-test path for offscreen validation.
+
+GLITCHED MATRIX Prototype Lab — 0.2.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.2.0
+- Generated: 2026-03-28T17:59:01.018100
+
+- Patch Notes
+- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
+- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
+- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
+- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
+- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
+- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
+
+GLITCHED MATRIX Prototype Lab — 0.1.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.1.0
+- Generated: 2026-03-28T17:59:12.223719
+
+- Patch Notes
+- Added a first-person monochrome line-art cyber-noir shooter foundation.
+- Procedural far-distance city chunk generation with fade fog and full collision boxes.
+- Ten-minute day inversion cycle with long dawn and dusk transitions.
+- Endless procedural weapon cycling on TAB.
+- Scary intact line-render enemies with chase behavior and ink-blood drips.
+- Minimal professional HUD, ESC settings panel, H HUD toggle, F10 workstation.
+- Built-in asset folders, patch notes generation, screenshots, and crash logs.
+- Self-test path for offscreen validation.
+
+GLITCHED MATRIX Prototype Lab — 0.2.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.2.0
+- Generated: 2026-03-28T18:00:42.091265
+
+- Patch Notes
+- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
+- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
+- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
+- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
+- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
+- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
+
+GLITCHED MATRIX Prototype Lab — 0.2.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.2.0
+- Generated: 2026-03-28T18:01:19.027820
+
+- Patch Notes
+- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
+- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
+- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
+- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
+- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
+- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
+
+GLITCHED MATRIX Prototype Lab — 0.2.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.2.0
+- Generated: 2026-03-28T18:02:52.670230
+
+- Patch Notes
+- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
+- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
+- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
+- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
+- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
+- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
+
+GLITCHED MATRIX Prototype Lab — 0.1.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.1.0
+- Generated: 2026-03-28T18:03:00.519217
+
+- Patch Notes
+- Added a first-person monochrome line-art cyber-noir shooter foundation.
+- Procedural far-distance city chunk generation with fade fog and full collision boxes.
+- Ten-minute day inversion cycle with long dawn and dusk transitions.
+- Endless procedural weapon cycling on TAB.
+- Scary intact line-render enemies with chase behavior and ink-blood drips.
+- Minimal professional HUD, ESC settings panel, H HUD toggle, F10 workstation.
+- Built-in asset folders, patch notes generation, screenshots, and crash logs.
+- Self-test path for offscreen validation.
+
+GLITCHED MATRIX Prototype Lab — 0.2.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.2.0
+- Generated: 2026-03-28T18:03:10.697727
+
+- Patch Notes
+- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
+- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
+- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
+- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
+- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
+- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
+
+GLITCHED MATRIX Prototype Lab — 0.2.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.2.0
+- Generated: 2026-03-28T18:03:22.138657
+
+- Patch Notes
+- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
+- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
+- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
+- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
+- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
+- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
+
+GLITCHED MATRIX Prototype Lab — 0.2.0 — 2026-03-28
+--------------------------------------------------
+- Etchline: Noir City Assault
+- Version: 0.2.0
+- Generated: 2026-03-28T18:03:49.517892
+
+- Patch Notes
+- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
+- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
+- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
+- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
+- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
+- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
 
 Atlas
 =====
@@ -1169,214 +707,6 @@ Atlas — 0.2.0 — 2026-03-28
 - Removed demo toolbar actions from the packaged build.
 - Updated docs and startup script for app-only delivery.
 - Preserved crash logs, patch note output, project scanning, editing, report export, and screenshot export.
-
-Central Hub Project
-===================
-
-Central Hub Project — 0.5.3 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.5.3
-- Generated: 2026-03-28T06:49:22.559716
-
-- Patch Notes
-- Switched the playable world over to an open district layout derived from the uploaded level2 world logic.
-- Reduced near-field clutter with broader roads, landmarks, courtyards, and clearer route silhouettes.
-- Moved the dense metropolis into a distant skyline backdrop so it reads as scale without crushing framerate.
-- Added an aura-based material reveal: nearby structures fade their solid surfaces in around the player while linework remains readable at range.
-- Spread the cockpit shoulder pylons wider for a clearer center view and moved the LED health meters onto them.
-- Added generated mech weapon feedback and hardened chain-lightning targeting against removed enemies.
-- Kept the mech combat layer, red enemy cores, fog treatment, workstation, screenshots, and crash logging.
-
-Central Hub Project — 0.5.3 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.5.3
-- Generated: 2026-03-28T06:50:56.385302
-
-- Patch Notes
-- Switched the playable world over to an open district layout derived from the uploaded level2 world logic.
-- Reduced near-field clutter with broader roads, landmarks, courtyards, and clearer route silhouettes.
-- Moved the dense metropolis into a distant skyline backdrop so it reads as scale without crushing framerate.
-- Added an aura-based material reveal: nearby structures fade their solid surfaces in around the player while linework remains readable at range.
-- Spread the cockpit shoulder pylons wider for a clearer center view and moved the LED health meters onto them.
-- Added generated mech weapon feedback and hardened chain-lightning targeting against removed enemies.
-- Kept the mech combat layer, red enemy cores, fog treatment, workstation, screenshots, and crash logging.
-
-Central Hub Project — 0.5.3 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.5.3
-- Generated: 2026-03-28T17:56:17.773085
-
-- Patch Notes
-- Switched the playable world over to an open district layout derived from the uploaded level2 world logic.
-- Reduced near-field clutter with broader roads, landmarks, courtyards, and clearer route silhouettes.
-- Moved the dense metropolis into a distant skyline backdrop so it reads as scale without crushing framerate.
-- Added an aura-based material reveal: nearby structures fade their solid surfaces in around the player while linework remains readable at range.
-- Spread the cockpit shoulder pylons wider for a clearer center view and moved the LED health meters onto them.
-- Added generated mech weapon feedback and hardened chain-lightning targeting against removed enemies.
-- Kept the mech combat layer, red enemy cores, fog treatment, workstation, screenshots, and crash logging.
-
-Central Hub Project — 0.2.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.2.0
-- Generated: 2026-03-28T17:58:04.867232
-
-- Patch Notes
-- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
-- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
-- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
-- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
-- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
-- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
-
-Central Hub Project — 0.1.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.1.0
-- Generated: 2026-03-28T17:58:39.214803
-
-- Patch Notes
-- Added a first-person monochrome line-art cyber-noir shooter foundation.
-- Procedural far-distance city chunk generation with fade fog and full collision boxes.
-- Ten-minute day inversion cycle with long dawn and dusk transitions.
-- Endless procedural weapon cycling on TAB.
-- Scary intact line-render enemies with chase behavior and ink-blood drips.
-- Minimal professional HUD, ESC settings panel, H HUD toggle, F10 workstation.
-- Built-in asset folders, patch notes generation, screenshots, and crash logs.
-- Self-test path for offscreen validation.
-
-Central Hub Project — 0.2.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.2.0
-- Generated: 2026-03-28T17:59:01.018100
-
-- Patch Notes
-- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
-- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
-- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
-- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
-- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
-- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
-
-Central Hub Project — 0.1.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.1.0
-- Generated: 2026-03-28T17:59:12.223719
-
-- Patch Notes
-- Added a first-person monochrome line-art cyber-noir shooter foundation.
-- Procedural far-distance city chunk generation with fade fog and full collision boxes.
-- Ten-minute day inversion cycle with long dawn and dusk transitions.
-- Endless procedural weapon cycling on TAB.
-- Scary intact line-render enemies with chase behavior and ink-blood drips.
-- Minimal professional HUD, ESC settings panel, H HUD toggle, F10 workstation.
-- Built-in asset folders, patch notes generation, screenshots, and crash logs.
-- Self-test path for offscreen validation.
-
-Central Hub Project — 0.2.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.2.0
-- Generated: 2026-03-28T18:00:42.091265
-
-- Patch Notes
-- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
-- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
-- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
-- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
-- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
-- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
-
-Central Hub Project — 0.2.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.2.0
-- Generated: 2026-03-28T18:01:19.027820
-
-- Patch Notes
-- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
-- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
-- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
-- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
-- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
-- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
-
-Central Hub Project — 0.2.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.2.0
-- Generated: 2026-03-28T18:02:52.670230
-
-- Patch Notes
-- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
-- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
-- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
-- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
-- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
-- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
-
-Central Hub Project — 0.1.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.1.0
-- Generated: 2026-03-28T18:03:00.519217
-
-- Patch Notes
-- Added a first-person monochrome line-art cyber-noir shooter foundation.
-- Procedural far-distance city chunk generation with fade fog and full collision boxes.
-- Ten-minute day inversion cycle with long dawn and dusk transitions.
-- Endless procedural weapon cycling on TAB.
-- Scary intact line-render enemies with chase behavior and ink-blood drips.
-- Minimal professional HUD, ESC settings panel, H HUD toggle, F10 workstation.
-- Built-in asset folders, patch notes generation, screenshots, and crash logs.
-- Self-test path for offscreen validation.
-
-Central Hub Project — 0.2.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.2.0
-- Generated: 2026-03-28T18:03:10.697727
-
-- Patch Notes
-- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
-- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
-- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
-- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
-- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
-- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
-
-Central Hub Project — 0.2.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.2.0
-- Generated: 2026-03-28T18:03:22.138657
-
-- Patch Notes
-- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
-- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
-- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
-- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
-- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
-- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
-
-Central Hub Project — 0.2.0 — 2026-03-28
-----------------------------------------
-- Etchline: Noir City Assault
-- Version: 0.2.0
-- Generated: 2026-03-28T18:03:49.517892
-
-- Patch Notes
-- Rebuilt the player presence as a towering first-person mech cockpit with animated interior framing.
-- Replaced hostile figures with bipedal enforcement mechs using a retro-futurist law-machine silhouette.
-- Reduced city density and introduced clearer boulevards, plazas, and district landmarks for navigation.
-- Added chunk-level district variety so adjacent locations read as unique spaces rather than repeated massing.
-- Preserved the monochrome etched rendering, long day-night inversion cycle, and procedural weapon carousel.
-- Kept workstation, config persistence, screenshots, patch notes generation, and crash reporting in main.py.
 
 Image 3D Forge
 ==============
@@ -1444,42 +774,6 @@ Liquid Mercury 4D — 2026-03-28
 - Added a right-click emergence system that raises a liquid form from the pool and morphs it toward a replaceable PNG mask.
 - Simplified the scene for better runtime cost: one deformable pool, one emergent form, one hidden debug panel.
 
-The Anti-Heroes
-===============
-
-The Anti-Heroes — 2026-03-28
-----------------------------
-- Focus:
-- reduce combat stutter during power exchanges
-- reduce default combatants to 3
-- improve helmet and suit silhouette variety
-
-- Changes:
-- default combatants lowered from 4 to 3
-- combatant setting now clamps to 2-6 instead of 2-8 for better stability
-- settings.json reset away from the prior stress-test state
-- active_player_count = 3
-- round_mutator = none
-- arena_theme = neptune_upper
-- effect_density capped to a smoother default
-- prewarmed combat FX and projectile textures at startup to reduce first-use hitching
-- added live caps for simultaneous power FX and projectiles
-- non-critical FX are now dropped first when the scene is saturated instead of spiking frame time
-- non-player projectiles are culled first when projectile load is too high
-- helmet and suit attack bursts now scale to the active combat budget instead of always firing the heaviest burst counts
-- suit construction now adds stronger silhouette masses per style
-- bigger torso blocks
-- pelvis / collar / spine masses
-- stronger shoulders / forearms / thighs / shins
-- more readable differences between alien, electric, laser, knight, void, exo, and cathedral builds
-- helmet construction now applies stronger shell-scale differences by helmet family
-- helmets now add broader crown, brow, side, and cheek silhouette pieces so variants read from gameplay distance more clearly
-
-- Validation:
-- main.py compile check passed
-- boot smoke test passed in the sandbox after the hotfix
-- Xvfb capture path remained slower than normal and mostly showed the loading screen in this environment
-
 Chameleon Pixels
 ================
 
@@ -1496,11 +790,11 @@ Chameleon Pixels — 0.2.0 — 2026-03-27
 - Added best-effort Windows capture exclusion to reduce self-feedback artifacts.
 - Kept topmost overlay, click-through behavior, config persistence, crash logs, and patch note generation.
 
-Lost Forests Test
-=================
+Lost Forests - Test
+===================
 
-Lost Forests Test — 2026-03-27
-------------------------------
+Lost Forests - Test — 2026-03-27
+--------------------------------
 - Pixel Forest Pygame Prototype
 - Build: 2026-03-27-a
 
@@ -1511,11 +805,11 @@ Lost Forests Test — 2026-03-27
 - Added robust crash logging and asset generation so users can replace the palette files directly.
 - Added settings overlay on Esc and HUD toggle on H.
 
-The Anti-Heroes
-===============
+The Anti-Heroes - Alpha
+=======================
 
-The Anti-Heroes — 2026-03-27
-----------------------------
+The Anti-Heroes - Alpha — 2026-03-27
+------------------------------------
 - Added
 - Expanded the Suit design menu into a full Armor Suite catalog panel during customization.
 - Added new suit families: alien_material, electric_silhouette, laser_ribcage, neon_knight, void_plate, exo_frame, bio_armor, and cathedral_mech.
@@ -1539,174 +833,3 @@ The Anti-Heroes — 2026-03-27
 - Verified default roster: 4 total combatants / 3 NPCs.
 - Verified live rebuild path by switching the combatant setting to 6 and regenerating the roster.
 - Verified active roster uniqueness for family, helmet, suit_style, and back_pattern in the validated preview run.
-
-The Anti-Heroes — 2026-03-27
-----------------------------
-- Update: Helmet Alignment View + Helmet Attack Powers
-
-- Added:
-- Helmet Studio now uses a full-body alignment preview instead of the tighter bust-only framing.
-- The player body stays visible during helmet editing so helmet placement can be judged against the head and silhouette.
-- Added new helmet variants:
-- samurai, tiara, scarab, dreadnought, skull, totem
-- Added helmet attack augments for players. Some helmets now emit bonus attacks or effects when firing:
-- horns -> Ruin Arc
-- antenna -> Scanner Lance
-- halo -> Halo Nova
-- blade -> Blade Wave
-- mandibles -> Venom Flux
-
-- Changed:
-- Helmet variant catalog now includes the new types in the studio list and randomization pools.
-- Helmet editor readout now reports full-body alignment view.
-- Helmet editing hides only noisy FX layers so the main character remains visible.
-- Helmet power names append to the attack text when a helmet bonus is triggered.
-
-- Notes:
-- Per-helmet offset auto-save remains active.
-- Snap views 1-4 remain available.
-
-The Anti-Heroes — 2026-03-27
-----------------------------
-- Summary:
-- Added a true Helmet Studio bust mode when the Helmet entry is selected in customization.
-- Added snapped camera views for front, left side, right side, and back helmet inspection.
-- Tightened the Helmet Studio framing and simplified the visible rig during helmet editing.
-- Preserved per-helmet offset and scale auto-save behavior from the previous update.
-
-- New Helmet Studio controls:
-- 1 = Front snap view
-- 2 = Left side snap view
-- 3 = Right side snap view
-- 4 = Back snap view
-- J / L = move helmet on X
-- U / O = move helmet on Y
-- I / K = move helmet on Z
-- Shift + same keys = scale helmet on that axis
-- Y = reset the current helmet preset
-- Left / Right = change helmet variant
-
-- Bust mode behavior:
-- Hides most body geometry while editing helmets so the head area reads clearly.
-- Hides aura shell clutter during helmet editing.
-- Keeps head, neck, clavicle, shoulder framing, and helmet extras visible.
-- Shows the full helmet variant catalog in the studio panel.
-
-- UI cleanup:
-- Moved the Helmet Studio panel farther right to keep the center preview cleaner.
-- Reduced Helmet Studio text size slightly so the full variant list fits with less clutter.
-- Added the current snap view label to the Helmet Studio readout.
-
-- Validation:
-- Syntax checked with py_compile.
-- Ran the Panda3D build in preview customization mode and captured an in-engine screenshot.
-
-The Anti-Heroes — 2026-03-27
-----------------------------
-- Update focus
-- Reworked helmet and mask silhouettes so switching helmet variants produces stronger visible changes.
-- Added neon helmet overlay passes with brighter themed face lines, brow strips, crest strips, and scanner details.
-- Added a new antlers helmet family and expanded random helmet pools to include it.
-- Upgraded horn behavior so large horns now scale the current live helmet extras correctly.
-- Added secondary ornament mixing so mythic and sci-fi helmets can pick up extra horns, antlers, or antennae where appropriate.
-- Improved helmet anchoring by rebuilding all attachments from a dedicated head-anchored helmet root.
-- Added cleanup for old tail extras during profile refresh so repeated customization no longer leaves stale attachments behind.
-
-- Load changes
-- Deferred maintenance work until after gameplay begins instead of blocking the loading sequence.
-- Moved asset inventory generation out of the critical startup path.
-- Reduced post-load hold time before control returns to play.
-
-- Validation
-- Panda3D preview boot completed successfully in sandbox.
-- Preview screenshot regenerated after patch.
-
-The Anti-Heroes — 2026-03-27
-----------------------------
-- Added
-- Added a dedicated Helmet Studio state when the Helmet row is selected in Customization.
-- Added a focused head-preview camera for helmet editing.
-- Added a complete on-screen helmet variant board so every helmet option is visible while editing.
-- Added per-helmet auto-save presets for anchor offset and anchor scale.
-- Added live helmet transform controls:
-- J = X offset
-- U = Y offset
-- I = Z offset
-- Shift + same keys = X scale
-- Y = reset current helmet preset
-- Added persistent helmet preset storage in helmet_studio_presets.json once the user edits a helmet.
-
-- Improved
-- Helmet selection now recalls the saved transform for that helmet variant automatically.
-- Helmet extras are anchored through a dedicated transform node so horns, masks, fins, antennae, antlers, and other add-ons stay aligned more predictably.
-- Customization menu now uses cached option lists for lighter menu refresh work.
-- Removed a startup settings write that was not needed at boot.
-
-- Visual / UX
-- Helmet Studio suppresses most back-rig clutter while editing so the head area reads more clearly.
-- Customization preview boot now opens with the Helmet row selected for faster validation.
-
-- Validation
-- Syntax checked with py_compile.
-- Ran the Panda3D build in preview customization mode successfully.
-- Captured an in-engine screenshot of the new Helmet Studio.
-
-The Anti-Heroes — 2026-03-27
-----------------------------
-- Summary:
-- Added a stability shield for late-stage runtime systems introduced in the sequence pass.
-- Sanitized arena and mutator settings when loading older or malformed settings files.
-- Added a clearer startup message when Panda3D is missing.
-- Preserved the sequence pass content while preventing single-subsystem faults from crashing the whole game.
-
-- Fixes:
-- Runtime faults in non-core systems now get logged to logs and the failing subsystem is disabled instead of crashing the app.
-- Arena theme and round mutator settings are normalized and clamped to valid values on load.
-- Active combatant count is written back in sanitized form during runtime settings application.
-- Missing Panda3D dependency now prints a direct install instruction before exiting.
-
-- Validated:
-- Python compile check passed.
-- Offscreen gameplay preview boot passed.
-- Offscreen customization preview boot passed.
-- Live gameplay smoke test under Xvfb ran for 20 seconds without crashing.
-
-The Anti-Heroes — 2026-03-27
-----------------------------
-- Sequence 1 — Armor mass and authored identities
-- Added armor mass classes: light, medium, heavy.
-- Added combat roles: duelist, tank, assassin, caster, berserker, support.
-- Added power sources: arc, plasma, relic, bone, radiation, solar, signal.
-- Added temperaments for fighter flavor and roster differentiation.
-- Extended live roster uniqueness so active fighters avoid duplicating family, helmet, suit, back pattern, weight class, combat role, and power source.
-- Weight class now changes scale, HP, speed, evade behavior, attack cadence, projectile scale, and hit radius.
-
-- Sequence 2 — Arena themes and mutators
-- Added arena settings: Neptune Upper, Neon Cathedral, Void Lab, Storm Forge, Alien Hive, Laser Tomb, Signal Pit.
-- Added mutators: none, low gravity, storm interference, unstable neon, armor overheat, power surge.
-- Arena theme now updates scene tinting and menu presentation.
-- Mutators now affect movement and damage flow.
-
-- Sequence 3 — Body construction layers
-- Expanded suits with clearer silhouette layers: shoulder rigs, gauntlets, greaves, boot trails, chest core, spine lattice, collar frame, waist cloth, and hip blades.
-- New body layers respond to armor mass and combat role.
-
-- Sequence 4 — Spawn intros and codex
-- Added round announcement system.
-- Added round showcase lines for the active roster.
-- Added codex persistence file that records discovered combinations of family, helmet, suit, weight class, role, and power source.
-
-- Sequence 5 — Damage deformation and audio identity
-- Added damage-state visual degradation for suit constructs and glow nodes.
-- Added identity-based audio triggers for spawn, attack, and hit events.
-
-- Validation
-- Python syntax compiled successfully.
-- In-engine gameplay preview completed successfully.
-- In-engine customization preview completed successfully.
-- Additional smoke test completed with arena_theme=signal_pit, round_mutator=power_surge, active_player_count=6.
-
-- Known limitations
-- Damage deformation currently focuses on suit constructs and emissive readability rather than true mesh destruction.
-- Arena themes are currently visual rather than fully bespoke geometry sets.
-- The round showcase and codex are functional, but the codex does not yet have a dedicated browser UI.
