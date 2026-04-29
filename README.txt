@@ -40,3 +40,13 @@ To update the demo grid without changing the layout:
 3. Bump assetVersion in demo_manifest.json so browsers refresh cached thumbnails.
 
 HoloVerse is intentionally not embedded yet. The current demos are lightweight, asset-free teasers for existing simple prototypes only.
+
+Pass 3 GitHub Pages fix notes
+-----------------------------
+If the Play Demos canvas was showing as a plain black box, replace the site with this pass and wait for GitHub Pages to finish deploying. This build cache-busts the demo JavaScript/CSS, resets the old browser-local image config key, and includes an inline fallback player so the demo panel stays visible even if an external script path is stale during deployment.
+
+The easiest image replacement path is still:
+assets/images/site_current/
+assets/images/site_current/demo_thumbs/
+
+After replacing images, update assets/data/image_manifest.json or keep the same filenames, then bump the assetVersion value.

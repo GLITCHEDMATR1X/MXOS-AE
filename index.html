@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GLITCHED MATRIX Prototype Lab</title>
   <meta name="description" content="A dark connected arcade where HoloVerse, MatrixCore, Gleebs, playable prototypes, bots, creator tools, and mod-friendly experiments keep evolving inside one digital lab." />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./style.css?v=20260429-pass3-routefix" />
 </head>
 <body>
   <div class="page-backdrop"></div>
@@ -122,7 +122,8 @@
         </aside>
 
         <div class="demo-canvas-shell">
-          <canvas id="demoCanvas" class="demo-canvas" width="960" height="540" aria-label="Playable generated web demo canvas"></canvas>
+          
+          <div id="demoLoadingOverlay" class="demo-loading-overlay">Loading playable demos…<span>If this stays visible, refresh once after the GitHub Pages deploy finishes.</span></div>
         </div>
 
         <aside class="demo-info-panel demo-info-right">
@@ -300,7 +301,105 @@
     </div>
   </aside>
 
-  <script src="assets/js/demos.js"></script>
-  <script src="admin.js"></script>
+  <script src="./assets/js/demos.js?v=20260429-pass3-routefix"></script>
+  <script>
+    (function () {
+      function installFallback() {
+        if (window.GLITCHED_DEMOS_READY || window.__GM_INLINE_DEMO_FALLBACK__) return;
+        window.__GM_INLINE_DEMO_FALLBACK__ = true;
+        var canvas = document.getElementById('demoCanvas');
+        var grid = document.getElementById('demoGalleryGrid');
+        if (!canvas || !grid) return;
+        var overlay = document.getElementById('demoLoadingOverlay');
+        if (overlay) {
+          overlay.innerHTML = 'Fallback web demo loaded<span>The external demo script did not start, so this safe inline player is running instead.</span>';
+          setTimeout(function () { overlay.hidden = true; }, 1200);
+        }
+        var demos = [
+          ['sky-ground', 'Sky and Ground', 'Collect signal orbs and avoid red hazards.'],
+          ['block-busters', 'Block Busters', 'Gather cores in a neon arena.'],
+          ['duck-cover', 'Duck n Cover', 'Fly the flock and drop eggs.'],
+          ['wheres-renaldo', "Where's Renaldo", 'Search the grid before time runs out.'],
+          ['mewtants', 'Mewtants', 'Collect gene pods and mutate.'],
+          ['dreamcrawler2d', 'DreamCrawler2D', 'Explore a shifting dream maze.'],
+          ['helix-biogenics', 'Helix Biogenics', 'Scan samples and complete the biolog strip.'],
+          ['isometric-world-machine', 'Isometric World Machine', 'Preview a tiny generated tile machine.'],
+          ['holo-campaign', 'Holo Campaign', 'Survive a generated combat teaser.']
+        ];
+        var selected = 0;
+        var keys = Object.create(null);
+        var player = { x: 140, y: 140 };
+        var orbs = [];
+        var hazards = [];
+        var score = 0;
+        function esc(text) { return String(text || '').replace(/[&<>]/g, function (ch) { return {'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]; }); }
+        function reset() {
+          player = { x: canvas.width * 0.22, y: canvas.height * 0.5 };
+          orbs = [];
+          hazards = [];
+          score = 0;
+          for (var i = 0; i < 8; i += 1) {
+            orbs.push({ x: 80 + Math.random() * Math.max(120, canvas.width - 160), y: 70 + Math.random() * Math.max(120, canvas.height - 140), r: 8 });
+            hazards.push({ x: 80 + Math.random() * Math.max(120, canvas.width - 160), y: 70 + Math.random() * Math.max(120, canvas.height - 140), r: 12, vx: -70 + Math.random() * 140, vy: -70 + Math.random() * 140 });
+          }
+        }
+        function setInfo() {
+          var demo = demos[selected];
+          var set = function (id, text) { var el = document.getElementById(id); if (el) el.textContent = text; };
+          set('demoStatus', 'Playable now');
+          set('demoTitle', demo[1]);
+          set('demoSummary', demo[2]);
+          set('demoObjective', demo[2]);
+          set('demoControls', 'WASD / Arrows move, R reset, P pause');
+          set('demoDetails', 'Inline fallback canvas demo. No external game assets required.');
+          Array.prototype.forEach.call(document.querySelectorAll('.demo-thumb-card'), function (node, index) { node.classList.toggle('active', index === selected); });
+        }
+        grid.innerHTML = '';
+        demos.forEach(function (demo, index) {
+          var btn = document.createElement('button');
+          btn.className = 'demo-thumb-card';
+          btn.type = 'button';
+          btn.innerHTML = '<span class="demo-thumb-image demo-thumb-fallback-art">' + esc(demo[1].slice(0, 2).toUpperCase()) + '</span><span class="demo-thumb-meta"><strong>' + esc(demo[1]) + '</strong><em class="is-playable">Playable now</em></span>';
+          btn.addEventListener('click', function () { selected = index; reset(); setInfo(); });
+          grid.appendChild(btn);
+        });
+        window.addEventListener('keydown', function (event) { keys[event.key.toLowerCase()] = true; if (event.key.toLowerCase() === 'r') reset(); });
+        window.addEventListener('keyup', function (event) { keys[event.key.toLowerCase()] = false; });
+        function resize() {
+          var b = canvas.getBoundingClientRect();
+          var r = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+          var w = Math.max(480, Math.floor(b.width * r));
+          var h = Math.max(270, Math.floor(b.height * r));
+          if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; reset(); }
+        }
+        function tick() {
+          resize();
+          var ctx = canvas.getContext('2d');
+          var w = canvas.width, h = canvas.height;
+          var dx = (keys.d || keys.arrowright ? 1 : 0) - (keys.a || keys.arrowleft ? 1 : 0);
+          var dy = (keys.s || keys.arrowdown ? 1 : 0) - (keys.w || keys.arrowup ? 1 : 0);
+          player.x = Math.max(20, Math.min(w - 20, player.x + dx * 4.2));
+          player.y = Math.max(20, Math.min(h - 20, player.y + dy * 4.2));
+          hazards.forEach(function (z) { z.x += z.vx * 0.016; z.y += z.vy * 0.016; if (z.x < 20 || z.x > w - 20) z.vx *= -1; if (z.y < 20 || z.y > h - 20) z.vy *= -1; });
+          orbs = orbs.filter(function (o) { var d = Math.hypot(o.x - player.x, o.y - player.y); if (d < o.r + 14) { score += 10; return false; } return true; });
+          if (!orbs.length) reset();
+          var grd = ctx.createLinearGradient(0, 0, w, h); grd.addColorStop(0, '#09090d'); grd.addColorStop(1, '#250407');
+          ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
+          ctx.strokeStyle = 'rgba(255,45,65,.16)'; ctx.lineWidth = 1;
+          for (var x = 0; x < w; x += 38) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+          for (var y = 0; y < h; y += 38) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+          orbs.forEach(function (o) { ctx.fillStyle = 'rgba(110,230,255,.88)'; ctx.beginPath(); ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2); ctx.fill(); });
+          hazards.forEach(function (z) { ctx.fillStyle = 'rgba(255,55,75,.82)'; ctx.beginPath(); ctx.moveTo(z.x, z.y - z.r); ctx.lineTo(z.x + z.r, z.y + z.r); ctx.lineTo(z.x - z.r, z.y + z.r); ctx.closePath(); ctx.fill(); });
+          ctx.fillStyle = '#fff4f4'; ctx.beginPath(); ctx.arc(player.x, player.y, 14, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(18, 16, 390, 42);
+          ctx.fillStyle = '#fff'; ctx.font = '700 18px system-ui, sans-serif'; ctx.fillText(demos[selected][1] + '  SCORE ' + score, 32, 43);
+          requestAnimationFrame(tick);
+        }
+        reset(); setInfo(); tick();
+      }
+      setTimeout(installFallback, 1600);
+    }());
+  </script>
+  <script src="./admin.js?v=20260429-pass3-routefix"></script>
 </body>
 </html>

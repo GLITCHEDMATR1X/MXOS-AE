@@ -149,9 +149,9 @@ const defaultConfig = {
   "assetVersion": "20260429-holoverse-site-refresh"
 };
 
-const STORAGE_KEY = 'glitched-prototype-site-config-v5';
-const UPDATES_SOURCE_URL = 'assets/data/combined_patch_notes.txt';
-const IMAGE_MANIFEST_URL = 'assets/data/image_manifest.json';
+const STORAGE_KEY = 'glitched-prototype-site-config-v6-assets-routefix';
+const UPDATES_SOURCE_URL = './assets/data/combined_patch_notes.txt';
+const IMAGE_MANIFEST_URL = './assets/data/image_manifest.json';
 let configLoadedFromStorage = false;
 let config = loadConfig();
 let adminOpen = false;
