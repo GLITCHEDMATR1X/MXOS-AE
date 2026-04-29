@@ -1,3 +1,32 @@
+GLITCHED MATRIX Prototype Lab Website — pass14-holoverse-mech-fps — 2026-04-29
+--------------------------------------------------------------------------------
+- Added vertical mouse look so the demo can look up and down as well as left and right.
+- Reversed the mouse left/right yaw direction from the prior pass.
+- Reversed keyboard turn behavior so Q turns right and E turns left.
+- Lightened rendering with capped resolution, shorter render distance, fewer active chunks, and simpler far surfaces.
+- Added a mech-suit cockpit overlay with cylindrical shoulder arms on both sides of the view.
+- Added automatic mech-arm lock-on and firing against enemy silhouettes.
+- Reworked the interface into a red tactical scanner HUD with scanlines, target boxes, mech heat, lock percentage, pitch, and compact controls.
+- Updated the HoloVerse Demo text and IO patch-note entries to describe the mech scan route.
+
+GLITCHED MATRIX Prototype Lab Website — pass13-holoverse-visual-io — 2026-04-29
+--------------------------------------------------------------------------------
+- Replaced the jarring day/night inversion feel with slower, smoother color motion.
+- Added colorful horizon sky gradients that drift over time and fade upward into darker/black battle sky.
+- Added overhead battle streaks and stronger atmospheric color behind the city.
+- Added subtle filled faces between line edges so buildings and surfaces feel more solid without heavy geometry.
+- Converted active controls toward mouse-centered FPS-style looking through pointer-lock behavior, with Esc still releasing controls.
+- Added IO as a protective companion that keeps distance instead of crowding the player.
+- Enemies now ignore the player in this site demo; IO is the only entity that sees/protects the player here.
+- Clicking IO displays one patch-note entry at a time, fading in/out for about four seconds and avoiding repeats until all entries have been shown in the session.
+- Updated the HoloVerse Demo copy to document the IO protection route and patch-note interaction.
+
+GLITCHED MATRIX Prototype Lab Website — pass12-holoverse-demo-port — 2026-04-29
+--------------------------------------------------------------------------------
+- Replaced the playable web slot with HoloVerse Demo instead of Block Busters.
+- Added a browser-safe canvas port inspired by the Panda3D HoloVerse build.
+- Added monochrome city chunks, day/night inversion, procedural weapon cycling, wire enemies, tracers, HUD, and infinite chunk streaming.
+
 GLITCHED MATRIX Prototype Lab Website — pass8-live-single-direct — 2026-04-29
 --------------------------------------------------------------------------------
 - Cleaned the live GitHub Pages update into one focused Block Busters web demo instead of the older multi-demo gallery.
@@ -5,12 +34,6 @@ GLITCHED MATRIX Prototype Lab Website — pass8-live-single-direct — 2026-04-2
 - The embedded game now plays as Block Busters only, with low-volume arcade feedback plus a visible Mute Audio button and M shortcut.
 - Header, footer, and media gallery art now use image paths that already exist in this repository so GitHub Pages has real bundled images to load.
 - The Patch Notes panel now starts with the newest live-site pass before the older HoloVerse and Prototype Lab history.
-
-GLITCHED MATRIX Prototype Lab Website — pass7-blockbusters-single — 2026-04-29
---------------------------------------------------------------------------------
-- Removed the multi-demo thumbnail gallery and replaced the scattered demo system with one focused Block Busters web demo.
-- Added low-volume browser sound effects, keyboard M mute support, and a visible Mute Audio button.
-- Kept HoloVerse out of the embedded demos for now.
 
 HoloVerse — v0.10.45-ui-persistence-polish — 2026-04-29
 -------------------------------------------------------
