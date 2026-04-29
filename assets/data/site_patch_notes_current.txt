@@ -1,0 +1,29 @@
+GLITCHED MATRIX Prototype Lab Website — pass8-live-single-direct — 2026-04-29
+--------------------------------------------------------------------------------
+- Cleaned the live GitHub Pages update into one focused Block Busters web demo instead of the older multi-demo gallery.
+- Removed the Edit Demo Manifest button route and thumbnail-grid behavior from the visible demo section.
+- The embedded game now plays as Block Busters only, with low-volume arcade feedback plus a visible Mute Audio button and M shortcut.
+- Header, footer, and media gallery art now use image paths that already exist in this repository so GitHub Pages has real bundled images to load.
+- The Patch Notes panel now starts with the newest live-site pass before the older HoloVerse and Prototype Lab history.
+
+GLITCHED MATRIX Prototype Lab Website — pass7-blockbusters-single — 2026-04-29
+--------------------------------------------------------------------------------
+- Removed the multi-demo thumbnail gallery and replaced the scattered demo system with one focused Block Busters web demo.
+- Added low-volume browser sound effects, keyboard M mute support, and a visible Mute Audio button.
+- Kept HoloVerse out of the embedded demos for now.
+
+HoloVerse — v0.10.45-ui-persistence-polish — 2026-04-29
+-------------------------------------------------------
+- Removed the FPS corner box and replaced it with a small transparent total-points readout.
+- Reduced UI panel opacity and tightened runtime panels that were prone to running offscreen.
+- Updated Green Hills animals so they appear as grown saved animals instead of egg-like placeholders.
+- Mirrored Hills and Mushroom region saves into canonical shared data.
+- Darkened Urban terrain relative to the sky without adding new geometry.
+- Confirmed Metropolis Robot Selector should remain selector-only and must not spawn the player into Urban.
+
+HoloVerse — Urban route-truth reminder — 2026-04-29
+---------------------------------------------------
+- Urban Warzone gameplay belongs to data/HoloVerse/Dimensions/Urban Warzone/runtime.py.
+- The visible Urban shell belongs to data/HoloVerse/world.py through holoverse_world_shell_mount.py.
+- The player route is not verified until the real Urban view shows URBAN WARZONE WORLD ROUTE ACTIVE and the top-right POINTS readout.
+- Do not expand Urban combat content until that real player route is proven.
