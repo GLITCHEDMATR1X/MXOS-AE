@@ -1,3 +1,13 @@
+GLITCHED MATRIX Prototype Lab Website — pass16-satellite-city-tour — 2026-04-30
+--------------------------------------------------------------------------------
+- Replaced the HoloVerse site demo with a satellite POV city tour.
+- Removed mech suit visuals, player tools, first-person movement, and combat HUD language from the site demo runtime.
+- Added drag-to-pan and mouse-wheel zoom controls for moving around the city from above.
+- Added clickable information points and clickable generated buildings so the demo remains interactive without combat.
+- Added traffic lanes, moving vehicles, and small citizen motion to make the HoloVerse city read as a living civilization.
+- Kept smooth color transitions, layered glow surfaces, city-grid readability, and lightweight browser rendering.
+- Updated the visible demo copy, controls, tags, and build note to describe the tour layer instead of the previous cockpit pass.
+
 GLITCHED MATRIX Prototype Lab Website — pass14-holoverse-mech-fps — 2026-04-29
 --------------------------------------------------------------------------------
 - Added vertical mouse look so the demo can look up and down as well as left and right.
