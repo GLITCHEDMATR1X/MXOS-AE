@@ -1,48 +1,739 @@
-(()=>{'use strict';
-const $=id=>document.getElementById(id),CH=80,R=4,SEED=74219,EYE=1.8,KEYS=new Set('w a s d q e shift tab h r m p arrowleft arrowright arrowup arrowdown  '.split(' '));
-let c,g,aud,on=false,mut=false,pause=false,hud=true,last=0,t=0,score=0,hp=100,mouse=false,cd=0,wep=0,banner=2;
-let P={x:0,y:0,yaw:0,pitch:0},IO={x:13,y:8},K={},chunks=new Map(),bad=[],beam=[],splat=[],log=[],bubble=null,seen=[],mech={target:null,heat:0,lock:0,side:0};
-const W=['Null Carbine','Etch Revolver','Wire Splicer','Noir Scatter','Vector Pike','Horizon Drill','Ink Needle','Longline Pulse'];
-const NOTES=[
-'Pass 14: mouse look now supports up and down pitch, with corrected left and right movement.',
-'Pass 14: Q and E were reversed so Q turns right and E turns left.',
-'Pass 14: the demo now renders lighter with capped resolution, shorter distance culling, and fewer active chunks.',
-'Pass 14: a mech suit overlay adds shoulder cylinder arms on both sides of the view.',
-'Pass 14: mech arms automatically lock and fire at target silhouettes while IO protects the player.',
-'Pass 14: the UI became a red tactical scanner HUD with heat, lock, pitch, and compact controls.',
-'Pass 13: IO was added as the only entity that sees the player in the site demo.',
-'Pass 13: patch-note dialogue was added to IO with non-repeating session entries.',
-'Urban route-truth reminder: the real Panda3D Urban route still needs route unification before combat expansion.',
-'HoloVerse v0.10.45: the FPS box was removed in favor of a cleaner points-style readout.'
-];
-let css=document.createElement('style');css.textContent='.demo-head .btn[href*=demo_manifest],#demoGalleryGrid,.demo-gallery-grid{display:none!important}.demo-canvas-shell{background:#050505;padding:12px;min-height:390px;overflow:hidden}.demo-canvas{min-height:360px;background:#030304;outline:none;border:1px solid rgba(255,55,55,.38);box-shadow:inset 0 0 70px #000,0 0 34px rgba(255,40,40,.16)}.demo-runtime-ready .demo-loading-overlay{display:none!important}.demo-audio-button[aria-pressed=true]{background:rgba(255,40,40,.18);border-color:rgba(255,90,90,.65)}';document.head.appendChild(css);
-const rnd=(a,b)=>a+Math.random()*(b-a),cl=(v,a,b)=>Math.max(a,Math.min(b,v)),hash=(i,j=0,k=0)=>{let n=Math.sin((i*127.1+j*311.7+k*74.7+SEED)*.0174532925)*43758.5453;return n-Math.floor(n)},mix=(a,b,u)=>a+(b-a)*u,rgb=(a,o=1)=>`rgba(${a[0]|0},${a[1]|0},${a[2]|0},${o})`,cm=(a,b,u)=>[mix(a[0],b[0],u),mix(a[1],b[1],u),mix(a[2],b[2],u)];
-function pal(){let u=(Math.sin(t*.018)+1)/2,v=(Math.sin(t*.011+2)+1)/2;return{h1:cm([255,70,54],[55,155,255],u),h2:cm([150,50,255],[30,230,180],v),top:[0,0,8],line:cm([255,46,38],[255,170,118],u),solid:cm([46,12,18],[72,18,42],v)}}function fg(o=1){return rgb(pal().line,o)}
-function beep(f=260,d=.04,v=.004,type='square'){if(mut)return;try{aud||=new(AudioContext||webkitAudioContext)();let o=aud.createOscillator(),q=aud.createGain();o.type=type;o.frequency.value=f;q.gain.value=v;o.connect(q);q.connect(aud.destination);o.start();q.gain.exponentialRampToValueAtTime(.0001,aud.currentTime+d);o.stop(aud.currentTime+d+.02)}catch{}}
-function note(s){log.unshift({s,life:4});log=log.slice(0,4)}
-function k(cx,cy){return cx+','+cy}function mk(cx,cy){let o=[],sp=[];for(let i=0;i<9;i++){let x=cx*CH+10+hash(cx,cy,i)*60,y=cy*CH+10+hash(cx,cy,i+20)*60,w=7+hash(cx,cy,i+4)*20,d=7+hash(cx,cy,i+5)*20,h=12+hash(cx,cy,i+6)*58;if(Math.hypot(x,y)>30)o.push({x,y,w,d,h})}for(let i=0;i<2+hash(cx,cy,88)*2;i++){let x=cx*CH+9+hash(cx,cy,i+100)*62,y=cy*CH+9+hash(cx,cy,i+200)*62;if(Math.hypot(x,y)>60)sp.push({x,y,seed:cx*7001+cy*911+i})}return{o,sp,spawn:false}}
-function ensure(){let cx=Math.floor(P.x/CH),cy=Math.floor(P.y/CH),need=new Set;for(let y=cy-R;y<=cy+R;y++)for(let x=cx-R;x<=cx+R;x++){let kk=k(x,y);need.add(kk);if(!chunks.has(kk))chunks.set(kk,mk(x,y))}for(let kk of [...chunks.keys()])if(!need.has(kk))chunks.delete(kk);for(let ch of chunks.values())if(!ch.spawn&&bad.length<16){ch.spawn=true;for(let s of ch.sp)if(bad.length<16)bad.push({x:s.x,y:s.y,hp:70,leg:0,seed:s.seed,dead:false})}}
-function obs(rad=2){let cx=Math.floor(P.x/CH),cy=Math.floor(P.y/CH),a=[];for(let y=cy-rad;y<=cy+rad;y++)for(let x=cy-rad;x<=cx+rad;x++){let ch=chunks.get(k(x,y));if(ch)a.push(...ch.o)}return a}
-function blocked(nx,ny,r=.45){for(let o of obs(1))if(nx>o.x-o.w/2-r&&nx<o.x+o.w/2+r&&ny>o.y-o.d/2-r&&ny<o.y+o.d/2+r)return true;return false}
-function proj(wx,wy,wz=0){let dx=wx-P.x,dy=wy-P.y,ca=Math.cos(P.yaw),sa=Math.sin(P.yaw),f=ca*dx+sa*dy,rr=-sa*dx+ca*dy;if(f<1)return null;let F=c.width*.78,H=c.height*(.56+P.pitch*.62);return{x:c.width/2+rr/f*F,y:H-(wz-EYE)/f*F,s:F/f,f}}
-function line(A,B,o=1){let a=proj(A[0],A[1],A[2]),b=proj(B[0],B[1],B[2]);if(!a||!b)return;g.globalAlpha=o;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();g.globalAlpha=1}
-function poly(p,o){let q=p.map(v=>proj(v[0],v[1],v[2]));if(q.some(v=>!v))return;g.beginPath();g.moveTo(q[0].x,q[0].y);for(let i=1;i<q.length;i++)g.lineTo(q[i].x,q[i].y);g.closePath();g.fillStyle=rgb(pal().solid,o);g.fill()}
-function box(o){let d=Math.hypot(o.x-P.x,o.y-P.y);if(d>500)return;let x0=o.x-o.w/2,x1=o.x+o.w/2,y0=o.y-o.d/2,y1=o.y+o.d/2,z=o.h,p=[[x0,y0,0],[x1,y0,0],[x1,y1,0],[x0,y1,0],[x0,y0,z],[x1,y0,z],[x1,y1,z],[x0,y1,z]],a=cl(1-d/600,.04,.9);if(d<350){poly([p[0],p[1],p[5],p[4]],.11*a);poly([p[1],p[2],p[6],p[5]],.15*a);poly([p[4],p[5],p[6],p[7]],.17*a)}g.strokeStyle=fg(a);g.lineWidth=d<220?1.7:1;[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]].forEach(e=>line(p[e[0]],p[e[1]],a))}
-function drawEnemy(e){let q=proj(e.x,e.y,1.4);if(!q||q.f>170)return;let s=cl(q.s*.018,.25,2.6),w=Math.sin(t*6+e.leg)*4*s,x0=q.x,y0=q.y;g.strokeStyle=fg(cl(1-q.f/150,.25,1));g.lineWidth=cl(2*s,1,4);function L(a,b,c,d){g.beginPath();g.moveTo(x0+a*s,y0+b*s);g.lineTo(x0+c*s,y0+d*s);g.stroke()}g.beginPath();g.ellipse(x0,y0-35*s,12*s,16*s,0,0,7);g.stroke();g.strokeRect(x0-18*s,y0-18*s,36*s,42*s);L(0,-18,0,28);L(-16,-4,-34,20+w);L(16,-4,34,20-w);L(0,28,-18,58-w);L(0,28,18,58+w);if(e===mech.target){g.strokeStyle='rgba(255,30,30,.95)';g.strokeRect(x0-34*s,y0-58*s,68*s,92*s)}}
-function drawIO(){let q=proj(IO.x,IO.y,1.55);if(!q)return;let s=cl(q.s*.022,.35,2.4);g.strokeStyle='rgba(230,235,255,.95)';g.fillStyle='rgba(180,190,255,.18)';g.lineWidth=cl(2*s,1,4);g.beginPath();g.arc(q.x,q.y-18*s,16*s,0,7);g.fill();g.stroke();g.strokeRect(q.x-12*s,q.y-2*s,24*s,34*s);g.font=`${Math.max(11,13*s)}px Consolas`;g.textAlign='center';g.fillStyle='rgba(245,246,255,.95)';g.fillText('IO',q.x,q.y-38*s)}
-function clickIO(){let q=proj(IO.x,IO.y,1.55);if(!q)return false;if(Math.hypot(c.width/2-q.x,c.height*.56-q.y)<84){if(!seen.length)seen=NOTES.map((_,i)=>i).sort(()=>Math.random()-.5);bubble={text:NOTES[seen.shift()],life:8,age:0};beep(680,.08,.01,'triangle');return true}return false}
-function ray(a,range){for(let d=1;d<range;d+=2.2){let x=P.x+Math.cos(a)*d,y=P.y+Math.sin(a)*d;for(let e of bad)if(!e.dead&&Math.hypot(e.x-x,e.y-y)<.85)return{type:'e',e,x,y};for(let o of obs(3))if(x>o.x-o.w/2&&x<o.x+o.w/2&&y>o.y-o.d/2&&y<o.y+o.d/2)return{type:'w',x,y}}return{type:'n',x:P.x+Math.cos(a)*range,y:P.y+Math.sin(a)*range}}
-function fire(){if(cd>0||!on||pause)return;if(clickIO())return;let w=wep%W.length,pel=w===3?5:w===7?3:1,spread=w===3?.11:.035;cd=.13+hash(w,3)*.22;for(let i=0;i<pel;i++){let h=ray(P.yaw+rnd(-spread,spread),230+w*24);beam.push({x1:P.x,y1:P.y,z1:1.65,x2:h.x,y2:h.y,z2:1.1,a:0,l:.07,m:false});splat.push({x:h.x,y:h.y,z:h.type==='e'?.8:.35,a:0,l:4});if(h.type==='e'){h.e.hp-=20+w*3;score+=8;if(h.e.hp<=0){h.e.dead=true;score+=70;note('TARGET CUT')}}}beep(220+w*35,.035,.006,'sawtooth')}
-function auto(dt){let list=bad.map(e=>{let q=proj(e.x,e.y,1.4);return{e,q,sc:q?Math.hypot(q.x-c.width/2,q.y-c.height*.56)+Math.hypot(e.x-P.x,e.y-P.y)*.45:9999}}).filter(o=>o.q&&o.q.f<170).sort((a,b)=>a.sc-b.sc);mech.target=list[0]?.e||null;mech.lock=mech.target?cl(mech.lock+dt*2.5,0,1):cl(mech.lock-dt*2.5,0,1);mech.heat=cl(mech.heat-dt*.32,0,1);if(mech.target&&mech.lock>.55&&mech.heat<.88){mech.heat+=.18;mech.side=1-mech.side;let off=mech.side?Math.PI/2:-Math.PI/2,ox=P.x+Math.cos(P.yaw+off)*.9,oy=P.y+Math.sin(P.yaw+off)*.9;beam.push({x1:ox,y1:oy,z1:1.48,x2:mech.target.x,y2:mech.target.y,z2:1.2,a:0,l:.12,m:true});mech.target.hp-=15;if(mech.target.hp<=0){mech.target.dead=true;score+=45;note('MECH AUTO-CUT')}beep(175,.03,.004,'sawtooth')}}
-function step(dt){if(pause)return;t+=dt;ensure();let turn=(K.q||K.arrowright?1:0)-(K.e||K.arrowleft?1:0);P.yaw+=turn*dt*2.4;let mx=(K.d?1:0)-(K.a?1:0),my=(K.w||K.arrowup?1:0)-(K.s||K.arrowdown?1:0),sp=(K.shift?30:18)*dt,fx=Math.cos(P.yaw),fy=Math.sin(P.yaw),rx=Math.cos(P.yaw+Math.PI/2),ry=Math.sin(P.yaw+Math.PI/2),vx=(fx*my+rx*mx)*sp,vy=(fy*my+ry*mx)*sp;if(!blocked(P.x+vx,P.y))P.x+=vx;if(!blocked(P.x,P.y+vy))P.y+=vy;if(mouse)fire();cd=Math.max(0,cd-dt);let d=Math.hypot(IO.x-P.x,IO.y-P.y),a=Math.atan2(IO.y-P.y,IO.x-P.x);if(d<11){IO.x+=Math.cos(a)*dt*15;IO.y+=Math.sin(a)*dt*15}else if(d>24){IO.x+=(P.x+Math.cos(P.yaw+1.9)*17-IO.x)*dt*.72;IO.y+=(P.y+Math.sin(P.yaw+1.9)*17-IO.y)*dt*.72}for(let e of bad){let dx=IO.x-e.x,dy=IO.y-e.y,D=Math.hypot(dx,dy)||1;e.leg+=dt*8;if(D<120){let nx=e.x+dx/D*2.2*dt,ny=e.y+dy/D*2.2*dt;if(!blocked(nx,ny,.55)){e.x=nx;e.y=ny}}if(D<4){e.hp-=dt*32;if(e.hp<=0){e.dead=true;score+=35}}}auto(dt);bad=bad.filter(e=>!e.dead&&Math.hypot(e.x-P.x,e.y-P.y)<CH*7);beam.forEach(v=>v.a+=dt);beam=beam.filter(v=>v.a<v.l);splat.forEach(v=>v.a+=dt);splat=splat.filter(v=>v.a<v.l);log.forEach(v=>v.life-=dt);log=log.filter(v=>v.life>0);if(bubble){bubble.age+=dt;bubble.life-=dt;if(bubble.life<=0)bubble=null}banner=Math.max(0,banner-dt)}
-function sky(){let p=pal(),gr=g.createLinearGradient(0,0,0,c.height*.7);gr.addColorStop(0,rgb(p.top,1));gr.addColorStop(.5,rgb(p.h2,.72));gr.addColorStop(1,rgb(p.h1,.9));g.fillStyle=gr;g.fillRect(0,0,c.width,c.height);for(let i=0;i<12;i++){let u=(i/12+t*.01)%1,px=u*c.width,py=25+hash(i,3)*130;g.strokeStyle=rgb(cm(p.h1,p.h2,hash(i,7)),.26);g.beginPath();g.moveTo(px-55,py);g.lineTo(px+55,py+20+hash(i,8)*40);g.stroke()}g.fillStyle='rgba(0,0,0,.70)';g.fillRect(0,c.height*.6,c.width,c.height*.4)}
-function mechDraw(){let red='rgba(255,48,48,';function cyl(cx,cy,w,h){let q=g.createLinearGradient(cx-w/2,cy,cx+w/2,cy);q.addColorStop(0,red+'.18)');q.addColorStop(.5,red+'.45)');q.addColorStop(1,red+'.08)');g.fillStyle=q;g.strokeStyle=red+'.75)';g.lineWidth=2;g.beginPath();g.roundRect(cx-w/2,cy-h/2,w,h,h*.45);g.fill();g.stroke()}cyl(c.width*.22,c.height*.80,c.width*.23,c.height*.10);cyl(c.width*.78,c.height*.80,c.width*.23,c.height*.10);g.strokeStyle='rgba(255,40,40,.7)';g.beginPath();g.moveTo(c.width*.11,c.height*.75);g.lineTo(c.width*.28,c.height*.68);g.moveTo(c.width*.89,c.height*.75);g.lineTo(c.width*.72,c.height*.68);g.stroke();g.fillStyle='rgba(0,0,0,.32)';g.fillRect(c.width*.34,c.height*.86,c.width*.32,28);g.strokeStyle='rgba(255,50,50,.65)';g.strokeRect(c.width*.34,c.height*.86,c.width*.32,28);g.fillStyle='rgba(255,60,60,.75)';g.fillRect(c.width*.35,c.height*.875,c.width*.30*mech.heat,6)}
-function draw(){resize();let now=performance.now(),dt=Math.min(.033,((now-last)||16)/1000);last=now;step(dt);sky();g.strokeStyle=fg(.13);let cx=Math.floor(P.x/CH),cy=Math.floor(P.y/CH);for(let gx=(cx-5)*CH;gx<=(cx+6)*CH;gx+=24)line([gx,(cy-5)*CH,0],[gx,(cy+6)*CH,0],.13);for(let gy=(cy-5)*CH;gy<=(cy+6)*CH;gy+=24)line([(cx-5)*CH,gy,0],[(cx+6)*CH,gy,0],.13);obs(R).sort((A,B)=>Math.hypot(B.x-P.x,B.y-P.y)-Math.hypot(A.x-P.x,A.y-P.y)).forEach(box);for(let v of splat){let q=proj(v.x,v.y,v.z);if(q){g.fillStyle=fg(.22*(1-v.a/v.l));g.beginPath();g.ellipse(q.x,q.y,cl(q.s*.018,3,24),cl(q.s*.012,2,18),0,0,7);g.fill()}}for(let tr of beam){g.strokeStyle=tr.m?'rgba(255,40,40,'+(1-tr.a/tr.l)+')':fg(1-tr.a/tr.l);g.lineWidth=tr.m?3:2;line([tr.x1,tr.y1,tr.z1],[tr.x2,tr.y2,tr.z2],1-tr.a/tr.l)}bad.sort((A,B)=>Math.hypot(B.x-P.x,B.y-P.y)-Math.hypot(A.x-P.x,A.y-P.y)).forEach(drawEnemy);drawIO();mechDraw();hudDraw();requestAnimationFrame(draw)}
-function hudDraw(){let red='rgba(255,42,42,',cx=c.width/2,cy=c.height*.56;g.strokeStyle=red+'.86)';g.beginPath();g.moveTo(cx-18,cy);g.lineTo(cx-5,cy);g.moveTo(cx+5,cy);g.lineTo(cx+18,cy);g.moveTo(cx,cy-18);g.lineTo(cx,cy-5);g.moveTo(cx,cy+5);g.lineTo(cx,cy+18);g.stroke();g.strokeStyle=red+'.16)';for(let y=0;y<c.height;y+=5){g.beginPath();g.moveTo(0,y);g.lineTo(c.width,y);g.stroke()}if(mech.target){let q=proj(mech.target.x,mech.target.y,1.4);if(q){g.strokeStyle=red+'.9)';g.strokeRect(q.x-36,q.y-62,72,96);g.fillStyle=red+'.8)';g.fillText('LOCK '+Math.round(mech.lock*100)+'%',q.x-34,q.y-68)}}if(hud){g.textAlign='left';g.font='13px Consolas';g.fillStyle='rgba(12,0,0,.62)';g.fillRect(18,16,510,124);g.strokeStyle=red+'.52)';g.strokeRect(18,16,510,124);g.fillStyle=red+'.98)';g.font='bold 16px Consolas';g.fillText('HOLOVERSE DEMO // MECH SCAN HUD',32,42);g.font='13px Consolas';g.fillText('HP '+Math.ceil(hp)+' SCORE '+Math.floor(score)+' ENEMIES '+bad.length+' IO '+Math.floor(Math.hypot(IO.x-P.x,IO.y-P.y)),32,66);g.fillText('WEAPON '+W[wep%W.length]+'  MECH HEAT '+Math.round(mech.heat*100)+'%  LOCK '+Math.round(mech.lock*100)+'%',32,88);g.fillText('YAW '+P.yaw.toFixed(2)+' PITCH '+P.pitch.toFixed(2)+' CHUNKS '+chunks.size+' PASS14',32,110);let y=158;for(let m of log){g.fillText('> '+m.s,32,y);y+=17}g.fillStyle='rgba(12,0,0,.62)';g.fillRect(c.width-410,16,392,176);g.strokeStyle=red+'.44)';g.strokeRect(c.width-410,16,392,176);g.fillStyle=red+'.95)';['CLICK CANVAS TO FOCUS','ESC RELEASES CONTROL','MOUSE LOOK: YAW + PITCH','WASD MOVE  SHIFT SPRINT','Q TURN RIGHT  E TURN LEFT','LMB FIRE / CLICK IO NOTES','TAB WEAPON  H HUD  R RESET'].forEach((s,i)=>g.fillText(s,c.width-388,44+i*18))}if(bubble){let a=bubble.life<1?bubble.life:Math.min(1,bubble.age);g.textAlign='center';g.font='bold 15px Consolas';g.fillStyle='rgba(0,0,0,'+(.72*a)+')';g.fillRect(c.width*.18,c.height*.74,c.width*.64,82);g.strokeStyle=red+(.74*a)+')';g.strokeRect(c.width*.18,c.height*.74,c.width*.64,82);g.fillStyle=red+(.98*a)+')';wrap(bubble.text,c.width/2,c.height*.775,c.width*.56,18)}if(!on){g.fillStyle='rgba(0,0,0,.52)';g.fillRect(0,0,c.width,c.height);g.textAlign='center';g.fillStyle=red+'.98)';g.font='bold 28px Consolas';g.fillText('CLICK GAME TO FOCUS',c.width/2,c.height/2-10);g.font='14px Consolas';g.fillText('Esc releases controls. Mouse wheel remains free for page scrolling.',c.width/2,c.height/2+22)}if(pause){g.fillStyle='rgba(0,0,0,.55)';g.fillRect(0,0,c.width,c.height);g.fillStyle='#ff5555';g.font='bold 42px Consolas';g.textAlign='center';g.fillText('PAUSED',c.width/2,c.height/2)}}
-function wrap(s,cx,y,w,lh){let words=s.split(' '),line='',lines=[];for(let z of words){let test=line+z+' ';if(g.measureText(test).width>w&&line){lines.push(line);line=z+' '}else line=test}lines.push(line);lines.forEach((l,i)=>g.fillText(l,cx,y+i*lh))}
-function resize(){let b=c.getBoundingClientRect(),d=Math.min(1.35,devicePixelRatio||1),w=Math.max(640,Math.floor(b.width*d)),h=Math.floor(w*9/16);if(c.width!==w||c.height!==h){c.width=w;c.height=h}}
-function cap(e){let kk=e.key===' '?' ':e.key.toLowerCase();if(kk==='escape'){on=false;K={};mouse=false;if(document.pointerLockElement)document.exitPointerLock();return false}if(!on||e.ctrlKey||e.metaKey||e.altKey||!KEYS.has(kk))return false;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();return kk}
-function reset(){P={x:0,y:0,yaw:0,pitch:0};IO={x:13,y:8};hp=100;score=0;chunks.clear();bad=[];beam=[];splat=[];log=[];wep=0;wpn=weapon();banner=2;mech={target:null,heat:0,side:0,lock:0};ensure();note('HOLOVERSE DEMO ONLINE')}
-function boot(){c=$('demoCanvas');if(!c)return;g=c.getContext('2d');c.tabIndex=0;document.body.classList.add('demo-runtime-ready','single-demo-runtime','holoverse-demo-port');let old=document.querySelector('.demo-head .btn[href*=demo_manifest]');if(old)old.remove();let grid=$('demoGalleryGrid');if(grid)grid.remove();let ov=$('demoLoadingOverlay');if(ov)ov.hidden=true;let head=document.querySelector('.demo-head');if(head&&!$('demoMuteBtn')){let b=document.createElement('button');b.id='demoMuteBtn';b.className='btn btn-secondary demo-audio-button';b.type='button';b.textContent='Mute Audio';b.onclick=e=>{e.preventDefault();e.stopPropagation();mut=!mut;b.textContent=mut?'Audio Muted':'Mute Audio';b.setAttribute('aria-pressed',String(mut))};head.appendChild(b)}[['demoSectionTitle','HoloVerse Demo — Mech Scan Route'],['demoSectionIntro','A polished HoloVerse browser demo with mouse yaw/pitch, corrected left/right turning, lighter rendering, IO protection, auto-lock mech arms, and red tactical scanner UI.'],['demoTitle','HoloVerse Demo'],['demoSummary','Explore the colorful wireframe city inside a shoulder-mounted mech suit while IO protects you and auto cannons lock onto enemies.'],['demoObjective','Move through the city, watch IO and the mech arms handle enemies, click IO for patch notes, and test the corrected FPS-style controls.'],['demoControls','Click the game first. Mouse look up/down/left/right, WASD move, Shift sprint, Q turn right, E turn left, LMB fire/click IO, TAB weapon, H HUD, R reset, M mute. Esc releases controls.'],['demoDetails','Pass 14: corrected turn direction, added mouse pitch, performance culling, mech shoulder cylinders with auto-lock fire, and a red tactical scan HUD.']].forEach(([id,v])=>{let e=$(id);if(e)e.textContent=v});let tags=$('demoTags');if(tags){tags.innerHTML='';['Mech suit','Auto-lock arms','Mouse pitch','Red scan HUD','IO protects'].forEach(t=>{let s=document.createElement('span');s.textContent=t;tags.appendChild(s)})}c.addEventListener('pointerdown',e=>{on=true;c.focus({preventScroll:true});mouse=true;try{aud||=new(AudioContext||webkitAudioContext)();aud.resume&&aud.resume()}catch{}if(c.requestPointerLock)c.requestPointerLock();fire();e.preventDefault();e.stopPropagation()},true);window.addEventListener('pointerup',()=>mouse=false,true);c.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation()},true);c.addEventListener('blur',()=>{on=false;K={};mouse=false});window.addEventListener('mousemove',e=>{if(on){P.yaw-=(e.movementX||0)*.0024;P.pitch=cl(P.pitch+(e.movementY||0)*.0017,-.48,.48)}},true);window.addEventListener('keydown',e=>{let kk=cap(e);if(!kk)return;K[kk]=true;if(kk==='tab'&&!K.tl){wep=(wep+(e.shiftKey?-1:1)+W.length)%W.length;wpn=weapon();banner=2;note('WEAPON '+W[wep]);beep(620,.07,.01,'triangle');K.tl=true}if(kk==='h'&&!K.hl){hud=!hud;K.hl=true}if(kk==='r'&&!K.rl){reset();K.rl=true}if(kk==='m'&&!K.ml){mut=!mut;K.ml=true;let b=$('demoMuteBtn');if(b){b.textContent=mut?'Audio Muted':'Mute Audio';b.setAttribute('aria-pressed',String(mut))}}if(kk==='p'&&!K.pl){pause=!pause;K.pl=true}},true);window.addEventListener('keyup',e=>{let kk=e.key===' '?' ':e.key.toLowerCase();K[kk]=false;if(kk==='tab')K.tl=false;if(kk==='h')K.hl=false;if(kk==='r')K.rl=false;if(kk==='m')K.ml=false;if(kk==='p')K.pl=false},true);window.addEventListener('resize',resize);resize();reset();requestAnimationFrame(draw)}
-document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot):boot();
+(() => {
+  'use strict';
+
+  const VERSION = '20260429-pass12-holoverse-visual-io';
+  const $ = (id) => document.getElementById(id);
+  const CHUNK = 72;
+  const RADIUS = 5;
+  const SEED = 74219;
+  const EYE = 1.85;
+  const KEY_SET = new Set(['w','a','s','d','q','e','arrowleft','arrowright','arrowup','arrowdown','shift','tab','h','r','m','p','f10',' ']);
+
+  let canvas, ctx, audioCtx;
+  let active = false;
+  let muted = false;
+  let paused = false;
+  let showHud = true;
+  let workstation = false;
+  let last = 0;
+  let time = 0;
+  let score = 0;
+  let hp = 100;
+  let player = { x: 0, y: 0, a: 0 };
+  let io = { x: 18, y: -22, hp: 160, charge: 0, pulse: 0 };
+  let keys = Object.create(null);
+  let chunks = new Map();
+  let enemies = [];
+  let tracers = [];
+  let impacts = [];
+  let overhead = [];
+  let notes = [];
+  let noteQueue = [];
+  let noteToast = null;
+  let messages = [];
+  let weaponIndex = 0;
+  let fireCd = 0;
+  let banner = 2;
+  let mouseDown = false;
+  let pointerLocked = false;
+
+  const weapons = [
+    'Null Carbine', 'Etch Revolver', 'Wire Splicer', 'Noir Scatter', 'Vector Pike',
+    'Horizon Drill', 'Ink Needle', 'Longline Pulse', 'Static Crown', 'Gleeb Signal'
+  ];
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, f) => a + (b - a) * f;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const key = (cx, cy) => `${cx},${cy}`;
+  const hash = (i, j = 0, k = 0) => {
+    const n = Math.sin((i * 127.1 + j * 311.7 + k * 74.7 + SEED) * 0.017453292519943295) * 43758.5453;
+    return n - Math.floor(n);
+  };
+  const hue = (offset = 0) => (time * 5 + offset) % 360;
+  const rgba = (h, s, l, a = 1) => `hsla(${h},${s}%,${l}%,${a})`;
+  const dist = (a, b, c, d) => Math.hypot(a - c, b - d);
+  const angleDelta = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+
+  function weapon() {
+    const h = weaponIndex;
+    return {
+      name: `${weapons[h % weapons.length]} ${String(h + 1).padStart(2, '0')}`,
+      damage: 18 + hash(h, 1) * 34,
+      spread: 0.010 + hash(h, 2) * 0.055,
+      rate: 0.105 + hash(h, 3) * 0.25,
+      range: 190 + hash(h, 4) * 340,
+      pellets: hash(h, 5) > 0.78 ? 5 : hash(h, 5) > 0.58 ? 3 : 1
+    };
+  }
+  let currentWeapon = weapon();
+
+  function addStyle() {
+    const style = document.createElement('style');
+    style.textContent = `
+      .demo-head .btn[href*=demo_manifest],#demoGalleryGrid,.demo-gallery-grid{display:none!important}
+      .demo-canvas-shell{position:relative;overflow:hidden;background:#03030a;padding:12px;min-height:390px}
+      .holoverse-demo-canvas,.demo-canvas{min-height:360px;background:#03030a;outline:none;border:1px solid rgba(130,210,255,.24);box-shadow:inset 0 0 80px rgba(0,0,0,.58),0 0 36px rgba(80,150,255,.16)}
+      .demo-runtime-ready .demo-loading-overlay{display:none!important}
+      .demo-audio-button[aria-pressed=true]{background:rgba(120,180,255,.16);border-color:rgba(180,220,255,.64)}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function beep(freq = 260, dur = 0.04, gain = 0.006, type = 'square') {
+    if (muted) return;
+    try {
+      audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      g.gain.value = gain;
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start();
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+      osc.stop(audioCtx.currentTime + dur + 0.02);
+    } catch {}
+  }
+
+  function status(text) {
+    messages.unshift({ text, life: 4 });
+    messages = messages.slice(0, 5);
+  }
+
+  function chunk(cx, cy) {
+    const buildings = [];
+    const spawn = [];
+    for (let i = 0; i < 13; i++) {
+      const ox = cx * CHUNK + 7 + hash(cx, cy, i) * 58;
+      const oy = cy * CHUNK + 7 + hash(cx, cy, i + 22) * 58;
+      const w = 5 + hash(cx, cy, i + 4) * 17;
+      const d = 5 + hash(cx, cy, i + 5) * 17;
+      const h = 7 + hash(cx, cy, i + 6) * 58;
+      if (dist(ox, oy, 0, 0) > 28) buildings.push({ x: ox, y: oy, w, d, h, seed: i + cx * 91 + cy * 113 });
+    }
+    for (let i = 0; i < 2 + hash(cx, cy, 77) * 3; i++) {
+      const ex = cx * CHUNK + 8 + hash(cx, cy, i + 100) * 55;
+      const ey = cy * CHUNK + 8 + hash(cx, cy, i + 200) * 55;
+      if (dist(ex, ey, 0, 0) > 60) spawn.push({ x: ex, y: ey, seed: cx * 7001 + cy * 911 + i });
+    }
+    return { cx, cy, buildings, spawn, spawned: false };
+  }
+
+  function ensureChunks() {
+    const pcx = Math.floor(player.x / CHUNK);
+    const pcy = Math.floor(player.y / CHUNK);
+    const needed = new Set();
+    for (let cy = pcy - RADIUS; cy <= pcy + RADIUS; cy++) {
+      for (let cx = pcx - RADIUS; cx <= pcx + RADIUS; cx++) {
+        const k = key(cx, cy);
+        needed.add(k);
+        if (!chunks.has(k)) chunks.set(k, chunk(cx, cy));
+      }
+    }
+    for (const k of [...chunks.keys()]) {
+      if (!needed.has(k)) chunks.delete(k);
+    }
+    for (const ch of chunks.values()) {
+      if (!ch.spawned && Math.abs(ch.cx - pcx) < 4 && Math.abs(ch.cy - pcy) < 4 && enemies.length < 28) {
+        ch.spawned = true;
+        for (const s of ch.spawn) {
+          if (enemies.length < 28) {
+            enemies.push({
+              x: s.x, y: s.y, homeX: s.x, homeY: s.y,
+              hp: 55 + hash(s.seed) * 45,
+              speed: 2.2 + hash(s.seed, 1) * 3.0,
+              seed: s.seed, phase: hash(s.seed, 2) * 7,
+              dead: false
+            });
+          }
+        }
+      }
+    }
+  }
+
+  function allBuildings(rad = RADIUS) {
+    const pcx = Math.floor(player.x / CHUNK);
+    const pcy = Math.floor(player.y / CHUNK);
+    const out = [];
+    for (let cy = pcy - rad; cy <= pcy + rad; cy++) {
+      for (let cx = pcx - rad; cx <= pcx + rad; cx++) {
+        const ch = chunks.get(key(cx, cy));
+        if (ch) out.push(...ch.buildings);
+      }
+    }
+    return out;
+  }
+
+  function blocked(nx, ny, r = 0.45) {
+    for (const o of allBuildings(1)) {
+      if (nx > o.x - o.w / 2 - r && nx < o.x + o.w / 2 + r && ny > o.y - o.d / 2 - r && ny < o.y + o.d / 2 + r) return true;
+    }
+    return false;
+  }
+
+  function reset() {
+    player = { x: 0, y: 0, a: 0 };
+    io = { x: 22, y: -24, hp: 160, charge: 0, pulse: 0 };
+    hp = 100;
+    score = 0;
+    chunks.clear();
+    enemies = [];
+    tracers = [];
+    impacts = [];
+    overhead = [];
+    messages = [];
+    weaponIndex = 0;
+    currentWeapon = weapon();
+    banner = 2;
+    paused = false;
+    ensureChunks();
+    status('HOLOVERSE DEMO ONLINE');
+  }
+
+  function project(wx, wy, wz = 0) {
+    const dx = wx - player.x;
+    const dy = wy - player.y;
+    const ca = Math.cos(-player.a);
+    const sa = Math.sin(-player.a);
+    const rx = dx * ca - dy * sa;
+    const rz = dx * sa + dy * ca;
+    if (rz < 3) return null;
+    const scale = Math.min(2600, canvas.width * 0.78 / rz);
+    return { x: canvas.width / 2 + rx * scale, y: canvas.height * 0.63 - (wz - EYE) * scale, s: scale, z: rz };
+  }
+
+  function line3(a, b, alpha = 1) {
+    const p = project(a[0], a[1], a[2]);
+    const q = project(b[0], b[1], b[2]);
+    if (!p || !q) return;
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(q.x, q.y);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  function poly(points, fill) {
+    const pts = points.map((p) => project(p[0], p[1], p[2])).filter(Boolean);
+    if (pts.length !== points.length) return;
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawBuilding(o) {
+    const x0 = o.x - o.w / 2, x1 = o.x + o.w / 2;
+    const y0 = o.y - o.d / 2, y1 = o.y + o.d / 2;
+    const z = o.h;
+    const d = dist(o.x, o.y, player.x, player.y);
+    const alpha = clamp(1 - d / 640, 0.05, 0.95);
+    const h = hue(o.seed * 11);
+    const faces = [
+      [[x0,y0,0],[x1,y0,0],[x1,y0,z],[x0,y0,z], rgba(h + 10, 75, 24, 0.18 * alpha)],
+      [[x1,y0,0],[x1,y1,0],[x1,y1,z],[x1,y0,z], rgba(h + 55, 78, 30, 0.15 * alpha)],
+      [[x1,y1,0],[x0,y1,0],[x0,y1,z],[x1,y1,z], rgba(h + 100, 80, 34, 0.13 * alpha)],
+      [[x0,y1,0],[x0,y0,0],[x0,y0,z],[x0,y1,z], rgba(h + 170, 70, 26, 0.14 * alpha)],
+      [[x0,y0,z],[x1,y0,z],[x1,y1,z],[x0,y1,z], rgba(h + 220, 85, 42, 0.20 * alpha)]
+    ];
+    ctx.globalCompositeOperation = 'source-over';
+    for (const face of faces) poly(face.slice(0, 4), face[4]);
+    ctx.strokeStyle = rgba(h + 210, 90, 78, alpha);
+    ctx.lineWidth = Math.max(0.75, 2.2 - d / 270);
+    const pts = [[x0,y0,0],[x1,y0,0],[x1,y1,0],[x0,y1,0],[x0,y0,z],[x1,y0,z],[x1,y1,z],[x0,y1,z]];
+    const edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    for (const e of edges) line3(pts[e[0]], pts[e[1]], alpha);
+  }
+
+  function drawEnemy(e) {
+    const q = project(e.x, e.y, 1.4);
+    if (!q || q.z > 220) return;
+    const s = clamp(q.s * 0.017, 0.25, 2.7);
+    const wob = Math.sin(time * 6 + e.phase) * 4 * s;
+    const h = hue(120 + e.seed);
+    ctx.strokeStyle = rgba(h, 80, 72, clamp(1 - q.z / 190, 0.18, 1));
+    ctx.lineWidth = clamp(2 * s, 1, 4);
+    const sx = q.x, sy = q.y;
+    function L(a,b,c,d) { ctx.beginPath(); ctx.moveTo(sx + a*s, sy + b*s); ctx.lineTo(sx + c*s, sy + d*s); ctx.stroke(); }
+    ctx.beginPath(); ctx.ellipse(sx, sy - 35*s, 12*s, 16*s, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeRect(sx - 18*s, sy - 18*s, 36*s, 42*s);
+    L(0,-18,0,28); L(-16,-4,-34,20+wob); L(16,-4,34,20-wob); L(0,28,-18,58-wob); L(0,28,18,58+wob);
+  }
+
+  function drawIo() {
+    const q = project(io.x, io.y, 1.6);
+    if (!q) return;
+    const s = clamp(q.s * 0.025, 0.45, 3.2);
+    const h = hue(205);
+    ctx.strokeStyle = rgba(h, 95, 78, 0.95);
+    ctx.fillStyle = rgba(h, 90, 42, 0.22);
+    ctx.lineWidth = clamp(2 * s, 1.5, 5);
+    ctx.beginPath(); ctx.arc(q.x, q.y - 20*s, 17*s, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.strokeRect(q.x - 18*s, q.y - 2*s, 36*s, 42*s);
+    ctx.beginPath(); ctx.arc(q.x, q.y + 18*s, (42 + Math.sin(time * 5) * 6) * s, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = rgba(h, 100, 84, 0.95);
+    ctx.font = `${Math.max(11, 12 * s)}px Consolas, monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText('IO', q.x, q.y - 48*s);
+  }
+
+  function hitRay(angle, range, sourceX = player.x, sourceY = player.y) {
+    let best = { type: 'none', x: sourceX + Math.cos(angle) * range, y: sourceY + Math.sin(angle) * range, d: range };
+    for (const e of enemies) {
+      const dx = e.x - sourceX, dy = e.y - sourceY, d = Math.hypot(dx, dy);
+      const da = Math.abs(angleDelta(Math.atan2(dy, dx), angle));
+      if (d < best.d && da < 0.14) best = { type: 'enemy', enemy: e, x: e.x, y: e.y, d };
+    }
+    for (const o of allBuildings(3)) {
+      const dx = o.x - sourceX, dy = o.y - sourceY, d = Math.hypot(dx, dy);
+      const da = Math.abs(angleDelta(Math.atan2(dy, dx), angle));
+      if (d < best.d && da < 0.055) best = { type: 'wall', x: o.x, y: o.y, d };
+    }
+    return best;
+  }
+
+  function firePlayer() {
+    if (fireCd > 0 || !active || paused) return;
+    fireCd = currentWeapon.rate;
+    let hit = false;
+    for (let i = 0; i < currentWeapon.pellets; i++) {
+      const angle = player.a + rnd(-currentWeapon.spread, currentWeapon.spread);
+      const h = hitRay(angle, currentWeapon.range);
+      tracers.push({ x1: player.x, y1: player.y, z1: EYE - 0.12, x2: h.x, y2: h.y, z2: 1.1, life: 0.08, age: 0, hue: hue(80) });
+      impacts.push({ x: h.x, y: h.y, z: h.type === 'enemy' ? 0.9 : 0.35, life: 1.6, age: 0, hue: hue(150) });
+      if (h.type === 'enemy') {
+        h.enemy.hp -= currentWeapon.damage;
+        score += 12;
+        hit = true;
+        if (h.enemy.hp <= 0) {
+          h.enemy.dead = true;
+          score += 75;
+          status('WIRE HOSTILE CUT');
+        }
+      }
+    }
+    beep(hit ? 420 : 240, 0.035, 0.009, 'sawtooth');
+  }
+
+  function ioProtect(dt) {
+    const desiredAngle = player.a + Math.PI * 0.72;
+    const desiredDist = 24;
+    const tx = player.x + Math.cos(desiredAngle) * desiredDist;
+    const ty = player.y + Math.sin(desiredAngle) * desiredDist;
+    io.x = lerp(io.x, tx, 0.026);
+    io.y = lerp(io.y, ty, 0.026);
+    io.charge -= dt;
+    if (io.charge <= 0 && enemies.length) {
+      let target = null, best = 999;
+      for (const e of enemies) {
+        const d = dist(io.x, io.y, e.x, e.y);
+        if (d < best && d < 160) { best = d; target = e; }
+      }
+      if (target) {
+        io.charge = 0.55;
+        target.hp -= 30;
+        tracers.push({ x1: io.x, y1: io.y, z1: 1.5, x2: target.x, y2: target.y, z2: 1.0, life: 0.16, age: 0, hue: hue(205) });
+        impacts.push({ x: target.x, y: target.y, z: 0.85, life: 1.0, age: 0, hue: hue(205) });
+        if (target.hp <= 0) { target.dead = true; score += 45; status('IO CLEARED A THREAT'); }
+        beep(720, 0.045, 0.006, 'triangle');
+      }
+    }
+  }
+
+  function enemyPatrol(dt) {
+    for (const e of enemies) {
+      const targetX = e.homeX + Math.sin(time * 0.25 + e.phase) * 38;
+      const targetY = e.homeY + Math.cos(time * 0.21 + e.phase) * 38;
+      const dx = targetX - e.x, dy = targetY - e.y, d = Math.hypot(dx, dy) || 1;
+      e.x += dx / d * e.speed * dt;
+      e.y += dy / d * e.speed * dt;
+      if (dist(e.x, e.y, io.x, io.y) < 4.0) {
+        io.hp = Math.max(0, io.hp - 2.5 * dt);
+        impacts.push({ x: io.x, y: io.y, z: 0.9, life: 0.35, age: 0, hue: hue(330) });
+      }
+    }
+    enemies = enemies.filter((e) => !e.dead && dist(e.x, e.y, player.x, player.y) < CHUNK * 7);
+  }
+
+  function update(dt) {
+    if (paused) return;
+    time += dt;
+    ensureChunks();
+    const forward = (keys.w || keys.arrowup ? 1 : 0) - (keys.s || keys.arrowdown ? 1 : 0);
+    const side = (keys.d ? 1 : 0) - (keys.a ? 1 : 0);
+    const keyTurn = (keys.e || keys.arrowright ? 1 : 0) - (keys.q || keys.arrowleft ? 1 : 0);
+    player.a += keyTurn * dt * 2.2;
+    const speed = (keys.shift ? 76 : 46) * dt;
+    const fx = Math.cos(player.a), fy = Math.sin(player.a);
+    const rx = Math.cos(player.a + Math.PI / 2), ry = Math.sin(player.a + Math.PI / 2);
+    const nx = player.x + (fx * forward + rx * side) * speed;
+    const ny = player.y + (fy * forward + ry * side) * speed;
+    if (!blocked(nx, player.y)) player.x = nx;
+    if (!blocked(player.x, ny)) player.y = ny;
+    if (mouseDown) firePlayer();
+    fireCd = Math.max(0, fireCd - dt);
+    ioProtect(dt);
+    enemyPatrol(dt);
+    for (const tr of tracers) tr.age += dt;
+    tracers = tracers.filter((tr) => tr.age < tr.life);
+    for (const im of impacts) im.age += dt;
+    impacts = impacts.filter((im) => im.age < im.life);
+    for (const m of messages) m.life -= dt;
+    messages = messages.filter((m) => m.life > 0);
+    if (noteToast) {
+      noteToast.age += dt;
+      if (noteToast.age > 4.1) noteToast = null;
+    }
+    if (Math.random() < dt * 0.9) overhead.push({ x: rnd(-0.1, 1.1), y: rnd(0.04, 0.28), vx: rnd(-0.08, 0.08), life: rnd(1.1, 2.3), age: 0, h: hue(rnd(0, 360)) });
+    for (const o of overhead) o.age += dt;
+    overhead = overhead.filter((o) => o.age < o.life);
+    banner = Math.max(0, banner - dt);
+  }
+
+  function drawSky() {
+    const top = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.64);
+    top.addColorStop(0, 'rgb(0,0,9)');
+    top.addColorStop(0.42, rgba(hue(210), 72, 9, 1));
+    top.addColorStop(1, rgba(hue(20), 86, 28, 1));
+    ctx.fillStyle = top;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const horizon = ctx.createLinearGradient(0, canvas.height * 0.28, canvas.width, canvas.height * 0.68);
+    horizon.addColorStop(0, rgba(hue(0), 85, 45, 0.32));
+    horizon.addColorStop(0.5, rgba(hue(95), 80, 36, 0.24));
+    horizon.addColorStop(1, rgba(hue(190), 86, 42, 0.32));
+    ctx.fillStyle = horizon;
+    ctx.fillRect(0, canvas.height * 0.22, canvas.width, canvas.height * 0.48);
+    for (const o of overhead) {
+      const a = 1 - o.age / o.life;
+      ctx.strokeStyle = rgba(o.h, 95, 68, 0.45 * a);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(o.x * canvas.width, o.y * canvas.height);
+      ctx.lineTo((o.x + o.vx * 1.2) * canvas.width, (o.y + 0.04) * canvas.height);
+      ctx.stroke();
+    }
+  }
+
+  function drawGround() {
+    const pcx = Math.floor(player.x / CHUNK), pcy = Math.floor(player.y / CHUNK);
+    ctx.strokeStyle = rgba(hue(260), 80, 70, 0.16);
+    ctx.lineWidth = 1;
+    for (let gx = (pcx - 7) * CHUNK; gx <= (pcx + 8) * CHUNK; gx += 18) line3([gx, (pcy - 7) * CHUNK, 0], [gx, (pcy + 8) * CHUNK, 0], 0.14);
+    for (let gy = (pcy - 7) * CHUNK; gy <= (pcy + 8) * CHUNK; gy += 18) line3([(pcx - 7) * CHUNK, gy, 0], [(pcx + 8) * CHUNK, gy, 0], 0.14);
+    ctx.fillStyle = rgba(hue(280), 70, 28, 0.10);
+    ctx.fillRect(0, canvas.height * 0.58, canvas.width, canvas.height * 0.42);
+  }
+
+  function render(now = 0) {
+    resize();
+    const dt = Math.min(0.033, ((now - last) || 16) / 1000);
+    last = now;
+    if (active) update(dt);
+    drawSky();
+    drawGround();
+    allBuildings(RADIUS).sort((a,b) => dist(b.x,b.y,player.x,player.y) - dist(a.x,a.y,player.x,player.y)).forEach(drawBuilding);
+    for (const im of impacts) {
+      const q = project(im.x, im.y, im.z);
+      if (q) {
+        const a = 1 - im.age / im.life;
+        ctx.fillStyle = rgba(im.hue, 90, 65, 0.28 * a);
+        ctx.beginPath();
+        ctx.ellipse(q.x, q.y, clamp(q.s * 0.022, 3, 32), clamp(q.s * 0.014, 2, 22), 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    for (const tr of tracers) {
+      ctx.strokeStyle = rgba(tr.hue, 95, 78, 1 - tr.age / tr.life);
+      ctx.lineWidth = 2;
+      line3([tr.x1,tr.y1,tr.z1], [tr.x2,tr.y2,tr.z2], 1 - tr.age / tr.life);
+    }
+    enemies.sort((a,b) => dist(b.x,b.y,player.x,player.y) - dist(a.x,a.y,player.x,player.y)).forEach(drawEnemy);
+    drawIo();
+    drawHud();
+    requestAnimationFrame(render);
+  }
+
+  function drawHud() {
+    const cx = canvas.width / 2, cy = canvas.height * 0.56;
+    ctx.strokeStyle = rgba(hue(210), 95, 86, 0.9);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - 15, cy); ctx.lineTo(cx - 5, cy);
+    ctx.moveTo(cx + 5, cy); ctx.lineTo(cx + 15, cy);
+    ctx.moveTo(cx, cy - 15); ctx.lineTo(cx, cy - 5);
+    ctx.moveTo(cx, cy + 5); ctx.lineTo(cx, cy + 15);
+    ctx.stroke();
+    if (showHud) {
+      ctx.textAlign = 'left';
+      ctx.fillStyle = 'rgba(0,0,0,.52)';
+      ctx.fillRect(18,16,500,126);
+      ctx.strokeStyle = rgba(hue(205), 95, 80, 0.45);
+      ctx.strokeRect(18,16,500,126);
+      ctx.fillStyle = rgba(hue(200), 100, 88, 0.98);
+      ctx.font = 'bold 16px Consolas, monospace';
+      ctx.fillText('HOLOVERSE DEMO // NOIR CITY ASSAULT',32,42);
+      ctx.font = '13px Consolas, monospace';
+      ctx.fillText(`HP ${Math.ceil(hp)}  IO ${Math.ceil(io.hp)}  SCORE ${Math.floor(score)}  ENEMIES ${enemies.length}`,32,66);
+      ctx.fillText(`WEAPON ${currentWeapon.name}  CHUNKS ${chunks.size}`,32,88);
+      ctx.fillText(`POINTER ${pointerLocked ? 'LOCKED' : 'FREE'}  POS ${Math.floor(player.x)}, ${Math.floor(player.y)}`,32,110);
+      ctx.fillText('ENEMIES IGNORE PLAYER // IO IS YOUR ONLY OBSERVER',32,132);
+      let y = 164;
+      for (const m of messages) {
+        ctx.fillStyle = rgba(hue(160), 100, 84, Math.min(1, m.life));
+        ctx.fillText('> ' + m.text, 32, y);
+        y += 17;
+      }
+      ctx.fillStyle = 'rgba(0,0,0,.50)';
+      ctx.fillRect(canvas.width - 386, 16, 368, 180);
+      ctx.strokeStyle = rgba(hue(265), 85, 78, 0.35);
+      ctx.strokeRect(canvas.width - 386, 16, 368, 180);
+      ctx.fillStyle = rgba(hue(290), 100, 88, 0.95);
+      ['CLICK GAME TO FOCUS / POINTER LOCK','ESC RELEASES CONTROLS','WASD MOVE  SHIFT SPRINT','MOUSE LOOKS LIKE FPS','LMB FIRE  TAB NEXT WEAPON','CLICK IO FOR PATCH NOTES','H HUD  R RESET  M MUTE'].forEach((s,i) => ctx.fillText(s, canvas.width - 364, 43 + i*19));
+    }
+    if (banner > 0) {
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 22px Consolas, monospace';
+      ctx.fillStyle = rgba(hue(30), 100, 82, Math.min(1, banner));
+      ctx.fillText(currentWeapon.name, canvas.width / 2, canvas.height * 0.16);
+    }
+    if (noteToast) {
+      const fade = Math.min(1, noteToast.age / 0.7, (4.1 - noteToast.age) / 0.8);
+      const w = Math.min(canvas.width * 0.76, 760);
+      const h = 118;
+      const x0 = canvas.width / 2 - w / 2;
+      const y0 = canvas.height * 0.68;
+      ctx.globalAlpha = clamp(fade, 0, 1);
+      ctx.fillStyle = 'rgba(0,0,0,.72)';
+      ctx.fillRect(x0, y0, w, h);
+      ctx.strokeStyle = rgba(hue(205), 95, 75, 0.8);
+      ctx.strokeRect(x0, y0, w, h);
+      ctx.fillStyle = rgba(hue(42), 95, 82, 1);
+      ctx.font = 'bold 14px Consolas, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('IO PATCH MEMORY', x0 + 18, y0 + 26);
+      ctx.font = '13px Consolas, monospace';
+      wrapText(noteToast.text, x0 + 18, y0 + 51, w - 36, 18);
+      ctx.globalAlpha = 1;
+    }
+    if (workstation) {
+      ctx.fillStyle = 'rgba(0,0,0,.76)';
+      ctx.fillRect(canvas.width*.18, canvas.height*.22, canvas.width*.64, canvas.height*.54);
+      ctx.strokeStyle = rgba(hue(190), 95, 75, 0.75);
+      ctx.strokeRect(canvas.width*.18, canvas.height*.22, canvas.width*.64, canvas.height*.54);
+      ctx.fillStyle = rgba(hue(200), 100, 86, 0.95);
+      ctx.font = 'bold 18px Consolas, monospace';
+      ctx.fillText('F10 WORKSTATION // HOLOVERSE DEMO', canvas.width*.22, canvas.height*.30);
+      ctx.font = '13px Consolas, monospace';
+      ['Smooth horizon colors replace hard inversion.', 'Solid translucent building faces fill the wireframe city.', 'Pointer lock makes mouse-look feel like an FPS.', 'IO guards at distance and speaks patch-note memories.', 'Enemies patrol and ignore the player in this demo.'].forEach((s,i) => ctx.fillText(s, canvas.width*.22, canvas.height*.37 + i*28));
+    }
+    if (!active) {
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = rgba(hue(210), 100, 88, 0.98);
+      ctx.font = 'bold 28px Consolas, monospace';
+      ctx.fillText('CLICK GAME TO FOCUS', canvas.width/2, canvas.height/2 - 10);
+      ctx.font = '14px Consolas, monospace';
+      ctx.fillText('Pointer lock enables FPS mouse-look. Esc releases controls. Scroll stays free outside the game.', canvas.width/2, canvas.height/2 + 22);
+    }
+    if (paused) {
+      ctx.fillStyle = 'rgba(0,0,0,.58)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 42px Consolas, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('PAUSED', canvas.width/2, canvas.height/2);
+    }
+  }
+
+  function wrapText(text, x, y, maxWidth, lineHeight) {
+    const words = String(text).split(/\s+/);
+    let line = '';
+    for (const word of words) {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        ctx.fillText(line, x, y);
+        y += lineHeight;
+        line = word;
+      } else line = test;
+    }
+    if (line) ctx.fillText(line, x, y);
+  }
+
+  function resize() {
+    const box = canvas.getBoundingClientRect();
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = Math.max(640, Math.floor(box.width * dpr));
+    const h = Math.floor(w * 9 / 16);
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  }
+
+  function syncMuteButton() {
+    const b = $('demoMuteBtn');
+    if (b) { b.textContent = muted ? 'Audio Muted' : 'Mute Audio'; b.setAttribute('aria-pressed', String(muted)); }
+  }
+
+  function setUiText() {
+    const pairs = [
+      ['demoSectionTitle','HoloVerse Demo — IO Memory Guard'],
+      ['demoSectionIntro','A smoother browser canvas HoloVerse slice: slow colorful horizon cycles, solidified neon line buildings, FPS-style pointer look, IO guard companion, passive enemies, overhead battle color, and patch-note memories.'],
+      ['demoTitle','HoloVerse Demo'],
+      ['demoSummary','Explore a generated city while IO protects from a distance. Enemies ignore the player here; only IO can see you.'],
+      ['demoObjective','Move through the city, test weapons, click IO for patch-note memories, and watch the sky/battle effects shift smoothly.'],
+      ['demoControls','Click the game first. WASD move, Shift sprint, mouse looks like FPS, LMB fire, TAB next weapon, click IO for patch notes, H HUD, F10 workstation, R reset, M mute. Esc releases controls.'],
+      ['demoDetails','Pass 12 notes: smooth color fades, filled building faces, pointer-lock mouse look, IO companion/patch-note interactions, and enemies ignoring the player.']
+    ];
+    for (const [id, value] of pairs) { const el = $(id); if (el) el.textContent = value; }
+    const note = $('demoSectionNote'); if (note) note.textContent = 'Pass 12: HoloVerse Demo keeps one playable canvas and adds smoother visuals, IO protection, and non-repeating patch-note interactions.';
+    const tags = $('demoTags');
+    if (tags) {
+      tags.innerHTML = '';
+      ['HoloVerse Demo','Smooth color cycle','Solid line city','FPS mouse look','IO patch memories'].forEach((t) => { const s = document.createElement('span'); s.textContent = t; tags.appendChild(s); });
+    }
+  }
+
+  function parsePatchNotes(text) {
+    const entries = [];
+    const blocks = text.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
+    for (const block of blocks) {
+      const lines = block.split('\n').map((l) => l.trim()).filter(Boolean);
+      if (!lines.length) continue;
+      const title = lines[0].replace(/^-\s*/, '');
+      const bullets = lines.filter((l) => l.startsWith('-')).map((l) => l.replace(/^[-\s]+/, '')).slice(0, 2);
+      if (bullets.length) entries.push(`${title}: ${bullets.join(' ')}`);
+    }
+    if (!entries.length) entries.push('HoloVerse Demo: smooth visual pass, IO guard behavior, passive enemies, and patch-note memories are active.');
+    notes = entries;
+    try {
+      const used = JSON.parse(sessionStorage.getItem('holoverse-demo-note-used-v1') || '[]');
+      noteQueue = notes.map((_, i) => i).filter((i) => !used.includes(i));
+      if (!noteQueue.length) { sessionStorage.removeItem('holoverse-demo-note-used-v1'); noteQueue = notes.map((_, i) => i); }
+    } catch { noteQueue = notes.map((_, i) => i); }
+  }
+
+  function showNextPatchNote() {
+    if (!notes.length) parsePatchNotes('');
+    if (!noteQueue.length) {
+      noteQueue = notes.map((_, i) => i);
+      try { sessionStorage.removeItem('holoverse-demo-note-used-v1'); } catch {}
+    }
+    const idx = noteQueue.shift();
+    const text = notes[idx] || notes[0];
+    noteToast = { text, age: 0 };
+    try {
+      const used = JSON.parse(sessionStorage.getItem('holoverse-demo-note-used-v1') || '[]');
+      if (!used.includes(idx)) used.push(idx);
+      sessionStorage.setItem('holoverse-demo-note-used-v1', JSON.stringify(used));
+    } catch {}
+    status('IO SHARED A PATCH MEMORY');
+    beep(880, 0.08, 0.006, 'triangle');
+  }
+
+  function clickInteractsWithIo() {
+    const q = project(io.x, io.y, 1.4);
+    if (!q) return false;
+    const dx = q.x - canvas.width / 2;
+    const dy = q.y - canvas.height * 0.56;
+    return Math.hypot(dx, dy) < 72;
+  }
+
+  function requestFocus(ev) {
+    active = true;
+    canvas.focus({ preventScroll: true });
+    try {
+      audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
+      audioCtx.resume && audioCtx.resume();
+    } catch {}
+    if (canvas.requestPointerLock && document.pointerLockElement !== canvas) canvas.requestPointerLock();
+    if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+  }
+
+  function releaseFocus() {
+    active = false;
+    keys = Object.create(null);
+    mouseDown = false;
+    if (document.pointerLockElement === canvas && document.exitPointerLock) document.exitPointerLock();
+  }
+
+  function captured(ev) {
+    const k = ev.key === ' ' ? ' ' : ev.key.toLowerCase();
+    if (k === 'escape') { releaseFocus(); return false; }
+    if (!active || ev.ctrlKey || ev.metaKey || ev.altKey || !KEY_SET.has(k)) return false;
+    ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation && ev.stopImmediatePropagation();
+    return k;
+  }
+
+  function boot() {
+    canvas = $('demoCanvas');
+    if (!canvas) return;
+    ctx = canvas.getContext('2d');
+    canvas.tabIndex = 0;
+    document.body.classList.add('demo-runtime-ready','single-demo-runtime','holoverse-demo-port');
+    const old = document.querySelector('.demo-head .btn[href*=demo_manifest]'); if (old) old.remove();
+    const grid = $('demoGalleryGrid'); if (grid) grid.remove();
+    const overlay = $('demoLoadingOverlay'); if (overlay) overlay.hidden = true;
+    const head = document.querySelector('.demo-head');
+    if (head && !$('demoMuteBtn')) {
+      const b = document.createElement('button');
+      b.id = 'demoMuteBtn'; b.className = 'btn btn-secondary demo-audio-button'; b.type = 'button'; b.textContent = 'Mute Audio';
+      b.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); muted = !muted; syncMuteButton(); };
+      head.appendChild(b);
+    }
+    setUiText();
+    fetch('./assets/data/site_patch_notes_current.txt?v=' + VERSION, { cache: 'no-store' })
+      .then((r) => r.ok ? r.text() : '')
+      .then(parsePatchNotes)
+      .catch(() => parsePatchNotes(''));
+    canvas.addEventListener('pointerdown', (ev) => {
+      requestFocus(ev);
+      mouseDown = true;
+      if (clickInteractsWithIo()) showNextPatchNote(); else firePlayer();
+    }, true);
+    canvas.addEventListener('pointerup', () => { mouseDown = false; }, true);
+    canvas.addEventListener('pointerleave', () => { if (!pointerLocked) mouseDown = false; }, true);
+    canvas.addEventListener('contextmenu', (ev) => { ev.preventDefault(); ev.stopPropagation(); }, true);
+    canvas.addEventListener('blur', () => { if (!pointerLocked) active = false; });
+    document.addEventListener('pointerlockchange', () => {
+      pointerLocked = document.pointerLockElement === canvas;
+      if (!pointerLocked) { active = false; keys = Object.create(null); mouseDown = false; }
+    });
+    window.addEventListener('mousemove', (ev) => {
+      if (!active) return;
+      if (pointerLocked) player.a += ev.movementX * 0.0022;
+    }, true);
+    window.addEventListener('keydown', (ev) => {
+      const k = captured(ev); if (!k) return;
+      keys[k] = true;
+      if (k === 'tab' && !keys.tabLatch) { weaponIndex = (weaponIndex + (ev.shiftKey ? -1 : 1) + weapons.length) % weapons.length; currentWeapon = weapon(); banner = 2; status('WEAPON ' + currentWeapon.name); keys.tabLatch = true; beep(620,0.07,0.007,'triangle'); }
+      if (k === 'h' && !keys.hLatch) { showHud = !showHud; keys.hLatch = true; }
+      if (k === 'f10' && !keys.f10Latch) { workstation = !workstation; keys.f10Latch = true; }
+      if (k === 'r' && !keys.rLatch) { reset(); keys.rLatch = true; }
+      if (k === 'm' && !keys.mLatch) { muted = !muted; syncMuteButton(); keys.mLatch = true; }
+      if (k === 'p' && !keys.pLatch) { paused = !paused; keys.pLatch = true; }
+    }, true);
+    window.addEventListener('keyup', (ev) => {
+      const k = ev.key === ' ' ? ' ' : ev.key.toLowerCase();
+      if (KEY_SET.has(k)) {
+        keys[k] = false;
+        if (k === 'tab') keys.tabLatch = false;
+        if (k === 'h') keys.hLatch = false;
+        if (k === 'f10') keys.f10Latch = false;
+        if (k === 'r') keys.rLatch = false;
+        if (k === 'm') keys.mLatch = false;
+        if (k === 'p') keys.pLatch = false;
+      }
+    }, true);
+    window.addEventListener('resize', resize);
+    resize();
+    reset();
+    requestAnimationFrame(render);
+  }
+
+  addStyle();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
