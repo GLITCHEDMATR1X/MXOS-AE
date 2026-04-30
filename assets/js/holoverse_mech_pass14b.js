@@ -1,29 +1,621 @@
-(()=>{'use strict';
-const $=id=>document.getElementById(id),TAU=Math.PI*2,SEED=734871,SEC=1450;
-let c,g,t=0,last=0,on=false,mut=false,drag=null,msg=null,keys=Object.create(null),view={x:0,y:0,z:.92},hits=[];
-const cl=(v,a,b)=>Math.max(a,Math.min(b,v)),mix=(a,b,u)=>a+(b-a)*u,rgb=(a,o=1)=>`rgba(${a[0]|0},${a[1]|0},${a[2]|0},${o})`,cm=(a,b,u)=>[mix(a[0],b[0],u),mix(a[1],b[1],u),mix(a[2],b[2],u)],h=(x,y=0,z=0)=>{let n=Math.sin((x*127.1+y*311.7+z*74.7+SEED)*.0174532925)*43758.5453;return n-Math.floor(n)};
-const biomes=[['Flat Civic',[0,210,255]],['Desert Archive',[255,165,0]],['Green Hills',[40,235,65]],['Ice Array',[80,180,255]],['Metropolis',[205,45,255]],['Urban Signal',[175,175,185]],['Mushroom Ring',[255,80,150]],['Forest Node',[30,180,80]]];
-const notes=['Pass 17: satellite view now follows the reference: cyan grid, hub rings, colored district clusters, and portal-core framing.','WASD and arrow keys pan the satellite camera in every direction while mouse wheel zooms over the city.','The city streams procedurally by sector so panning outward keeps revealing new HoloVerse districts.','This is a survey/tour layer only: no mech suit, no weapons, no first-person mode.','Clickable hubs, rings, traffic, and district clusters display HoloVerse info.'];
-let style=document.createElement('style');style.textContent='.demo-head .btn[href*=demo_manifest],#demoGalleryGrid,.demo-gallery-grid{display:none!important}.demo-canvas-shell{background:#020708;padding:12px;min-height:390px;overflow:hidden}.demo-canvas{min-height:360px;background:#020607;outline:none;border:1px solid rgba(0,240,255,.38);box-shadow:inset 0 0 80px #000,0 0 38px rgba(0,220,255,.18);cursor:grab}.demo-canvas:active{cursor:grabbing}.demo-runtime-ready .demo-loading-overlay{display:none!important}.demo-audio-button[aria-pressed=true]{background:rgba(0,220,255,.16);border-color:rgba(120,255,255,.65)}';document.head.appendChild(style);
-function pal(){let u=(Math.sin(t*.012)+1)/2,v=(Math.sin(t*.007+1.7)+1)/2;return{bg1:cm([0,8,11],[0,20,26],u),bg2:cm([0,40,44],[8,24,62],v),grid:cm([0,230,235],[0,160,255],u),ring:cm([0,255,245],[80,165,255],v),red:[255,34,34],pink:[255,0,210],white:[220,245,255]}}
-function tone(f=520){if(mut)return;try{let A=window.__holoTourAudio||=new(AudioContext||webkitAudioContext)(),o=A.createOscillator(),q=A.createGain();o.type='triangle';o.frequency.value=f;q.gain.value=.0045;o.connect(q);q.connect(A.destination);o.start();q.gain.exponentialRampToValueAtTime(.0001,A.currentTime+.055);o.stop(A.currentTime+.08)}catch{}}
-function sx(x){return c.width/2+(x-view.x)*view.z}function sy(y){return c.height/2+(y-view.y)*view.z}function wx(x){return(x-c.width/2)/view.z+view.x}function wy(y){return(y-c.height/2)/view.z+view.y}function vis(x,y,r=40){let X=sx(x),Y=sy(y),R=r*view.z;return X>-R&&Y>-R&&X<c.width+R&&Y<c.height+R}
-function poly(pts,f,s,a=1){g.globalAlpha=a;g.beginPath();g.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)g.lineTo(pts[i][0],pts[i][1]);g.closePath();if(f){g.fillStyle=f;g.fill()}if(s){g.strokeStyle=s;g.stroke()}g.globalAlpha=1}
-function box(x,y,w,d,ht,col,a=.76){if(!vis(x,y,Math.max(w,d)+ht))return;let X=sx(x),Y=sy(y),W=w*view.z,D=d*view.z,H=ht*view.z*.12,dx=H*.55,dy=-H*.75,edge=rgb(col,.55*a),fill=rgb(col,.20*a),top=rgb(cm(col,[255,255,255],.22),.28*a),x0=X-W/2,y0=Y-D/2,x1=X+W/2,y1=Y+D/2;poly([[x0+dx,y0+dy],[x1+dx,y0+dy],[x1+dx,y1+dy],[x0+dx,y1+dy]],top,edge,1);poly([[x1,y0],[x1+dx,y0+dy],[x1+dx,y1+dy],[x1,y1]],fill,edge,.75);poly([[x0,y1],[x1,y1],[x1+dx,y1+dy],[x0+dx,y1+dy]],fill,edge,.65);g.strokeStyle=edge;g.lineWidth=Math.max(.7,view.z*.75);g.strokeRect(x0,y0,W,D);g.beginPath();g.moveTo(x0,y0);g.lineTo(x0+dx,y0+dy);g.moveTo(x1,y0);g.lineTo(x1+dx,y0+dy);g.moveTo(x0,y1);g.lineTo(x0+dx,y1+dy);g.moveTo(x1,y1);g.lineTo(x1+dx,y1+dy);g.stroke()}
-function bg(){let p=pal(),gr=g.createRadialGradient(c.width/2,c.height/2,40,c.width/2,c.height/2,Math.max(c.width,c.height)*.75);gr.addColorStop(0,rgb(p.bg2));gr.addColorStop(.62,rgb(p.bg1));gr.addColorStop(1,'#000');g.fillStyle=gr;g.fillRect(0,0,c.width,c.height);let vg=g.createRadialGradient(c.width/2,c.height/2,80,c.width/2,c.height/2,Math.max(c.width,c.height)*.55);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');g.fillStyle=vg;g.fillRect(0,0,c.width,c.height)}
-function grid(){let p=pal(),mn=80,mj=320,minX=wx(-40),maxX=wx(c.width+40),minY=wy(-40),maxY=wy(c.height+40);g.lineWidth=1;for(let x=Math.floor(minX/mn)*mn;x<=maxX;x+=mn){g.strokeStyle=rgb(p.grid,Math.abs(x%mj)<1?.38:.16);g.beginPath();g.moveTo(sx(x),sy(minY));g.lineTo(sx(x),sy(maxY));g.stroke()}for(let y=Math.floor(minY/mn)*mn;y<=maxY;y+=mn){g.strokeStyle=rgb(p.grid,Math.abs(y%mj)<1?.38:.16);g.beginPath();g.moveTo(sx(minX),sy(y));g.lineTo(sx(maxX),sy(y));g.stroke()}}
-function ring(cx,cy,r,a=.25){let p=pal();if(!vis(cx,cy,r+10))return;g.strokeStyle=rgb(p.ring,a);g.lineWidth=Math.max(1,view.z);g.beginPath();g.arc(sx(cx),sy(cy),r*view.z,0,TAU);g.stroke()}
-function hub(cx,cy,scx,scy){let p=pal();ring(cx,cy,180,.48);ring(cx,cy,310,.38);ring(cx,cy,460,.26);ring(cx,cy,620,.18);let X=sx(cx),Y=sy(cy),r=54*view.z;g.strokeStyle=rgb(p.pink,.9);g.lineWidth=Math.max(1.2,2*view.z);g.beginPath();for(let i=0;i<8;i++){let a=i*TAU/8+Math.PI/8,xx=X+Math.cos(a)*r,yy=Y+Math.sin(a)*r;i?g.lineTo(xx,yy):g.moveTo(xx,yy)}g.closePath();g.stroke();for(let i=0;i<8;i++){let a=i*TAU/8;g.strokeStyle=rgb(i%2?p.grid:p.pink,.68);g.beginPath();g.moveTo(X+Math.cos(a)*r*.38,Y+Math.sin(a)*r*.38);g.lineTo(X+Math.cos(a)*r*1.55,Y+Math.sin(a)*r*1.55);g.stroke()}g.fillStyle=rgb(p.red,.92);g.font=`${Math.max(10,12*view.z)}px Consolas`;g.textAlign='center';if(view.z>.45)g.fillText(scx===0&&scy===0?'Portal Hub Core':'Remote Core '+scx+','+scy,X,Y-r-14*view.z);hits.push({x:cx,y:cy,r:90,title:scx===0&&scy===0?'Portal Hub Core':'Remote HoloVerse Core',body:'Central survey hub with concentric route rings. Pan outward to reveal more generated city sectors.'})}
-function biome(scx,scy,i){return biomes[Math.floor(h(scx,scy,i)*biomes.length)%biomes.length]}
-function sector(scx,scy){let cx=scx*SEC,cy=scy*SEC;if(!vis(cx,cy,SEC*.9))return;hub(cx,cy,scx,scy);for(let z=0;z<8;z++){let b=biome(scx,scy,z),col=b[1],base=z*TAU/8+h(scx,scy,z)*.28,rad=280+h(scx,z,2)*420,cnt=10+Math.floor(h(scx,scy,z+5)*18);for(let i=0;i<cnt;i++){let rr=rad+h(scx*31+z,scy*17+i)*130,aa=base+(h(scx+i,scy+z)-.5)*.55,x=cx+Math.cos(aa)*rr+(h(i,z)-.5)*115,y=cy+Math.sin(aa)*rr+(h(z,i)-.5)*115,w=20+h(scx,z,i)*58,d=20+h(scx+i,scy,z)*48,ht=28+h(z,scx,scy+i)*145;box(x,y,w,d,ht,col,.82);if(view.z>.25&&i%8===0){g.strokeStyle=rgb(col,.22);g.beginPath();g.moveTo(sx(cx),sy(cy));g.lineTo(sx(x),sy(y));g.stroke()}hits.push({x,y,r:Math.max(w,d)*.65,title:b[0],body:'Generated '+b[0]+' cluster. This district streams from the infinite satellite city field.'})}}}
-function traffic(dt){let p=pal(),minX=wx(-60),maxX=wx(c.width+60),minY=wy(-60),maxY=wy(c.height+60),sp=160;for(let y=Math.floor(minY/sp)*sp;y<=maxY;y+=sp)for(let n=0;n<3;n++){let ph=(t*(38+n*16)+h(y,n)*1000)%sp,x0=Math.floor(minX/sp)*sp+ph;for(let x=x0;x<=maxX;x+=sp)box(x,y+8*n,22,8,20,n%2?p.grid:p.red,.75)}for(let x=Math.floor(minX/sp)*sp;x<=maxX;x+=sp)for(let n=0;n<2;n++){let ph=(t*(32+n*18)+h(x,n)*1000)%sp,y0=Math.floor(minY/sp)*sp+ph;for(let y=y0;y<=maxY;y+=sp)box(x+8*n,y,8,22,20,p.white,.55)}}
-function labels(){let p=pal();g.fillStyle=rgb(p.white,.42);g.font='12px Consolas';g.textAlign='left';let X=sx(-SEC*.42),Y=sy(-SEC*.47);if(X>-100&&Y>-30&&X<c.width)g.fillText('Portal Hub Core  //  Holo-Utopia Civic Ring',X,Y);g.fillStyle=rgb(p.red,.9);g.textAlign='center';g.font='bold 16px Consolas';if(vis(0,520,80))g.fillText('E // CORE OPTIONS',sx(0),sy(520))}
-function click(px,py){let x=wx(px),y=wy(py),best=null,bd=1e9;for(let q of hits){let d=Math.hypot(q.x-x,q.y-y)/Math.max(1,q.r);if(d<bd){bd=d;best=q}}if(best&&bd<1.5){msg={title:best.title,body:best.body,life:5,age:0};tone();return}msg={title:'HoloVerse Satellite Survey',body:notes.shift()||'Satellite survey notes complete for this session. Keep panning: the city keeps streaming.',life:5,age:0};tone(420)}
-function step(dt){let sp=(keys.shift?620:380)*dt/view.z;if(keys.w||keys.arrowup)view.y-=sp;if(keys.s||keys.arrowdown)view.y+=sp;if(keys.a||keys.arrowleft)view.x-=sp;if(keys.d||keys.arrowright)view.x+=sp}
-function wrap(s,x,y,w,lh){let a=s.split(' '),l='',out=[];for(let z of a){let q=l+z+' ';if(g.measureText(q).width>w&&l){out.push(l);l=z+' '}else l=q}out.push(l);out.slice(0,3).forEach((q,i)=>g.fillText(q,x,y+i*lh))}
-function hud(){let p=pal();g.fillStyle='rgba(0,8,12,.66)';g.fillRect(16,16,450,122);g.strokeStyle=rgb(p.grid,.48);g.strokeRect(16,16,450,122);g.textAlign='left';g.fillStyle=rgb(p.grid,.95);g.font='bold 16px Consolas';g.fillText('HOLOVERSE SATELLITE // INFINITE CITY SURVEY',30,42);g.font='13px Consolas';g.fillText('X '+Math.round(view.x)+'  Y '+Math.round(view.y)+'  ZOOM '+view.z.toFixed(2)+'x',30,66);g.fillText('WASD / ARROWS PAN  SHIFT FAST  WHEEL ZOOM',30,90);g.fillText('DRAG PAN  CLICK INFO  M MUTE  ESC RELEASE',30,114);if(msg){msg.age+=1/60;msg.life-=1/60;let a=cl(Math.min(msg.age,msg.life),0,1);g.fillStyle='rgba(0,8,14,'+(.72*a)+')';g.fillRect(c.width*.18,c.height*.74,c.width*.64,92);g.strokeStyle=rgb(p.pink,.65*a);g.strokeRect(c.width*.18,c.height*.74,c.width*.64,92);g.textAlign='center';g.fillStyle=rgb(p.white,.96*a);g.font='bold 16px Consolas';g.fillText(msg.title,c.width/2,c.height*.78);g.font='13px Consolas';wrap(msg.body,c.width/2,c.height*.815,c.width*.56,17);if(msg.life<=0)msg=null}if(!on){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,c.width,c.height);g.textAlign='center';g.fillStyle=rgb(p.grid,.95);g.font='bold 25px Consolas';g.fillText('CLICK TO FOCUS SATELLITE TOUR',c.width/2,c.height/2-8);g.font='14px Consolas';g.fillText('WASD pans, mouse wheel zooms, click colored districts for info.',c.width/2,c.height/2+22)}}
-function resize(){let b=c.getBoundingClientRect(),d=Math.min(1.45,devicePixelRatio||1),w=Math.max(640,Math.floor(b.width*d)),hh=Math.floor(w*9/16);if(c.width!==w||c.height!==hh){c.width=w;c.height=hh}}
-function frame(now){resize();let dt=Math.min(.05,((now-last)||16)/1000);last=now;t+=dt;if(on)step(dt);hits=[];bg();grid();let minX=wx(-250),maxX=wx(c.width+250),minY=wy(-250),maxY=wy(c.height+250),a=Math.floor(minX/SEC)-1,b=Math.floor(maxX/SEC)+1,d=Math.floor(minY/SEC)-1,e=Math.floor(maxY/SEC)+1;for(let yy=d;yy<=e;yy++)for(let xx=a;xx<=b;xx++)sector(xx,yy);traffic(dt);labels();hud();requestAnimationFrame(frame)}
-function boot(){c=$('demoCanvas');if(!c)return;g=c.getContext('2d');c.tabIndex=0;document.body.classList.add('demo-runtime-ready','single-demo-runtime','holoverse-demo-port');let ov=$('demoLoadingOverlay');if(ov)ov.hidden=true;let head=document.querySelector('.demo-head');if(head&&!$('demoMuteBtn')){let b=document.createElement('button');b.id='demoMuteBtn';b.className='btn btn-secondary demo-audio-button';b.type='button';b.textContent='Mute Audio';b.onclick=e=>{e.preventDefault();mut=!mut;b.textContent=mut?'Audio Muted':'Mute Audio';b.setAttribute('aria-pressed',String(mut))};head.appendChild(b)}[['demoSectionTitle','HoloVerse Demo — Infinite Satellite Survey'],['demoSectionIntro','A neon top-down HoloVerse overview inspired by the reference: portal rings, cyan grid, colored district clusters, and an infinite city field that keeps changing as you explore.'],['demoTitle','HoloVerse Demo'],['demoSummary','Satellite POV over the HoloVerse city. Pan with WASD or drag, zoom with mouse wheel, and click hubs or districts for info.'],['demoObjective','Survey the city from above, follow the concentric hub rings, inspect colored district clusters, and keep panning to reveal more generated civilization.'],['demoControls','Click the demo first. WASD/Arrows pan in any direction, Shift pans faster, mouse wheel zooms, drag pans, click districts/signals for info, M mutes, Esc releases focus.'],['demoDetails','Pass 17 pushes the satellite layer closer to the HoloVerse overview reference and adds infinite sector streaming around the camera.']].forEach(([id,v])=>{let e=$(id);if(e)e.textContent=v});let tags=$('demoTags');if(tags){tags.innerHTML='';['Reference-style','Infinite city','WASD pan','Wheel zoom','Clickable districts'].forEach(x=>{let s=document.createElement('span');s.textContent=x;tags.appendChild(s)})}c.addEventListener('pointerdown',ev=>{on=true;c.focus({preventScroll:true});drag={x:ev.clientX,y:ev.clientY,mx:ev.offsetX*(c.width/c.clientWidth),my:ev.offsetY*(c.height/c.clientHeight),m:false};ev.preventDefault();ev.stopPropagation()},true);window.addEventListener('pointermove',ev=>{if(!drag)return;let dx=ev.clientX-drag.x,dy=ev.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>2)drag.m=true;view.x-=dx/view.z;view.y-=dy/view.z;drag.x=ev.clientX;drag.y=ev.clientY;drag.mx=(ev.clientX-c.getBoundingClientRect().left)*(c.width/c.clientWidth);drag.my=(ev.clientY-c.getBoundingClientRect().top)*(c.height/c.clientHeight);ev.preventDefault();ev.stopPropagation()},true);window.addEventListener('pointerup',()=>{if(drag&&!drag.m)click(drag.mx,drag.my);drag=null},true);c.addEventListener('wheel',ev=>{on=true;c.focus({preventScroll:true});let px=ev.offsetX*(c.width/c.clientWidth),py=ev.offsetY*(c.height/c.clientHeight),bx=wx(px),by=wy(py);view.z=cl(view.z*(ev.deltaY<0?1.13:.88),.28,3.2);view.x+=bx-wx(px);view.y+=by-wy(py);ev.preventDefault();ev.stopPropagation()},{passive:false});window.addEventListener('keydown',ev=>{let k=ev.key.toLowerCase();if(k==='escape'){on=false;keys=Object.create(null);drag=null;return}if(!on)return;if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','shift','m'].includes(k)){if(k==='m'){mut=!mut;let b=$('demoMuteBtn');if(b){b.textContent=mut?'Audio Muted':'Mute Audio';b.setAttribute('aria-pressed',String(mut))}}else keys[k]=true;ev.preventDefault();ev.stopPropagation()}},true);window.addEventListener('keyup',ev=>{keys[ev.key.toLowerCase()]=false},true);c.addEventListener('blur',()=>{on=false;keys=Object.create(null);drag=null});window.addEventListener('resize',resize);resize();msg={title:'Infinite Satellite Survey',body:'Pass 17 online: WASD pans, wheel zooms, and each sector reveals new HoloVerse district clusters.',life:5,age:0};requestAnimationFrame(frame)}
-document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot):boot();
+(()=>{
+  'use strict';
+
+  const $ = (id) => document.getElementById(id);
+  const TAU = Math.PI * 2;
+  const WORLD_OUTER_RADIUS = 11100;
+  const SPACE_PAD = 3900;
+  const ANCHOR_ANGLE = -Math.PI / 2;
+
+  const RINGS = [
+    { key: 1, name: 'FLAT', label: 'FLAT / HUB CORE', bot: 'IO', kind: 'flat', r0: 30, r1: 620, color: [205, 214, 220], line: [245, 250, 255], accent: [255, 255, 225], note: 'Imported from HoloVerse world.py ring 1. The compact hub core where IO watches the center routes.' },
+    { key: 2, name: 'FORESTS', label: 'FORESTS', bot: 'Vanta', kind: 'forest', r0: 620, r1: 1920, color: [22, 166, 75], line: [80, 255, 120], accent: [172, 255, 92], note: 'Imported from HoloVerse world.py ring 2. A green living belt around the hub.' },
+    { key: 3, name: 'GREEN HILLS', label: 'GREEN HILLS', bot: 'Nyx', kind: 'hills', r0: 1920, r1: 3300, color: [154, 216, 48], line: [214, 255, 82], accent: [255, 245, 84], note: 'Imported from HoloVerse world.py ring 3. Rolling yellow-green terrain compressed into a readable top-down band.' },
+    { key: 4, name: 'MUSHROOM', label: 'MUSHROOM', bot: 'Solace', kind: 'mushroom', r0: 3300, r1: 4700, color: [236, 66, 190], line: [255, 125, 240], accent: [70, 255, 255], note: 'Imported from HoloVerse world.py ring 4. The strange fantasy/life ring before the hard environment bands.' },
+    { key: 5, name: 'DESERT', label: 'DESERT', bot: 'Ember', kind: 'desert', r0: 4700, r1: 6100, color: [224, 144, 45], line: [255, 210, 94], accent: [255, 140, 82], note: 'Imported from HoloVerse world.py ring 5. Amber desert archive terrain with room for pyramids later.' },
+    { key: 6, name: 'ICE', label: 'ICE', bot: 'Mirror', kind: 'ice', r0: 6100, r1: 7500, color: [96, 197, 255], line: [190, 245, 255], accent: [255, 255, 255], note: 'Imported from HoloVerse world.py ring 6. Cool blue ice array terrain, ready for crystal/cube detail later.' },
+    { key: 7, name: 'URBAN', label: 'URBAN', bot: 'Sable', kind: 'urban', r0: 7500, r1: 9100, color: [126, 130, 142], line: [220, 226, 236], accent: [255, 70, 70], note: 'Imported from HoloVerse world.py ring 7. Grey ruined urban war-zone belt, kept as a visual ring only in this site pass.' },
+    { key: 8, name: 'METROPOLIS', label: 'METROPOLIS', bot: 'Archivist', kind: 'metropolis', r0: 9100, r1: 11100, color: [118, 70, 204], line: [205, 145, 255], accent: [110, 190, 255], note: 'Imported from HoloVerse world.py ring 8. The outer city shell; visually compact here even though the game ring streams outward.' },
+  ];
+
+  let canvas, ctx, last = 0, t = 0;
+  let focused = false;
+  let dragging = null;
+  let keys = Object.create(null);
+  let muted = false;
+  let message = null;
+  const camera = { x: 0, y: 0, zoom: 1.0 };
+  let hits = [];
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const mix = (a, b, u) => a + (b - a) * u;
+  const lerpColor = (a, b, u) => [mix(a[0], b[0], u), mix(a[1], b[1], u), mix(a[2], b[2], u)];
+  const rgba = (rgb, a = 1) => `rgba(${rgb[0]|0},${rgb[1]|0},${rgb[2]|0},${a})`;
+  const noise = (x, y = 0, z = 0) => {
+    const n = Math.sin((x * 127.1 + y * 311.7 + z * 74.7 + 734871) * 0.0174532925) * 43758.5453;
+    return n - Math.floor(n);
+  };
+
+  const style = document.createElement('style');
+  style.textContent = [
+    '.demo-head .btn[href*=demo_manifest],#demoGalleryGrid,.demo-gallery-grid{display:none!important}',
+    '.demo-canvas-shell{background:#020608;padding:12px;min-height:390px;overflow:hidden}',
+    '.demo-canvas{min-height:360px;background:#020607;outline:none;border:1px solid rgba(0,240,255,.38);box-shadow:inset 0 0 80px #000,0 0 38px rgba(0,220,255,.18);cursor:grab}',
+    '.demo-canvas:active{cursor:grabbing}',
+    '.demo-runtime-ready .demo-loading-overlay{display:none!important}',
+    '.demo-audio-button[aria-pressed=true]{background:rgba(0,220,255,.16);border-color:rgba(120,255,255,.65)}'
+  ].join('');
+  document.head.appendChild(style);
+
+  function tone(freq = 460) {
+    if (muted) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const audio = window.__holoRingAudio || (window.__holoRingAudio = new AudioCtx());
+      const osc = audio.createOscillator();
+      const gain = audio.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      gain.gain.value = 0.004;
+      osc.connect(gain);
+      gain.connect(audio.destination);
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.07);
+      osc.stop(audio.currentTime + 0.09);
+    } catch (_) {}
+  }
+
+  function baseScale() {
+    const usable = Math.min(canvas.width, canvas.height) * 0.425;
+    return usable / WORLD_OUTER_RADIUS;
+  }
+
+  function worldToScreen(x, y) {
+    const s = baseScale() * camera.zoom;
+    return [canvas.width / 2 + (x - camera.x) * s, canvas.height / 2 + (y - camera.y) * s];
+  }
+
+  function screenToWorld(x, y) {
+    const s = baseScale() * camera.zoom;
+    return [(x - canvas.width / 2) / s + camera.x, (y - canvas.height / 2) / s + camera.y];
+  }
+
+  function screenRadius(worldRadius) {
+    return worldRadius * baseScale() * camera.zoom;
+  }
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+    const w = Math.max(640, Math.floor(rect.width * dpr));
+    const h = Math.max(360, Math.floor(w * 9 / 16));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+  }
+
+  function drawBackground() {
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const maxR = Math.max(canvas.width, canvas.height) * 0.72;
+    const gradient = ctx.createRadialGradient(cx, cy, 20, cx, cy, maxR);
+    gradient.addColorStop(0, '#071d22');
+    gradient.addColorStop(0.42, '#041016');
+    gradient.addColorStop(0.75, '#020509');
+    gradient.addColorStop(1, '#000000');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const spaceR = screenRadius(WORLD_OUTER_RADIUS + SPACE_PAD * 0.42);
+    ctx.strokeStyle = 'rgba(95,180,255,.18)';
+    ctx.lineWidth = Math.max(1, 1.2 * camera.zoom);
+    ctx.setLineDash([4, 8]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, spaceR, 0, TAU);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    for (let i = 0; i < 130; i++) {
+      const a = noise(i, 8) * TAU;
+      const r = screenRadius(WORLD_OUTER_RADIUS + 300 + noise(i, 2) * SPACE_PAD * 1.35);
+      const x = cx + Math.cos(a + t * 0.006 * (noise(i, 4) - 0.5)) * r;
+      const y = cy + Math.sin(a + t * 0.006 * (noise(i, 5) - 0.5)) * r;
+      const twinkle = 0.22 + 0.42 * noise(i, Math.floor(t * 2));
+      ctx.fillStyle = `rgba(180,230,255,${twinkle})`;
+      ctx.fillRect(x, y, Math.max(1, camera.zoom * 1.1), Math.max(1, camera.zoom * 1.1));
+    }
+  }
+
+  function drawAnnulus(inner, outer, fill, stroke, alpha = 1) {
+    const [cx, cy] = worldToScreen(0, 0);
+    const r0 = screenRadius(inner);
+    const r1 = screenRadius(outer);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r1, 0, TAU);
+    ctx.arc(cx, cy, r0, TAU, 0, true);
+    ctx.closePath();
+    ctx.fillStyle = fill;
+    ctx.fill();
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = Math.max(1, 1.5 * camera.zoom);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawRingPattern(ring, index) {
+    const mid = (ring.r0 + ring.r1) * 0.5;
+    const thickness = ring.r1 - ring.r0;
+    const count = ring.kind === 'metropolis' ? 72 : ring.kind === 'urban' ? 56 : ring.kind === 'forest' ? 48 : 36;
+    const patternAlpha = camera.zoom < 0.6 ? 0.12 : 0.24;
+
+    for (let i = 0; i < count; i++) {
+      const n = noise(index, i);
+      const a = (i / count) * TAU + t * (ring.kind === 'metropolis' ? 0.015 : 0.004) * (0.4 + n);
+      const rr = mid + (n - 0.5) * thickness * 0.58;
+      const [x, y] = worldToScreen(Math.cos(a) * rr, Math.sin(a) * rr);
+      const size = Math.max(1.2, screenRadius(thickness * (0.012 + 0.018 * noise(i, index))));
+      ctx.fillStyle = rgba(ring.accent, patternAlpha + 0.12 * noise(i, Math.floor(t)));
+
+      if (ring.kind === 'metropolis') {
+        ctx.fillRect(x - size * 0.55, y - size * 1.4, size * 1.1, size * 2.8);
+      } else if (ring.kind === 'urban') {
+        ctx.fillRect(x - size, y - size * 0.35, size * 2, size * 0.7);
+      } else if (ring.kind === 'forest' || ring.kind === 'hills') {
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, TAU);
+        ctx.fill();
+      } else if (ring.kind === 'mushroom') {
+        ctx.beginPath();
+        ctx.arc(x, y, size * 1.35, Math.PI, 0);
+        ctx.lineTo(x + size * 0.35, y + size * 1.4);
+        ctx.lineTo(x - size * 0.35, y + size * 1.4);
+        ctx.closePath();
+        ctx.fill();
+      } else if (ring.kind === 'desert') {
+        ctx.beginPath();
+        ctx.moveTo(x, y - size * 1.4);
+        ctx.lineTo(x + size * 1.2, y + size);
+        ctx.lineTo(x - size * 1.2, y + size);
+        ctx.closePath();
+        ctx.fill();
+      } else if (ring.kind === 'ice') {
+        ctx.strokeStyle = rgba(ring.accent, patternAlpha + 0.14);
+        ctx.lineWidth = Math.max(1, camera.zoom);
+        ctx.strokeRect(x - size, y - size, size * 2, size * 2);
+      }
+    }
+  }
+
+  function drawHub() {
+    const [cx, cy] = worldToScreen(0, 0);
+    const core = screenRadius(350);
+    const pulse = 1 + Math.sin(t * 2.2) * 0.035;
+    ctx.strokeStyle = 'rgba(0,255,245,.76)';
+    ctx.lineWidth = Math.max(1, 2.4 * camera.zoom);
+    for (const r of [160, 260, 390, 520]) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, screenRadius(r) * pulse, 0, TAU);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(0,16,20,.72)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, core * 0.46, 0, TAU);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.85)';
+    ctx.stroke();
+
+    for (let i = 0; i < 8; i++) {
+      const a = i * TAU / 8 + Math.PI / 8;
+      const [x1, y1] = worldToScreen(Math.cos(a) * 85, Math.sin(a) * 85);
+      const [x2, y2] = worldToScreen(Math.cos(a) * 560, Math.sin(a) * 560);
+      ctx.strokeStyle = i % 2 ? 'rgba(0,245,255,.45)' : 'rgba(255,255,255,.35)';
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = 'rgba(235,250,255,.95)';
+    ctx.font = `${Math.max(11, 13 * camera.zoom)}px Consolas, monospace`;
+    ctx.textAlign = 'center';
+    if (camera.zoom > 0.52) ctx.fillText('HUB', cx, cy + 4);
+    hits.push({ kind: 'hub', x: 0, y: 0, r0: 0, r1: 620, title: 'HoloVerse Hub Core', body: 'Miniature top-down hub. The next pass can add civilization traffic flowing outward through every ring.' });
+  }
+
+  function drawBoundaryGuides() {
+    const routeAngles = [-Math.PI / 2, 0, Math.PI / 2, Math.PI];
+    for (const a of routeAngles) {
+      const [x1, y1] = worldToScreen(Math.cos(a) * 620, Math.sin(a) * 620);
+      const [x2, y2] = worldToScreen(Math.cos(a) * WORLD_OUTER_RADIUS, Math.sin(a) * WORLD_OUTER_RADIUS);
+      ctx.strokeStyle = 'rgba(220,245,255,.18)';
+      ctx.lineWidth = Math.max(1, camera.zoom);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+  }
+
+  function drawLabels() {
+    const [cx, cy] = worldToScreen(0, 0);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i < RINGS.length; i++) {
+      const ring = RINGS[i];
+      const mid = (ring.r0 + ring.r1) * 0.5;
+      const a = ANCHOR_ANGLE + (i - 3.5) * 0.025;
+      const [x, y] = worldToScreen(Math.cos(a) * mid, Math.sin(a) * mid);
+      const minSize = ring.key >= 7 ? 10 : 9;
+      const fontSize = Math.max(minSize, Math.min(15, 10.5 * camera.zoom));
+      if (camera.zoom < 0.48 && ring.key < 4) continue;
+      ctx.fillStyle = 'rgba(2,8,12,.55)';
+      const text = ring.name;
+      const width = ctx.measureText(text).width + 16;
+      ctx.fillRect(x - width / 2, y - fontSize, width, fontSize * 1.8);
+      ctx.strokeStyle = rgba(ring.line, 0.32);
+      ctx.strokeRect(x - width / 2, y - fontSize, width, fontSize * 1.8);
+      ctx.fillStyle = rgba(ring.line, 0.96);
+      ctx.font = `bold ${fontSize}px Consolas, monospace`;
+      ctx.fillText(text, x, y);
+    }
+
+    if (camera.zoom <= 0.7) {
+      ctx.fillStyle = 'rgba(150,210,255,.58)';
+      ctx.font = 'bold 13px Consolas, monospace';
+      ctx.fillText('SPACE / ORBITAL EXTERIOR', cx, cy - screenRadius(WORLD_OUTER_RADIUS + 1850));
+    }
+  }
+
+  function drawBotAnchors() {
+    for (let i = 0; i < RINGS.length; i++) {
+      const ring = RINGS[i];
+      const mid = (ring.r0 + ring.r1) * 0.5;
+      const a = ANCHOR_ANGLE + i * 0.045 + Math.sin(t * 0.65 + i) * 0.01;
+      const [x, y] = worldToScreen(Math.cos(a) * mid, Math.sin(a) * mid);
+      const r = Math.max(3, 5.4 * camera.zoom);
+      ctx.fillStyle = rgba(ring.accent, 0.95);
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, TAU);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,.7)';
+      ctx.stroke();
+      if (camera.zoom > 0.78) {
+        ctx.fillStyle = 'rgba(235,250,255,.85)';
+        ctx.font = `${Math.max(8, 10 * camera.zoom)}px Consolas, monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillText(ring.bot, x, y - r - 9 * camera.zoom);
+      }
+    }
+  }
+
+  function drawSpaceOrbit() {
+    const orbitCount = 22;
+    for (let i = 0; i < orbitCount; i++) {
+      const a = i * TAU / orbitCount + t * 0.028;
+      const r = WORLD_OUTER_RADIUS + 650 + noise(i, 9) * 2100;
+      const [x, y] = worldToScreen(Math.cos(a) * r, Math.sin(a) * r);
+      const size = Math.max(2, 4 * camera.zoom);
+      ctx.strokeStyle = 'rgba(110,200,255,.45)';
+      ctx.lineWidth = Math.max(1, camera.zoom);
+      ctx.beginPath();
+      ctx.moveTo(x - size * 1.8, y);
+      ctx.lineTo(x + size * 1.8, y);
+      ctx.moveTo(x, y - size * 1.8);
+      ctx.lineTo(x, y + size * 1.8);
+      ctx.stroke();
+    }
+
+    const a = t * 0.022 - 1.2;
+    const [ox, oy] = worldToScreen(Math.cos(a) * (WORLD_OUTER_RADIUS + 2500), Math.sin(a) * (WORLD_OUTER_RADIUS + 2500));
+    ctx.fillStyle = 'rgba(255,190,70,.9)';
+    ctx.beginPath();
+    ctx.arc(ox, oy, Math.max(4, 7 * camera.zoom), 0, TAU);
+    ctx.fill();
+    if (camera.zoom < 1.8) {
+      ctx.fillStyle = 'rgba(255,220,140,.85)';
+      ctx.font = `${Math.max(9, 12 * camera.zoom)}px Consolas, monospace`;
+      ctx.textAlign = 'center';
+      ctx.fillText('Orbit', ox, oy - 14 * camera.zoom);
+    }
+  }
+
+  function registerRingHits() {
+    for (const ring of RINGS) {
+      hits.push({
+        kind: 'ring',
+        r0: ring.r0,
+        r1: ring.r1,
+        title: `${ring.name} // ${ring.bot}`,
+        body: `${ring.note} Radius ${Math.round(ring.r0)}-${Math.round(ring.r1)} compressed into the mini ring-world.`
+      });
+    }
+  }
+
+  function drawWorld() {
+    hits = [];
+    drawBackground();
+
+    const [cx, cy] = worldToScreen(0, 0);
+    const outerGlow = ctx.createRadialGradient(cx, cy, screenRadius(WORLD_OUTER_RADIUS * 0.72), cx, cy, screenRadius(WORLD_OUTER_RADIUS * 1.08));
+    outerGlow.addColorStop(0, 'rgba(0,0,0,0)');
+    outerGlow.addColorStop(1, 'rgba(120,60,255,.14)');
+    ctx.fillStyle = outerGlow;
+    ctx.beginPath();
+    ctx.arc(cx, cy, screenRadius(WORLD_OUTER_RADIUS * 1.08), 0, TAU);
+    ctx.fill();
+
+    for (let i = RINGS.length - 1; i >= 0; i--) {
+      const ring = RINGS[i];
+      const fill = rgba(lerpColor(ring.color, [0, 0, 0], 0.18), ring.key === 8 ? 0.72 : 0.68);
+      const stroke = rgba(ring.line, ring.key === 8 ? 0.86 : 0.72);
+      drawAnnulus(ring.r0, ring.r1, fill, stroke, 1);
+    }
+
+    drawBoundaryGuides();
+    registerRingHits();
+    for (let i = 0; i < RINGS.length; i++) drawRingPattern(RINGS[i], i);
+    drawHub();
+    drawBotAnchors();
+    drawSpaceOrbit();
+    drawLabels();
+  }
+
+  function drawPanel() {
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = 'rgba(0,8,12,.70)';
+    ctx.fillRect(16, 16, 490, 132);
+    ctx.strokeStyle = 'rgba(0,245,255,.45)';
+    ctx.strokeRect(16, 16, 490, 132);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = 'rgba(0,245,255,.95)';
+    ctx.font = 'bold 16px Consolas, monospace';
+    ctx.fillText('MINI HOLOVERSE // LIVING RING-WORLD BASE', 30, 43);
+    ctx.font = '13px Consolas, monospace';
+    ctx.fillStyle = 'rgba(220,245,255,.82)';
+    ctx.fillText('WORLD.PY ORDER: FLAT > FORESTS > HILLS > MUSHROOM > DESERT > ICE > URBAN > METROPOLIS', 30, 68);
+    ctx.fillText(`ZOOM ${camera.zoom.toFixed(2)}x  //  DRAG PAN  WHEEL ZOOM  CLICK RINGS`, 30, 92);
+    ctx.fillText('SPACE IS OUTSIDE THE OUTER RING; ZOOM OUT TO SEE MORE ORBITAL ROOM.', 30, 116);
+    ctx.fillText('THIS PASS STARTS WITH THE SHRUNK RINGS + COLORS ONLY.', 30, 138);
+  }
+
+  function drawMessage() {
+    if (!message) return;
+    message.age += 1 / 60;
+    message.life -= 1 / 60;
+    const alpha = clamp(Math.min(message.age * 2, message.life), 0, 1);
+    const w = Math.min(canvas.width * 0.72, 680);
+    const h = 96;
+    const x = (canvas.width - w) / 2;
+    const y = canvas.height - h - 28;
+    ctx.fillStyle = `rgba(0,8,14,${0.75 * alpha})`;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = `rgba(255,80,220,${0.68 * alpha})`;
+    ctx.strokeRect(x, y, w, h);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = `rgba(235,250,255,${alpha})`;
+    ctx.font = 'bold 16px Consolas, monospace';
+    ctx.fillText(message.title, canvas.width / 2, y + 30);
+    ctx.font = '13px Consolas, monospace';
+    wrapText(message.body, canvas.width / 2, y + 55, w - 60, 17, alpha);
+    if (message.life <= 0) message = null;
+  }
+
+  function wrapText(text, x, y, width, lineHeight, alpha) {
+    const words = text.split(' ');
+    let line = '';
+    const lines = [];
+    for (const word of words) {
+      const test = `${line}${word} `;
+      if (ctx.measureText(test).width > width && line) {
+        lines.push(line.trim());
+        line = `${word} `;
+      } else {
+        line = test;
+      }
+    }
+    if (line.trim()) lines.push(line.trim());
+    for (let i = 0; i < Math.min(lines.length, 3); i++) {
+      ctx.fillStyle = `rgba(210,240,255,${0.9 * alpha})`;
+      ctx.fillText(lines[i], x, y + i * lineHeight);
+    }
+  }
+
+  function drawFocusOverlay() {
+    if (focused) return;
+    ctx.fillStyle = 'rgba(0,0,0,.38)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(0,245,255,.96)';
+    ctx.font = 'bold 24px Consolas, monospace';
+    ctx.fillText('CLICK TO FOCUS MINI HOLOVERSE', canvas.width / 2, canvas.height / 2 - 10);
+    ctx.font = '14px Consolas, monospace';
+    ctx.fillText('Top-down compressed ring world. Drag, zoom, and click each region.', canvas.width / 2, canvas.height / 2 + 22);
+  }
+
+  function clickCanvas(px, py) {
+    const [wx, wy] = screenToWorld(px, py);
+    const r = Math.hypot(wx, wy);
+    let selected = null;
+    for (const hit of hits) {
+      if (hit.kind === 'hub' && r <= hit.r1) selected = hit;
+      else if (hit.kind === 'ring' && r >= hit.r0 && r <= hit.r1) selected = hit;
+    }
+    if (!selected && r > WORLD_OUTER_RADIUS) {
+      selected = { title: 'SPACE // Orbit', body: 'Space is outside the ground rings. This pass shows the exterior orbital layer without making it a normal biome ring.' };
+    }
+    if (!selected) {
+      selected = { title: 'Mini HoloVerse Ring World', body: 'The world is now a compact top-down terrarium. Next passes can add civilization loops inside these colored rings.' };
+    }
+    message = { title: selected.title, body: selected.body, life: 5, age: 0 };
+    tone(selected.title.includes('SPACE') ? 620 : 460);
+  }
+
+  function update(dt) {
+    const speed = (keys.shift ? 1550 : 900) * dt / Math.max(0.55, camera.zoom);
+    if (keys.w || keys.arrowup) camera.y -= speed;
+    if (keys.s || keys.arrowdown) camera.y += speed;
+    if (keys.a || keys.arrowleft) camera.x -= speed;
+    if (keys.d || keys.arrowright) camera.x += speed;
+    const limit = WORLD_OUTER_RADIUS * 0.45;
+    camera.x = clamp(camera.x, -limit, limit);
+    camera.y = clamp(camera.y, -limit, limit);
+  }
+
+  function frame(now) {
+    resize();
+    const dt = Math.min(0.05, ((now - last) || 16) / 1000);
+    last = now;
+    t += dt;
+    if (focused) update(dt);
+    drawWorld();
+    drawPanel();
+    drawMessage();
+    drawFocusOverlay();
+    window.requestAnimationFrame(frame);
+  }
+
+  function setText(id, text) {
+    const el = $(id);
+    if (el) el.textContent = text;
+  }
+
+  function updatePageCopy() {
+    setText('demoSectionTitle', 'HoloVerse Demo — Mini Living Ring World');
+    setText('demoSectionIntro', 'A compact top-down HoloVerse terrarium using the real ring order from the Panda3D world: hub core, natural rings, hard-environment rings, Urban, and outer Metropolis, with space outside the world edge.');
+    setText('demoTitle', 'Mini HoloVerse Ring World');
+    setText('demoSummary', 'The full HoloVerse region stack is compressed into one watchable overhead world. This pass starts with the correct rings and colors before civilization simulation is added.');
+    setText('demoObjective', 'Inspect the shrunken ring world from above, confirm the region order and colors, zoom out for the space exterior, and click rings for imported route notes.');
+    setText('demoControls', 'Click the demo first. Drag or WASD/Arrows pan, mouse wheel zooms, Shift pans faster, click regions for info, M mutes, Esc releases focus.');
+    setText('demoDetails', 'Pass 18 replaces the infinite survey field with a bounded miniature HoloVerse layout based on data/HoloVerse/world.py: Flat, Forests, Green Hills, Mushroom, Desert, Ice, Urban, then Metropolis.');
+    setText('demoSectionNote', 'Miniature-world pass: this starts with the correct shrunken rings and color bands so future passes can add citizens, traffic, construction, weather, and region events.');
+    const tags = $('demoTags');
+    if (tags) {
+      tags.innerHTML = '';
+      ['Mini ring world', 'Actual biome order', 'Top-down view', 'Space exterior', 'Living world base'].forEach((text) => {
+        const span = document.createElement('span');
+        span.textContent = text;
+        tags.appendChild(span);
+      });
+    }
+  }
+
+  function boot() {
+    canvas = $('demoCanvas');
+    if (!canvas) return;
+    ctx = canvas.getContext('2d');
+    canvas.tabIndex = 0;
+    document.body.classList.add('demo-runtime-ready', 'single-demo-runtime', 'holoverse-mini-ringworld');
+    const overlay = $('demoLoadingOverlay');
+    if (overlay) overlay.hidden = true;
+    updatePageCopy();
+
+    const head = document.querySelector('.demo-head');
+    if (head && !$('demoMuteBtn')) {
+      const btn = document.createElement('button');
+      btn.id = 'demoMuteBtn';
+      btn.className = 'btn btn-secondary demo-audio-button';
+      btn.type = 'button';
+      btn.textContent = 'Mute Audio';
+      btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        muted = !muted;
+        btn.textContent = muted ? 'Audio Muted' : 'Mute Audio';
+        btn.setAttribute('aria-pressed', String(muted));
+      });
+      head.appendChild(btn);
+    }
+
+    canvas.addEventListener('pointerdown', (event) => {
+      focused = true;
+      canvas.focus({ preventScroll: true });
+      const sx = event.offsetX * (canvas.width / canvas.clientWidth);
+      const sy = event.offsetY * (canvas.height / canvas.clientHeight);
+      dragging = { x: event.clientX, y: event.clientY, sx, sy, moved: false };
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
+
+    window.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      const dx = event.clientX - dragging.x;
+      const dy = event.clientY - dragging.y;
+      if (Math.abs(dx) + Math.abs(dy) > 2) dragging.moved = true;
+      const s = baseScale() * camera.zoom;
+      camera.x -= dx / s;
+      camera.y -= dy / s;
+      dragging.x = event.clientX;
+      dragging.y = event.clientY;
+      const rect = canvas.getBoundingClientRect();
+      dragging.sx = (event.clientX - rect.left) * (canvas.width / canvas.clientWidth);
+      dragging.sy = (event.clientY - rect.top) * (canvas.height / canvas.clientHeight);
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
+
+    window.addEventListener('pointerup', () => {
+      if (dragging && !dragging.moved) clickCanvas(dragging.sx, dragging.sy);
+      dragging = null;
+    }, true);
+
+    canvas.addEventListener('wheel', (event) => {
+      focused = true;
+      canvas.focus({ preventScroll: true });
+      const px = event.offsetX * (canvas.width / canvas.clientWidth);
+      const py = event.offsetY * (canvas.height / canvas.clientHeight);
+      const before = screenToWorld(px, py);
+      camera.zoom = clamp(camera.zoom * (event.deltaY < 0 ? 1.14 : 0.88), 0.48, 3.35);
+      const after = screenToWorld(px, py);
+      camera.x += before[0] - after[0];
+      camera.y += before[1] - after[1];
+      event.preventDefault();
+      event.stopPropagation();
+    }, { passive: false });
+
+    window.addEventListener('keydown', (event) => {
+      const key = event.key.toLowerCase();
+      if (key === 'escape') {
+        focused = false;
+        keys = Object.create(null);
+        dragging = null;
+        return;
+      }
+      if (!focused) return;
+      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift', 'm'].includes(key)) {
+        if (key === 'm') {
+          muted = !muted;
+          const btn = $('demoMuteBtn');
+          if (btn) {
+            btn.textContent = muted ? 'Audio Muted' : 'Mute Audio';
+            btn.setAttribute('aria-pressed', String(muted));
+          }
+        } else {
+          keys[key] = true;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, true);
+
+    window.addEventListener('keyup', (event) => {
+      keys[event.key.toLowerCase()] = false;
+    }, true);
+
+    canvas.addEventListener('blur', () => {
+      focused = false;
+      keys = Object.create(null);
+      dragging = null;
+    });
+
+    window.addEventListener('resize', resize);
+    message = { title: 'Pass 18 Ring Base Online', body: 'The demo now starts as a compact top-down HoloVerse ring world using the actual region order, with Metropolis as the outer ground ring and space outside.', life: 6, age: 0 };
+    resize();
+    window.requestAnimationFrame(frame);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();
