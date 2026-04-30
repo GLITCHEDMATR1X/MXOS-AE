@@ -1,25 +1,9 @@
 {
-  "assetVersion": "20260429-live-blockbusters-single",
+  "assetVersion": "20260430-pass15-gallery-holoverse",
   "images": {
     "heroHeader": "assets/images/library_hero.png",
-    "navLogo": "assets/images/capsule_small.png",
-    "footerLogo": "assets/images/capsule_small.png",
     "gallery": [
-      "assets/images/library_hero.png",
-      "assets/images/library_header.png",
-      "assets/images/SCREENSHOT.png",
-      "assets/images/screenshot2.png",
-      "assets/images/matrixos_window.png",
-      "assets/images/business_card.png",
-      "assets/images/capsule_main.png",
-      "assets/images/capsule_header.png",
-      "assets/images/c1.png",
-      "assets/images/c2.png"
+      "assets/images/library_hero.png"
     ]
-  },
-  "notes": [
-    "Live manifest points to image files already present in this repository so the header, logo, footer logo, and media gallery load reliably.",
-    "To replace images later, upload a new file to assets/images and change the path here, or replace an existing file while keeping the same filename.",
-    "Bump assetVersion after image changes to push browsers past cached images."
-  ]
+  }
 }
