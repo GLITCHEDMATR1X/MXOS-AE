@@ -1,3 +1,23 @@
+GLITCHED MATRIX Prototype Lab Website — pass19-smart-civilian-ringworld — 2026-04-30
+--------------------------------------------------------------------------------
+- Added a new smart-civilian miniature HoloVerse runtime at assets/js/holoverse_mini_ringworld_pass19.js.
+- Locked the demo canvas styling to a clean 16:9 display and starts the camera at roughly a 5x overhead inspection scale.
+- Preserved the real world.py ring order: Flat, Forests, Green Hills, Mushroom, Desert, Ice, Urban, then Metropolis.
+- Added a minimap so the whole ring world remains readable while the main view stays zoomed in from above.
+- Added realm-specific civilian behavior: hub route citizens, forest foragers, hill farmers/animals, mushroom spore keepers, desert caravans, ice scanners, urban repair/scout crews, metropolis couriers, and exterior space orbiters.
+- Added F to fit the full ring world after zooming in, while keeping drag pan, WASD/Arrow panning, Shift fast pan, wheel zoom, click-to-inspect, Esc release, and M mute.
+- This pass stages the living-world runtime for wiring into the public page without replacing the stable pass-18 script yet.
+
+GLITCHED MATRIX Prototype Lab Website — pass18-mini-ringworld-base — 2026-04-30
+--------------------------------------------------------------------------------
+- Replaced the infinite satellite survey behavior with a bounded miniature HoloVerse ring-world base.
+- Used the actual Panda3D world.py ring order: Flat, Forests, Green Hills, Mushroom, Desert, Ice, Urban, then Metropolis.
+- Compressed the full region stack into one top-down view so every ground region can be rendered at once.
+- Kept Metropolis as the outermost ground ring and moved Space/Orbit to the exterior layer outside the world edge.
+- Added color-coded region bands, region labels, bot anchor markers, hub pulses, route guide lines, and simple region pattern hints.
+- Preserved drag pan, WASD/Arrow panning, Shift fast pan, mouse-wheel zoom, click-to-inspect ring info, Esc release, and M mute.
+- Set this up as the foundation for later living-civilization passes: traffic, citizens, construction, repairs, weather, and region events.
+
 GLITCHED MATRIX Prototype Lab Website — pass17-infinite-satellite-survey — 2026-04-30
 --------------------------------------------------------------------------------
 - Reworked the HoloVerse satellite demo toward the supplied overview reference: cyan grid, dark vignette, portal hub rings, colored district clusters, and core-option labeling.
