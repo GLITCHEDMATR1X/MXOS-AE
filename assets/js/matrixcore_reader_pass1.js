@@ -1,9 +1,10 @@
 (() => {
   'use strict';
 
-  const DATA_URL = './assets/data/matrixcore_chapters.json?v=20260511-reader-pass2-full-text';
+  const DATA_URL = './assets/data/matrixcore_chapters.json?v=20260529-pass42-preview-cleanup';
   const SECTION_ID = 'matrixcoreLoreSection';
   const STYLE_ID = 'matrixcore-lore-reader-no-notes-style';
+  const MAX_PREVIEW_CHARS = 118;
   const bodyCache = new Map();
   let activeChapterId = '';
 
@@ -11,7 +12,7 @@
     {
       id: '00',
       title: 'The Utopia Project',
-      summary: 'Utopia was built as a promise and sold as a cure. The island became a controlled machine where medicine, governance, simulations, and hidden systems intertwined.',
+      summary: 'A controlled artificial island promises a managed future while deeper systems begin to surface.',
       body: 'The Utopia Project\n\nThe full MatrixCore chapter feed is still loading. Hard refresh once if this fallback remains visible.'
     }
   ];
@@ -31,7 +32,7 @@
       .matrixcore-chapter-button { display: grid; gap: 4px; width: 100%; text-align: left; color: #e9f7fb; border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.035); border-radius: 12px; padding: 12px; cursor: pointer; }
       .matrixcore-chapter-button:hover, .matrixcore-chapter-button.active { border-color: rgba(255, 58, 58, .48); background: rgba(170, 20, 26, .18); }
       .matrixcore-chapter-button strong { font-size: .98rem; line-height: 1.25; }
-      .matrixcore-chapter-button span { color: var(--muted, #b8b8b8); font-size: .82rem; line-height: 1.35; }
+      .matrixcore-chapter-button span { color: var(--muted, #b8b8b8); font-size: .82rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
       .matrixcore-reader-panel { padding: clamp(18px, 1.4vw, 28px); min-height: 520px; max-height: min(82vh, 820px); overflow: auto; }
       .matrixcore-reader-panel h3 { margin: 0 0 12px; font-size: clamp(1.8rem, 1.7vw, 3rem); line-height: 1.05; }
       .matrixcore-reader-meta { color: #ff5058; letter-spacing: .14em; text-transform: uppercase; font-size: .78rem; margin-bottom: 12px; }
@@ -62,6 +63,34 @@
 
   function schedulePublicCopyCleanup() {
     [0, 120, 500, 1200, 2600, 5200].forEach((delay) => window.setTimeout(sanitizePublicCopy, delay));
+  }
+
+  function collapseWhitespace(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function stripRepeatedTitle(text, chapter) {
+    const title = collapseWhitespace(chapter && chapter.title);
+    let output = collapseWhitespace(text);
+    if (title && output.toLowerCase().startsWith(title.toLowerCase())) {
+      output = output.slice(title.length).replace(/^[\s:—-]+/, '').trim();
+    }
+    return output || collapseWhitespace(text);
+  }
+
+  function clampPreview(value, maxChars = MAX_PREVIEW_CHARS) {
+    const text = collapseWhitespace(value);
+    if (text.length <= maxChars) return text;
+    const cut = text.slice(0, maxChars);
+    const lastSpace = cut.lastIndexOf(' ');
+    const safeEnd = lastSpace > 72 ? lastSpace : maxChars;
+    return `${cut.slice(0, safeEnd).trim()}…`;
+  }
+
+  function makeChapterPreview(chapter) {
+    const raw = collapseWhitespace((chapter && (chapter.teaser || chapter.preview || chapter.summary)) || '');
+    const cleaned = stripRepeatedTitle(raw, chapter);
+    return clampPreview(cleaned || 'Open recovered chapter record.');
   }
 
   function escapeHtml(value) {
@@ -107,12 +136,13 @@
   }
 
   async function loadBody(chapter) {
-    const fallback = chapter.body || chapter.summary || '';
-    if (!chapter.bodyUrl) return fallback;
+    const bundledBody = chapter.body || '';
+    if (!chapter.bodyUrl) return bundledBody || 'Full chapter text is not bundled yet.';
     if (bodyCache.has(chapter.bodyUrl)) return bodyCache.get(chapter.bodyUrl);
     const response = await fetch(chapter.bodyUrl, { cache: 'no-store' });
     if (!response.ok) throw new Error(`Chapter text returned ${response.status}`);
     const text = await response.text();
+    if (!text.trim()) throw new Error('Chapter text was empty');
     bodyCache.set(chapter.bodyUrl, text);
     return text;
   }
@@ -127,9 +157,10 @@
       if (activeChapterId !== chapter.id) return;
       panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-reader-body">${escapeHtml(body)}</div>`;
     } catch (err) {
-      console.warn('MatrixCore chapter text fallback:', err);
+      console.warn('MatrixCore chapter text unavailable:', err);
       if (activeChapterId !== chapter.id) return;
-      panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-reader-body">${escapeHtml(chapter.body || chapter.summary || 'Chapter text could not be loaded.')}</div>`;
+      const fallback = chapter.body || 'Full chapter text is temporarily unavailable. The short chapter preview remains on the left, but the full story was not loaded into this panel.';
+      panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-reader-body">${escapeHtml(fallback)}</div>`;
     }
   }
 
@@ -139,9 +170,11 @@
     host.innerHTML = '';
     chapters.forEach((chapter) => {
       const button = document.createElement('button');
+      const preview = makeChapterPreview(chapter);
       button.type = 'button';
       button.className = 'matrixcore-chapter-button' + (chapter.id === activeId ? ' active' : '');
-      button.innerHTML = `<strong>${escapeHtml(chapter.id)} — ${escapeHtml(chapter.title)}</strong><span>${escapeHtml(chapter.summary || '')}</span>`;
+      button.setAttribute('aria-label', `Open chapter ${chapter.id || ''}: ${chapter.title || 'Untitled'}`);
+      button.innerHTML = `<strong>${escapeHtml(chapter.id)} — ${escapeHtml(chapter.title)}</strong><span>${escapeHtml(preview)}</span>`;
       button.addEventListener('click', () => {
         renderList(chapters, chapter.id);
         renderChapter(chapter);
@@ -155,7 +188,7 @@
     if (!search) return;
     search.addEventListener('input', () => {
       const q = search.value.trim().toLowerCase();
-      const filtered = allChapters.filter((chapter) => `${chapter.id} ${chapter.title} ${chapter.summary} ${chapter.searchText || ''}`.toLowerCase().includes(q));
+      const filtered = allChapters.filter((chapter) => `${chapter.id} ${chapter.title} ${makeChapterPreview(chapter)} ${chapter.searchText || ''}`.toLowerCase().includes(q));
       renderList(filtered, filtered[0] && filtered[0].id);
       if (filtered[0]) renderChapter(filtered[0]);
     });
