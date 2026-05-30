@@ -1,6 +1,7 @@
 (()=>{
 'use strict';
 const LIVE_SCRIPT='./assets/js/holomap_rts_pass43.js?v=20260529-pass43-holomap-rts';
+const STORY_FIX_SCRIPT='./assets/js/matrixcore_story_fix_pass42e.js?v=20260529-pass42e-story-panel';
 const STYLE_ID='holomap-rts-loader-pass43-style';
 const publicUpdates=[
   {group:'HoloMap',title:'Playable RTS Command Slice',meta:'2026-05-29',bullets:[
@@ -60,7 +61,7 @@ function copy(){
   list('roadmapList',publicCopy.roadmap);updates();
   const secondary=document.getElementById('secondaryCta');if(secondary){secondary.textContent='HoloMap RTS Preview';secondary.href='#demos'}
 }
-function loadScript(src){if(document.querySelector('script[data-holoverse-pass35-loader="true"]'))return;const s=document.createElement('script');s.src=src;s.async=false;s.dataset.holoversePass35Loader='true';document.head.appendChild(s)}
-function mount(){installLayoutStyle();promoteDemo();copy();[120,480,1200,2600,5200,9000].forEach(t=>setTimeout(copy,t));loadScript(LIVE_SCRIPT)}
+function loadScript(src,attr){if(document.querySelector(`script[${attr}="true"]`))return;const s=document.createElement('script');s.src=src;s.async=false;s.setAttribute(attr,'true');document.head.appendChild(s)}
+function mount(){installLayoutStyle();promoteDemo();copy();[120,480,1200,2600,5200,9000].forEach(t=>setTimeout(copy,t));loadScript(STORY_FIX_SCRIPT,'data-matrixcore-story-fix-pass42e');loadScript(LIVE_SCRIPT,'data-holoverse-pass35-loader')}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
