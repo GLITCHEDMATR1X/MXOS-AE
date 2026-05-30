@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const DATA_URL = './assets/data/matrixcore_chapters.json?v=20260529-pass42-preview-cleanup';
+  const DATA_URL = './assets/data/matrixcore_chapters.json?v=20260529-pass42b-tab-body-separation';
   const SECTION_ID = 'matrixcoreLoreSection';
   const STYLE_ID = 'matrixcore-lore-reader-no-notes-style';
   const MAX_PREVIEW_CHARS = 118;
@@ -29,14 +29,15 @@
       .matrixcore-reader-layout { display: grid; grid-template-columns: minmax(260px, 360px) minmax(0, 1fr); gap: clamp(14px, 1.2vw, 22px); align-items: stretch; }
       .matrixcore-chapter-list, .matrixcore-reader-panel { border: 1px solid rgba(255, 60, 70, .16); border-radius: 16px; background: rgba(0, 10, 14, .56); }
       .matrixcore-chapter-list { display: grid; align-content: start; gap: 8px; max-height: min(78vh, 760px); overflow: auto; padding: 12px; }
-      .matrixcore-chapter-button { display: grid; gap: 4px; width: 100%; text-align: left; color: #e9f7fb; border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.035); border-radius: 12px; padding: 12px; cursor: pointer; }
+      .matrixcore-chapter-button { display: grid; gap: 0; width: 100%; text-align: left; color: #e9f7fb; border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.035); border-radius: 12px; padding: 13px 12px; cursor: pointer; }
       .matrixcore-chapter-button:hover, .matrixcore-chapter-button.active { border-color: rgba(255, 58, 58, .48); background: rgba(170, 20, 26, .18); }
       .matrixcore-chapter-button strong { font-size: .98rem; line-height: 1.25; }
-      .matrixcore-chapter-button span { color: var(--muted, #b8b8b8); font-size: .82rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .matrixcore-chapter-button span { display: none !important; }
       .matrixcore-reader-panel { padding: clamp(18px, 1.4vw, 28px); min-height: 520px; max-height: min(82vh, 820px); overflow: auto; }
       .matrixcore-reader-panel h3 { margin: 0 0 12px; font-size: clamp(1.8rem, 1.7vw, 3rem); line-height: 1.05; }
       .matrixcore-reader-meta { color: #ff5058; letter-spacing: .14em; text-transform: uppercase; font-size: .78rem; margin-bottom: 12px; }
       .matrixcore-reader-body { white-space: pre-wrap; color: #dbe6ea; line-height: 1.72; font-size: clamp(1rem, .76vw, 1.16rem); max-width: 112ch; }
+      .matrixcore-unavailable { color: #cfd8dd; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 16px; background: rgba(255,255,255,.035); max-width: 88ch; }
       .matrixcore-loading { color: #ff7b7b; letter-spacing: .08em; text-transform: uppercase; font-size: .85rem; }
       .matrixcore-search { width: 100%; padding: 12px 14px; color: #fff; border-radius: 12px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.42); margin-bottom: 10px; }
       @media (max-width: 1180px) { .matrixcore-reader-layout { grid-template-columns: 1fr; } .matrixcore-chapter-list, .matrixcore-reader-panel { max-height: none; } }
@@ -137,7 +138,7 @@
 
   async function loadBody(chapter) {
     const bundledBody = chapter.body || '';
-    if (!chapter.bodyUrl) return bundledBody || 'Full chapter text is not bundled yet.';
+    if (!chapter.bodyUrl) return bundledBody || '';
     if (bodyCache.has(chapter.bodyUrl)) return bodyCache.get(chapter.bodyUrl);
     const response = await fetch(chapter.bodyUrl, { cache: 'no-store' });
     if (!response.ok) throw new Error(`Chapter text returned ${response.status}`);
@@ -155,12 +156,13 @@
     try {
       const body = await loadBody(chapter);
       if (activeChapterId !== chapter.id) return;
+      if (!body.trim()) throw new Error('No bundled chapter body');
       panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-reader-body">${escapeHtml(body)}</div>`;
     } catch (err) {
       console.warn('MatrixCore chapter text unavailable:', err);
       if (activeChapterId !== chapter.id) return;
-      const fallback = chapter.body || 'Full chapter text is temporarily unavailable. The short chapter preview remains on the left, but the full story was not loaded into this panel.';
-      panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-reader-body">${escapeHtml(fallback)}</div>`;
+      const message = 'Full chapter text is not bundled in this website build yet. This panel is reserved for the full story only; chapter preview text is intentionally kept out of this area.';
+      panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-reader-body matrixcore-unavailable">${escapeHtml(message)}</div>`;
     }
   }
 
@@ -173,8 +175,9 @@
       const preview = makeChapterPreview(chapter);
       button.type = 'button';
       button.className = 'matrixcore-chapter-button' + (chapter.id === activeId ? ' active' : '');
-      button.setAttribute('aria-label', `Open chapter ${chapter.id || ''}: ${chapter.title || 'Untitled'}`);
-      button.innerHTML = `<strong>${escapeHtml(chapter.id)} — ${escapeHtml(chapter.title)}</strong><span>${escapeHtml(preview)}</span>`;
+      button.setAttribute('aria-label', `Open chapter ${chapter.id || ''}: ${chapter.title || 'Untitled'}. ${preview}`);
+      button.title = preview;
+      button.innerHTML = `<strong>${escapeHtml(chapter.id)} — ${escapeHtml(chapter.title)}</strong>`;
       button.addEventListener('click', () => {
         renderList(chapters, chapter.id);
         renderChapter(chapter);
