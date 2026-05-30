@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const DATA_URL = './assets/data/matrixcore_chapters.json?v=20260529-pass42b-tab-body-separation';
+  const DATA_URL = './assets/data/matrixcore_chapters.json?v=20260529-pass42c-story-panel-fallback';
   const SECTION_ID = 'matrixcoreLoreSection';
   const STYLE_ID = 'matrixcore-lore-reader-no-notes-style';
   const MAX_PREVIEW_CHARS = 118;
@@ -13,7 +13,7 @@
       id: '00',
       title: 'The Utopia Project',
       summary: 'A controlled artificial island promises a managed future while deeper systems begin to surface.',
-      body: 'The Utopia Project\n\nThe full MatrixCore chapter feed is still loading. Hard refresh once if this fallback remains visible.'
+      body: 'The Utopia Project\n\nUtopia was built as a promise and sold as a cure. Nations in decline pooled talent, money, and desperation to raise an artificial island in the Atlantic and test what a managed future might look like.'
     }
   ];
 
@@ -37,7 +37,6 @@
       .matrixcore-reader-panel h3 { margin: 0 0 12px; font-size: clamp(1.8rem, 1.7vw, 3rem); line-height: 1.05; }
       .matrixcore-reader-meta { color: #ff5058; letter-spacing: .14em; text-transform: uppercase; font-size: .78rem; margin-bottom: 12px; }
       .matrixcore-reader-body { white-space: pre-wrap; color: #dbe6ea; line-height: 1.72; font-size: clamp(1rem, .76vw, 1.16rem); max-width: 112ch; }
-      .matrixcore-unavailable { color: #cfd8dd; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 16px; background: rgba(255,255,255,.035); max-width: 88ch; }
       .matrixcore-loading { color: #ff7b7b; letter-spacing: .08em; text-transform: uppercase; font-size: .85rem; }
       .matrixcore-search { width: 100%; padding: 12px 14px; color: #fff; border-radius: 12px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.42); margin-bottom: 10px; }
       @media (max-width: 1180px) { .matrixcore-reader-layout { grid-template-columns: 1fr; } .matrixcore-chapter-list, .matrixcore-reader-panel { max-height: none; } }
@@ -94,6 +93,14 @@
     return clampPreview(cleaned || 'Open recovered chapter record.');
   }
 
+  function makePanelFallbackBody(chapter) {
+    if (!chapter) return '';
+    if (chapter.body && collapseWhitespace(chapter.body)) return chapter.body;
+    const raw = chapter.summary || chapter.preview || chapter.teaser || '';
+    const cleaned = stripRepeatedTitle(raw, chapter);
+    return cleaned || 'Story text is not bundled in this website build yet.';
+  }
+
   function escapeHtml(value) {
     return String(value || '')
       .replaceAll('&', '&amp;')
@@ -137,33 +144,33 @@
   }
 
   async function loadBody(chapter) {
+    if (!chapter) return '';
     const bundledBody = chapter.body || '';
-    if (!chapter.bodyUrl) return bundledBody || '';
+    if (!chapter.bodyUrl) return bundledBody || makePanelFallbackBody(chapter);
     if (bodyCache.has(chapter.bodyUrl)) return bodyCache.get(chapter.bodyUrl);
-    const response = await fetch(chapter.bodyUrl, { cache: 'no-store' });
-    if (!response.ok) throw new Error(`Chapter text returned ${response.status}`);
-    const text = await response.text();
-    if (!text.trim()) throw new Error('Chapter text was empty');
-    bodyCache.set(chapter.bodyUrl, text);
-    return text;
+    try {
+      const response = await fetch(chapter.bodyUrl, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`Chapter text returned ${response.status}`);
+      const text = await response.text();
+      if (!text.trim()) throw new Error('Chapter text was empty');
+      bodyCache.set(chapter.bodyUrl, text);
+      return text;
+    } catch (err) {
+      console.warn('MatrixCore external chapter text unavailable; using bundled story copy:', err);
+      const fallback = makePanelFallbackBody(chapter);
+      bodyCache.set(chapter.bodyUrl, fallback);
+      return fallback;
+    }
   }
 
   async function renderChapter(chapter) {
     const panel = document.getElementById('matrixcoreReaderPanel');
     if (!panel || !chapter) return;
     activeChapterId = chapter.id;
-    panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-loading">Loading full chapter...</div>`;
-    try {
-      const body = await loadBody(chapter);
-      if (activeChapterId !== chapter.id) return;
-      if (!body.trim()) throw new Error('No bundled chapter body');
-      panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-reader-body">${escapeHtml(body)}</div>`;
-    } catch (err) {
-      console.warn('MatrixCore chapter text unavailable:', err);
-      if (activeChapterId !== chapter.id) return;
-      const message = 'Full chapter text is not bundled in this website build yet. This panel is reserved for the full story only; chapter preview text is intentionally kept out of this area.';
-      panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-reader-body matrixcore-unavailable">${escapeHtml(message)}</div>`;
-    }
+    panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-loading">Loading chapter...</div>`;
+    const body = await loadBody(chapter);
+    if (activeChapterId !== chapter.id) return;
+    panel.innerHTML = `<div class="matrixcore-reader-meta">Chapter ${escapeHtml(chapter.id || '')}</div><h3>${escapeHtml(chapter.title || 'Untitled')}</h3><div class="matrixcore-reader-body">${escapeHtml(body)}</div>`;
   }
 
   function renderList(chapters, activeId) {
